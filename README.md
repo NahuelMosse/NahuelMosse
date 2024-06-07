@@ -1,7 +1,7 @@
 <h1 align="center">Hi 👋, I'm Nahuel Mosse</h1>
 <h6 align="center">I am Nahuel Mosse, a dedicated Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h6>
 
-<p align="center">currently working on <b>Kovix | Fravega</b></p>
+<p align="center"> currently working on <b> Kovix | Fravega </b> </p>
 <p align="center"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=f50056&style=flat" alt="nahuelmosse" /> </p>
 
 <!-- separator -->
@@ -16,7 +16,12 @@
 <!-- separator -->
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=nahuelmosse" alt="nahuelmosse" /></a> </p>
+<!-- trophies -->
+<p align="center">
+  <a href="https://github.com/ryo-ma/github-profile-trophy">
+    <img src="https://github-profile-trophy.vercel.app/?username=nahuelmosse&theme=monokai&no-bg=true&no-frame=true&margin-w=16" alt="nahuelmosse" />
+  </a>
+</p>
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
