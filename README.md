@@ -1,6 +1,8 @@
 <h1 align="center">Hi 👋, I'm Nahuel Mosse</h1>
 <h6 align="center">I am Nahuel Mosse, a dedicated Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h6>
 
+currently working on **Kovix | Fravega**
+
 <!-- separator -->
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
@@ -17,8 +19,6 @@
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=nahuelmosse" alt="nahuelmosse" /></a> </p>
 
-- 🔭 I’m currently working on **Kovix | Fravega**
-
 <h3 align="left">Connect with me:</h3>
 <p align="left">
 <a href="https://linkedin.com/in/nahuelmosse" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="nahuelmosse" height="30" width="40" /></a>
@@ -31,7 +31,6 @@
 
 <p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=nahuelmosse&show_icons=true&theme=dark&hide_border=true&locale=en&layout=compact" alt="nahuelmosse" /></p>
 
-<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=nahuelmosse&show_icons=true&theme=dark&hide_border=true&locale=en" alt="nahuelmosse" /></p>
-
 <p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=nahuelmosse&theme=dark&hide_border=true" alt="nahuelmosse" /></p>
 
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=f50056&style=flat" alt="nahuelmosse" /> </p>
