@@ -1,13 +1,17 @@
 <h1 align="center">Hi 👋, I'm Nahuel Mosse</h1>
-<h3 align="center">I am Nahuel Mosse, a dedicated Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h3>
+<h6 align="center">I am Nahuel Mosse, a dedicated Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h6>
 
+<!-- separator -->
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-<!--- snake -->
+<!-- snake -->
 <div align="center">
   <img  src="https://github.com/1999AZZAR/1999AZZAR/blob/readme/resources/img/grid-snake.svg"
        alt="snake" /></a>
 </div>
+
+<!-- separator -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=0e75b6&style=flat" alt="nahuelmosse" /> </p>
 
