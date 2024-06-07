@@ -1,7 +1,8 @@
 <h1 align="center">Hi 👋, I'm Nahuel Mosse</h1>
 <h6 align="center">I am Nahuel Mosse, a dedicated Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h6>
 
-currently working on **Kovix | Fravega**
+<p align="center">currently working on **Kovix | Fravega**</p>
+<p align="center"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=f50056&style=flat" alt="nahuelmosse" /> </p>
 
 <!-- separator -->
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
@@ -30,5 +31,3 @@ currently working on **Kovix | Fravega**
 <p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=nahuelmosse&show_icons=true&theme=dark&hide_border=true&locale=en&layout=compact" alt="nahuelmosse" /></p>
 
 <p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=nahuelmosse&theme=dark&hide_border=true" alt="nahuelmosse" /></p>
-
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=f50056&style=flat" alt="nahuelmosse" /> </p>
