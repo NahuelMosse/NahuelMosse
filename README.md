@@ -1,8 +1,15 @@
-<h1 align="center">I'm Nahuel Mosse</h1>
-<h6 align="center">Full Stack Developer with over two years of experience in frontend and backend development using technologies like TypeScript, JavaScript, Angular, React.js, Node.js, and NestJS. With a background in electromechanics and currently pursuing a degree in Computer Engineering, I excel in technical design, API communication, and team leadership. My notable achievements include significantly improving business processes and ensuring successful project deployments. I am bilingual in Spanish and English and passionate about continuous learning and problem-solving.</h6>
+<h1 align="center">I'm Nawi</h1>
 
-<p align="center"> currently working on <b> Kovix | Fravega </b> </p>
-<p align="center"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=f50056&style=flat" alt="nahuelmosse" /> </p>
+<!-- stats -->
+<div align="center">
+  <a href="https://git.io/streak-stats">
+    <img src="https://streak-stats.demolab.com?user=nahuelmosse&theme=radical&hide_border=true&card_width=200&card_height=100&background=FF000000&sideNums=FFFFFF&dates=FFFFFF&sideLabels=FFFFFF&hide_current_streak=true&hide_longest_streak=true" alt="GitHub Streak" />
+  </a>
+</div>
+
+<p align="center" margin="0"> currently working on <b> Kovix | Fravega </b> </p>
+
+<p align="center" margin="0"> <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=fa1968&style=flat" alt="nahuelmosse" /> </p>
 
 <!-- snake -->
 <div align="center">
@@ -13,6 +20,6 @@
 <!-- trophies -->
 <h3 align="center">
   <a href="https://github.com/ryo-ma/github-profile-trophy">
-    <img src="https://github-profile-trophy.vercel.app/?username=nahuelmosse&theme=monokai&no-bg=true&no-frame=true&margin-w=16" alt="nahuelmosse" />
+    <img src="https://github-profile-trophy.vercel.app/?username=nahuelmosse&theme=radical&no-bg=true&no-frame=true&margin-w=16" alt="nahuelmosse" />
   </a>
 </h3>
