@@ -37,7 +37,7 @@ Jüsto   · releases            10+ to production, no major incidents
 **Backend** — Node.js · NestJS · TypeScript · REST and BFF architectures<br>
 **Frontend** — React · Angular · Next.js · Tailwind CSS<br>
 **Data** — PostgreSQL · MongoDB<br>
-**Testing** — Jest · Vitest<br>
+**Testing** — Jest · Vitest · Playwright<br>
 **Tooling** — Docker · Git · Linux
 
 Also Python, Java and Flutter, mostly outside work.
