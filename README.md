@@ -33,13 +33,25 @@
 
 ### Selected work
 
-| Project | What it is | Stack |
-| --- | --- | --- |
-| [**Portfolio**](https://github.com/NahuelMosse/Portfolio) · [live](https://nahuelmosse.vercel.app) | Scroll-snapped narrative site, content driven from a single source and exposed as JSON and `llms.txt` | Next.js · TypeScript · Framer Motion |
-| [**nasa-calendar**](https://github.com/NahuelMosse/nasa-calendar) | Calendar built on NASA's Astronomy Picture of the Day API, server-side rendered | Next.js · React · TypeScript |
-| [**Node-Mongo**](https://github.com/NahuelMosse/Node-Mongo) | Interactive CLI over MongoDB with a layered domain / repository / service split | TypeScript · MongoDB · Mongoose |
-| [**ias_mosse_api**](https://github.com/NahuelMosse/ias_mosse_api) | REST API with a Dockerised Postgres and a Make-driven dev workflow | Python · PostgreSQL · Docker |
-| [**FinalProgramacion4**](https://github.com/NahuelMosse/FinalProgramacion4) | Recruitment domain model built around inheritance for hierarchical and non-hierarchical roles | Java |
+**[Portfolio](https://github.com/NahuelMosse/Portfolio)** · [live](https://nahuelmosse.vercel.app)
+Scroll-snapped narrative site. All copy lives in one source file and is served as HTML, JSON and `llms.txt` from the same data.
+`Next.js` `TypeScript` `Tailwind` `Framer Motion`
+
+**[nasa-calendar](https://github.com/NahuelMosse/nasa-calendar)**
+Calendar built on NASA's Astronomy Picture of the Day API, server-side rendered.
+`Next.js` `React` `TypeScript`
+
+**[Node-Mongo](https://github.com/NahuelMosse/Node-Mongo)**
+Interactive CLI over MongoDB with a layered domain / repository / service split.
+`TypeScript` `MongoDB` `Mongoose`
+
+**[ias_mosse_api](https://github.com/NahuelMosse/ias_mosse_api)**
+REST API with a Dockerised Postgres and a Make-driven dev workflow.
+`Python` `PostgreSQL` `Docker`
+
+**[FinalProgramacion4](https://github.com/NahuelMosse/FinalProgramacion4)**
+Recruitment domain model built around inheritance for hierarchical and non-hierarchical roles.
+`Java`
 
 <!--
   GitHub stats cards. github-readme-stats.vercel.app was returning 503 service-wide
