@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nahuelmosse.vercel.app">
-    <img src="https://img.shields.io/badge/Portfolio-00170d?style=for-the-badge&logo=vercel&logoColor=bba07b" alt="Portfolio">
+    <img src="https://img.shields.io/badge/Portfolio-135b42?style=for-the-badge&logo=vercel&logoColor=f2eee7" alt="Portfolio">
   </a>
   <a href="https://linkedin.com/in/nahuelmosse">
     <img src="https://img.shields.io/badge/LinkedIn-9e6033?style=for-the-badge&logo=linkedin&logoColor=f2eee7" alt="LinkedIn">
