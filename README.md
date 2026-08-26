@@ -41,12 +41,17 @@
 | [**ias_mosse_api**](https://github.com/NahuelMosse/ias_mosse_api) | REST API with a Dockerised Postgres and a Make-driven dev workflow | Python · PostgreSQL · Docker |
 | [**FinalProgramacion4**](https://github.com/NahuelMosse/FinalProgramacion4) | Recruitment domain model built around inheritance for hierarchical and non-hierarchical roles | Java |
 
-### GitHub
+<!--
+  GitHub stats cards. github-readme-stats.vercel.app was returning 503 service-wide
+  when this was written, so the cards are parked here rather than rendering broken.
+  Uncomment once the service is back up.
 
-<p>
-  <img height="160" src="https://github-readme-stats.vercel.app/api?username=NahuelMosse&show_icons=true&hide_border=true&theme=transparent&count_private=true&include_all_commits=true" alt="GitHub stats for NahuelMosse">
-  <img height="160" src="https://github-readme-stats.vercel.app/api/top-langs/?username=NahuelMosse&layout=compact&hide_border=true&theme=transparent&langs_count=8" alt="Most used languages">
-</p>
+  <h3>GitHub</h3>
+  <p>
+    <img height="160" src="https://github-readme-stats.vercel.app/api?username=NahuelMosse&show_icons=true&hide_border=true&theme=transparent&count_private=true&include_all_commits=true" alt="GitHub stats for NahuelMosse">
+    <img height="160" src="https://github-readme-stats.vercel.app/api/top-langs/?username=NahuelMosse&layout=compact&hide_border=true&theme=transparent&langs_count=8" alt="Most used languages">
+  </p>
+-->
 
 <p align="center">
   <img src="https://komarev.com/ghpvc/?username=nahuelmosse&label=Profile%20views&color=fa1968&style=flat" alt="Profile views">
