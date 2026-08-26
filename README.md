@@ -23,7 +23,7 @@ Enrolled in Computer Engineering, had my first job by the first semester. Still 
 
 ### What I've shipped
 
-Four years at **Kovix Consulting**, mostly on B2C platforms serving millions of users — API contracts across teams, query optimisation, release planning, mentoring.
+Four years at **Kovix Consulting**, mostly on B2B platforms serving millions of users — API contracts across teams, query optimisation, release planning, mentoring.
 
 ```
 Frávega · receiving flow      7h 48m  ──▶  46m average
