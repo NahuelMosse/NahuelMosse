@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 400" width="490" height="400" role="img" aria-label="role: Full Stack Engineer; now: Kovix Consulting · 4 years; based: Buenos Aires, AR; backend: Node.js · NestJS · TypeScript; front: React · Angular · Next.js; data: PostgreSQL · MongoDB; testing: Jest · Vitest · Playwright; tooling: Docker · Git · Linux; after: Python · Java · Flutter; study: Computer Eng. · 4th year · UM; origin: Minecraft → Jarvis → this">
+  <title>nahuel@github</title>
+  <style>
+    text { font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace; font-size: 13px; fill: #f2eee7; white-space: pre; }
+    .k { fill: #bba07b; font-weight: 700; }
+    .m { fill: #968e82; }
+    .u { fill: #bba07b; font-weight: 700; }
+    .h { fill: #2f8a66; font-weight: 700; }
+    .bar { font-size: 11px; fill: #968e82; }
+    .ln { opacity: 0; animation: print .35s ease-out forwards; }
+    @keyframes print { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .ln { animation: none; opacity: 1; } }
+  </style>
+  <rect x="0.5" y="0.5" width="489" height="399" rx="10" fill="#00170d" stroke="#193429"/>
+  <line x1="1" y1="34" x2="489" y2="34" stroke="#193429"/>
+  <circle cx="20" cy="17.5" r="4.5" fill="#193429"/><circle cx="36" cy="17.5" r="4.5" fill="#193429"/><circle cx="52" cy="17.5" r="4.5" fill="#193429"/>
+  <text class="bar" x="245" y="21.5" text-anchor="middle">~ $ neofetch</text>
+  <g class="ln" style="animation-delay:0.35s">
+    <text x="26" y="76"><tspan class="u">nahuel</tspan><tspan class="m">@</tspan><tspan class="h">github</tspan></text>
+  </g>
+  <g class="ln" style="animation-delay:0.46s">
+    <text x="26" y="97.5" class="m">─────────────</text>
+  </g>
+  <g class="ln" style="animation-delay:0.57s">
+    <text x="26" y="127.6" class="k">role</text>
+    <text x="100" y="127.6">Full Stack Engineer</text>
+  </g>
+  <g class="ln" style="animation-delay:0.68s">
+    <text x="26" y="149.1" class="k">now</text>
+    <text x="100" y="149.1">Kovix Consulting · 4 years</text>
+  </g>
+  <g class="ln" style="animation-delay:0.79s">
+    <text x="26" y="170.60000000000002" class="k">based</text>
+    <text x="100" y="170.60000000000002">Buenos Aires, AR</text>
+  </g>
+  <g class="ln" style="animation-delay:0.90s">
+    <text x="26" y="192.10000000000002" class="k">backend</text>
+    <text x="100" y="192.10000000000002">Node.js · NestJS · TypeScript</text>
+  </g>
+  <g class="ln" style="animation-delay:1.01s">
+    <text x="26" y="213.6" class="k">front</text>
+    <text x="100" y="213.6">React · Angular · Next.js</text>
+  </g>
+  <g class="ln" style="animation-delay:1.12s">
+    <text x="26" y="235.1" class="k">data</text>
+    <text x="100" y="235.1">PostgreSQL · MongoDB</text>
+  </g>
+  <g class="ln" style="animation-delay:1.23s">
+    <text x="26" y="256.6" class="k">testing</text>
+    <text x="100" y="256.6">Jest · Vitest · Playwright</text>
+  </g>
+  <g class="ln" style="animation-delay:1.34s">
+    <text x="26" y="278.1" class="k">tooling</text>
+    <text x="100" y="278.1">Docker · Git · Linux</text>
+  </g>
+  <g class="ln" style="animation-delay:1.45s">
+    <text x="26" y="299.6" class="k">after</text>
+    <text x="100" y="299.6">Python · Java · Flutter</text>
+  </g>
+  <g class="ln" style="animation-delay:1.56s">
+    <text x="26" y="321.1" class="k">study</text>
+    <text x="100" y="321.1">Computer Eng. · 4th year · UM</text>
+  </g>
+  <g class="ln" style="animation-delay:1.67s">
+    <text x="26" y="342.6" class="k">origin</text>
+    <text x="100" y="342.6">Minecraft → Jarvis → this</text>
+  </g>
+  <g class="ln" style="animation-delay:1.78s"><rect x="26" y="372.7" width="22" height="12" rx="2" fill="#f2eee7"/><rect x="52" y="372.7" width="22" height="12" rx="2" fill="#bba07b"/><rect x="78" y="372.7" width="22" height="12" rx="2" fill="#2f8a66"/><rect x="104" y="372.7" width="22" height="12" rx="2" fill="#968e82"/><rect x="130" y="372.7" width="22" height="12" rx="2" fill="#193429"/></g>
+</svg>
