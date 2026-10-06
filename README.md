@@ -15,7 +15,7 @@
 
 <div align="center">
 
-<h3><code>nahuel@github ~ $ whoami</code></h3>
+<h3><code>nahuelmosse@github ~ $ whoami</code></h3>
 
 <table>
   <tr>
@@ -36,7 +36,7 @@
   </tr>
 </table>
 
-<h3><code>nahuel@github ~ $ ./contributions.sh</code></h3>
+<h3><code>nahuelmosse@github ~ $ ./contributions.sh</code></h3>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/heatmap-dark.svg">

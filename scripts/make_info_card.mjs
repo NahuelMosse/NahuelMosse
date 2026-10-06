@@ -34,10 +34,10 @@ function render(name) {
   const at = () => (start + step * line++).toFixed(2);
 
   const head = `<g class="ln" style="animation-delay:${at()}s">
-    <text x="${X}" y="${TOP}"><tspan class="u">nahuel</tspan><tspan class="m">@</tspan><tspan class="h">github</tspan></text>
+    <text x="${X}" y="${TOP}"><tspan class="u">nahuelmosse</tspan><tspan class="m">@</tspan><tspan class="h">github</tspan></text>
   </g>
   <g class="ln" style="animation-delay:${at()}s">
-    <text x="${X}" y="${TOP + LH}" class="m">${"─".repeat(13)}</text>
+    <text x="${X}" y="${TOP + LH}" class="m">${"─".repeat(18)}</text>
   </g>`;
 
   const rows = ROWS.map(([k, v], i) => {
@@ -54,7 +54,7 @@ function render(name) {
     .join("");
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(ALT)}">
-  <title>nahuel@github</title>
+  <title>nahuelmosse@github</title>
   <style>
     text { font-family: ${MONO}; font-size: 13px; fill: ${t.text}; white-space: pre; }
     .k { fill: ${t.accent}; font-weight: 700; }
