@@ -1,10 +1,10 @@
 {
   "user": "NahuelMosse",
-  "fetchedAt": "2026-10-12T15:16:17.653Z",
-  "total": 1839,
-  "activeDays": 146,
+  "fetchedAt": "2026-10-13T14:06:27.067Z",
+  "total": 1840,
+  "activeDays": 147,
   "streak": {
-    "current": 6,
+    "current": 7,
     "longest": 15
   },
   "bestDay": {
@@ -1839,6 +1839,11 @@
     },
     {
       "date": "2026-10-12",
+      "level": 1,
+      "count": 1
+    },
+    {
+      "date": "2026-10-13",
       "level": 0,
       "count": 0
     }
