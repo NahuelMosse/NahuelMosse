@@ -1,11 +1,11 @@
 {
   "user": "NahuelMosse",
-  "fetchedAt": "2026-10-13T14:06:27.067Z",
-  "total": 1840,
-  "activeDays": 147,
+  "fetchedAt": "2026-10-14T11:47:00.690Z",
+  "total": 1905,
+  "activeDays": 150,
   "streak": {
-    "current": 7,
-    "longest": 15
+    "current": 25,
+    "longest": 25
   },
   "bestDay": {
     "date": "2026-09-27",
@@ -1705,7 +1705,7 @@
     {
       "date": "2026-09-15",
       "level": 1,
-      "count": 6
+      "count": 8
     },
     {
       "date": "2026-09-16",
@@ -1715,12 +1715,12 @@
     {
       "date": "2026-09-17",
       "level": 1,
-      "count": 24
+      "count": 27
     },
     {
       "date": "2026-09-18",
       "level": 1,
-      "count": 16
+      "count": 18
     },
     {
       "date": "2026-09-19",
@@ -1734,13 +1734,13 @@
     },
     {
       "date": "2026-09-21",
-      "level": 1,
-      "count": 32
+      "level": 2,
+      "count": 36
     },
     {
       "date": "2026-09-22",
       "level": 3,
-      "count": 95
+      "count": 96
     },
     {
       "date": "2026-09-23",
@@ -1790,7 +1790,7 @@
     {
       "date": "2026-10-02",
       "level": 1,
-      "count": 3
+      "count": 12
     },
     {
       "date": "2026-10-03",
@@ -1804,13 +1804,13 @@
     },
     {
       "date": "2026-10-05",
-      "level": 0,
-      "count": 0
+      "level": 1,
+      "count": 6
     },
     {
       "date": "2026-10-06",
       "level": 1,
-      "count": 9
+      "count": 13
     },
     {
       "date": "2026-10-07",
@@ -1820,12 +1820,12 @@
     {
       "date": "2026-10-08",
       "level": 1,
-      "count": 1
+      "count": 8
     },
     {
       "date": "2026-10-09",
       "level": 1,
-      "count": 21
+      "count": 30
     },
     {
       "date": "2026-10-10",
@@ -1844,8 +1844,13 @@
     },
     {
       "date": "2026-10-13",
-      "level": 0,
-      "count": 0
+      "level": 1,
+      "count": 16
+    },
+    {
+      "date": "2026-10-14",
+      "level": 1,
+      "count": 2
     }
   ]
 }
