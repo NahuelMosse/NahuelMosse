@@ -1,52 +1,17 @@
 {
   "user": "NahuelMosse",
-  "fetchedAt": "2026-10-24T10:53:18.712Z",
-  "total": 2028,
-  "activeDays": 157,
+  "fetchedAt": "2026-10-25T11:19:49.938Z",
+  "total": 2394,
+  "activeDays": 158,
   "streak": {
-    "current": 34,
-    "longest": 34
+    "current": 36,
+    "longest": 36
   },
   "bestDay": {
-    "date": "2026-09-27",
-    "count": 134
+    "date": "2026-10-22",
+    "count": 161
   },
   "days": [
-    {
-      "date": "2025-10-19",
-      "level": 1,
-      "count": 1
-    },
-    {
-      "date": "2025-10-20",
-      "level": 0,
-      "count": 0
-    },
-    {
-      "date": "2025-10-21",
-      "level": 0,
-      "count": 0
-    },
-    {
-      "date": "2025-10-22",
-      "level": 0,
-      "count": 0
-    },
-    {
-      "date": "2025-10-23",
-      "level": 0,
-      "count": 0
-    },
-    {
-      "date": "2025-10-24",
-      "level": 0,
-      "count": 0
-    },
-    {
-      "date": "2025-10-25",
-      "level": 0,
-      "count": 0
-    },
     {
       "date": "2025-10-26",
       "level": 0,
@@ -874,7 +839,7 @@
     },
     {
       "date": "2026-04-09",
-      "level": 2,
+      "level": 1,
       "count": 34
     },
     {
@@ -1699,7 +1664,7 @@
     },
     {
       "date": "2026-09-21",
-      "level": 2,
+      "level": 1,
       "count": 36
     },
     {
@@ -1719,7 +1684,7 @@
     },
     {
       "date": "2026-09-25",
-      "level": 3,
+      "level": 2,
       "count": 73
     },
     {
@@ -1739,7 +1704,7 @@
     },
     {
       "date": "2026-09-29",
-      "level": 2,
+      "level": 1,
       "count": 38
     },
     {
@@ -1839,33 +1804,38 @@
     },
     {
       "date": "2026-10-19",
-      "level": 2,
+      "level": 1,
       "count": 39
     },
     {
       "date": "2026-10-20",
-      "level": 1,
-      "count": 5
+      "level": 2,
+      "count": 49
     },
     {
       "date": "2026-10-21",
       "level": 1,
-      "count": 20
+      "count": 21
     },
     {
       "date": "2026-10-22",
-      "level": 1,
-      "count": 17
+      "level": 4,
+      "count": 161
     },
     {
       "date": "2026-10-23",
-      "level": 1,
-      "count": 1
+      "level": 4,
+      "count": 152
     },
     {
       "date": "2026-10-24",
-      "level": 0,
-      "count": 0
+      "level": 1,
+      "count": 24
+    },
+    {
+      "date": "2026-10-25",
+      "level": 1,
+      "count": 2
     }
   ]
 }
