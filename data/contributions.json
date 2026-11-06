@@ -1,10 +1,10 @@
 {
   "user": "NahuelMosse",
-  "fetchedAt": "2026-11-04T14:26:14.191Z",
-  "total": 3602,
+  "fetchedAt": "2026-11-06T14:11:53.528Z",
+  "total": 3706,
   "activeDays": 167,
   "streak": {
-    "current": 46,
+    "current": 0,
     "longest": 46
   },
   "bestDay": {
@@ -1824,8 +1824,8 @@
     },
     {
       "date": "2026-10-30",
-      "level": 1,
-      "count": 88
+      "level": 2,
+      "count": 97
     },
     {
       "date": "2026-10-31",
@@ -1840,17 +1840,27 @@
     {
       "date": "2026-11-02",
       "level": 1,
-      "count": 26
+      "count": 40
     },
     {
       "date": "2026-11-03",
       "level": 1,
-      "count": 33
+      "count": 55
     },
     {
       "date": "2026-11-04",
       "level": 1,
-      "count": 2
+      "count": 61
+    },
+    {
+      "date": "2026-11-05",
+      "level": 0,
+      "count": 0
+    },
+    {
+      "date": "2026-11-06",
+      "level": 0,
+      "count": 0
     }
   ]
 }
