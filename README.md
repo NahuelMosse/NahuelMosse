@@ -12,7 +12,9 @@
 
 <br>
 
-<img src="assets/case-01.svg" alt="Case 01: The card is the specification. Node.js, Playwright, Claude Code." width="100%">
+<img src="assets/projects.svg" alt="Projects: five case files" width="100%">
+
+<img src="assets/case-01.svg" alt="Case file 01: The card is the specification. The kit's real card and its tagged tests on the monitor of the night desk. Node.js, Playwright, Claude Code." width="100%">
 
 **What.** A development kit where the requirement is frozen as a card and every behavior is proven by tests tagged to it.<br>
 **Problem.** Work built with AI agents drifts from what was asked, and nobody can tell which part was verified.<br>
@@ -22,7 +24,7 @@ Claude Code agents build each card; hooks and tests keep them honest. The skills
 
 <br>
 
-<img src="assets/case-02.svg" alt="Case 02: Grit. Flutter, Riverpod, SQLite." width="100%">
+<img src="assets/case-02.svg" alt="Case file 02: Grit. Grit's Today screen with the active training session, on the phone he holds up in the gym. Flutter, Riverpod, SQLite." width="100%">
 
 **What.** A local-first training app for Android and iOS, built in Flutter with Riverpod and SQLite.<br>
 **Problem.** Training logs need to work in a gym with no signal and still feel instant.<br>
@@ -32,7 +34,7 @@ Specified with Spec Kit; AI agents wrote the code against the specs.
 
 <br>
 
-<img src="assets/case-03.svg" alt="Case 03: Guardia. Browser game, itch.io." width="100%">
+<img src="assets/case-03.svg" alt="Case file 03: Guardia. The title screen of the Triaje game on the monitor of a dark ward office. Browser game, itch.io." width="100%">
 
 **What.** A triage game for the browser, published as Triaje.<br>
 **Problem.** Deciding who is treated first under pressure is hard to explain and easy to play.<br>
@@ -42,7 +44,7 @@ Built with Claude Code; its trailers and ads made with AI. [Play Triaje →](htt
 
 <br>
 
-<img src="assets/case-04.svg" alt="Case 04: Cebador. Landing site, Motion, GitHub Pages." width="100%">
+<img src="assets/case-04.svg" alt="Case file 04: Cebador. The Cebador site on a laptop at a street kiosk counter at night. Landing site, Motion, GitHub Pages." width="100%">
 
 **What.** The site of a fictional canned mate soda brand, a design piece.<br>
 **Problem.** A new brand needs an identity that is felt before it is read.<br>
@@ -52,7 +54,7 @@ Built with my dev kit: Claude Code agents, every behavior tested. [Visit the sit
 
 <br>
 
-<img src="assets/case-05.svg" alt="Case 05: ClubNahuelMosse. Flutter, REST API." width="100%">
+<img src="assets/case-05.svg" alt="Case file 05: ClubNahuelMosse. The app's login screen on the phone he holds at the edge of a night court. Flutter, REST API." width="100%">
 
 **What.** A Flutter app with a REST API to book sports courts.<br>
 **Problem.** Reserving a court by message is slow and double reservations happen.<br>
@@ -62,26 +64,29 @@ Built with my dev kit: specs first, then Claude Code agents. [Repository →](ht
 
 <br>
 
-## Record
+<img src="assets/experience.svg" alt="Experience" width="100%">
 
-<img src="assets/logos/kovix.webp" alt="" width="20" height="20"> **Kovix Consulting** · Technical Lead · now
+Technical Lead at **Kovix Consulting**. Every company below is a Kovix engagement.
 
-| Assigned to | Role | Period |
-|---|---|---|
-| **Smart Warehousing** | AI Engineering Enablement Lead / SDD Coach | 09/2026 – present |
-| **Grupo ST** | Technical Lead | 08/2026 – present |
-| <img src="assets/logos/visma.webp" alt="" width="14" height="14"> **Visma** | Technical Lead | 01/2026 – present |
+<img src="assets/exp-smart-warehousing.svg" alt="Smart Warehousing, AI Engineering Enablement Lead / SDD Coach, 09/2026 to present. A set of warehouse teams adopting AI-assisted development." width="100%">
 
-| Earlier | Role | Period |
-|---|---|---|
-| <img src="assets/logos/fravega.webp" alt="" width="14" height="14"> **Frávega** | Senior Full Stack Developer | 06/2023 – 01/2026 |
-| <img src="assets/logos/justo.webp" alt="" width="14" height="14"> **Jüsto** | Senior Full Stack Developer | 11/2022 – 12/2023 |
+I lead the engineering enablement: the method, the training and the coaching of the teams.
 
-- **Smart Warehousing.** A set of warehouse teams adopting AI-assisted development, each using agents its own way. I lead the engineering enablement: the method, the training and the coaching of the teams.
-- **Grupo ST.** An AI-first delivery on a credit risk platform that manages documents and decisions. As technical lead I set the architecture and run the delivery with specifications and tests.
-- **Visma.** A payroll onboarding product for a Nordic software company. I am the customer's technical contact: scope, architecture, security, cloud and mentoring.
-- **Frávega.** The warehouse system of a large retailer's online orders. I built the order flow and the seller interface, and planned the critical releases.
-- **Jüsto.** A multi-warehouse system for an online supermarket. I designed the system, coordinated the team and kept it steady through the sales peaks.
+<img src="assets/exp-grupo-st.svg" alt="Grupo ST, Technical Lead, 08/2026 to present. An AI-first delivery on a credit risk platform that manages documents and decisions." width="100%">
+
+As technical lead I set the architecture and run the delivery with specifications and tests.
+
+<img src="assets/exp-visma.svg" alt="Visma, Technical Lead, 01/2026 to present. A payroll onboarding product for a Nordic software company." width="100%">
+
+I am the customer's technical contact: scope, architecture, security, cloud and mentoring.
+
+<img src="assets/exp-fravega.svg" alt="Frávega, Senior Full Stack Developer, 06/2023 to 01/2026. The warehouse system of a large retailer's online orders." width="100%">
+
+I built the order flow and the seller interface, and planned the critical releases.
+
+<img src="assets/exp-justo.svg" alt="Jüsto, Senior Full Stack Developer, 11/2022 to 12/2023. A multi-warehouse system for an online supermarket." width="100%">
+
+I designed the system, coordinated the team and kept it steady through the sales peaks.
 
 ```
 Frávega · receiving flow      7h 48m  ──▶  46m average
@@ -92,7 +97,7 @@ Jüsto   · releases            10+ to production, no major incidents
 
 <br>
 
-<img src="assets/doors.svg" alt="Two doors: Freelance and Technical Project Manager." width="100%">
+<img src="assets/offer.svg" alt="Offer. Two doors: Freelance and Technical Project Manager." width="100%">
 
 <table>
   <tr>
@@ -110,6 +115,16 @@ Jüsto   · releases            10+ to production, no major incidents
     </td>
   </tr>
 </table>
+
+<br>
+
+<img src="assets/contact.svg" alt="Let's talk" width="100%">
+
+<p>
+  <a href="mailto:nahuelgamail@gmail.com"><code>nahuelgamail@gmail.com →</code></a><br>
+  <a href="https://linkedin.com/in/nahuelmosse"><code>LinkedIn →</code></a><br>
+  <a href="https://github.com/NahuelMosse"><code>GitHub →</code></a>
+</p>
 
 <br>
 
