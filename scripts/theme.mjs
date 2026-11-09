@@ -1,27 +1,18 @@
-// Palette shared with assets/banner-*.svg. GitHub picks the file per theme through <picture>,
-// so every generated asset is emitted once per theme instead of using prefers-color-scheme.
-export const THEMES = {
-  dark: {
-    bg: "#00170d",
-    rule: "#193429",
-    text: "#f2eee7",
-    muted: "#968e82",
-    accent: "#bba07b",
-    green: "#2f8a66",
-    empty: "#11291f",
-  },
-  light: {
-    bg: "#f2eee7",
-    rule: "#e2dbcd",
-    text: "#00170d",
-    muted: "#6b6459",
-    accent: "#9e6033",
-    green: "#135b42",
-    empty: "#e4ddd0",
-  },
-};
+// The portfolio's palette (design/tokens.css): one red as the only accent, over ink and bone.
+// The art is dark in both GitHub themes, so every asset is emitted once.
+import { readFileSync } from "node:fs";
 
-export const MONO = `ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace`;
+export const INK = "#0c0c0b";
+export const BONE = "#ede4d0";
+export const RED = "#d2231b";
+
+export const LABEL_TRACKING = "0.16em";
+
+// Courier Prime subset (SIL OFL, fonts/OFL.txt), built by scripts/build_art.py. An SVG shown
+// through <img> cannot load external fonts, so it travels inside the file.
+const courier = readFileSync(new URL("../fonts/courier-prime.woff2", import.meta.url)).toString("base64");
+export const LABEL_FONT_FACE = `@font-face { font-family: "Courier Prime"; src: url(data:font/woff2;base64,${courier}) format("woff2"); }`;
+export const LABEL = `"Courier Prime", ui-monospace, monospace`;
 
 // Linear blend between two #rrggbb colors.
 export function mix(a, b, t) {
