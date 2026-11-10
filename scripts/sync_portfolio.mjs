@@ -8,7 +8,7 @@
 // The deployed payload carries only the text fields (no stacks, titles, periods, groups or credits), so it can update the
 // words of what the data already has, never add or drop an entry. A payload older than the data's is left alone.
 import { execFileSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -29,7 +29,12 @@ const newer = (a, b) => {
   return 0;
 };
 
+// The CV is published from the checkout as a file of this repo, so the link does not depend on a branch of the portfolio.
+const CV_PDF = new URL("cv/Nahuel-Mosse-CV.pdf", ROOT);
+
 async function fromCheckout(dir) {
+  await mkdir(new URL("cv/", ROOT), { recursive: true });
+  await copyFile(join(dir, "cv/CV.pdf"), CV_PDF);
   const content = await import(pathToFileURL(join(dir, "features/portfolio/presentation/content.ts")).href);
   const machine = await readFile(join(dir, "lib/machine-readable.ts"), "utf8");
   const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" }).trim();
@@ -121,19 +126,27 @@ function studies() {
   return [`${cv.localNames[title] ?? title} · ${school} · ${year}`, ...cv.inProgress.map((s) => s.replace(/^.*\((.*)\)(.*)$/, "$1$2"))];
 }
 
-// A selected entry is a project id, or a group id that stands for all its projects in one row.
-function workRow(key) {
+// A selected entry is a project id, or a group id that stands for all its projects in one cell.
+function workCell(key) {
   const group = data.groups.find((g) => g.id === key);
-  const thumb = `<img src="assets/thumbs/${key}.webp" alt="" width="200">`;
+  const thumb = `<img src="assets/thumbs/${key}.webp" alt="" width="240">`;
   if (group) {
     const items = group.projects.map((id) => data.projects.find((p) => p.id === id));
-    const names = items.map((p) => `[${p.name}](${p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href})`).join(" · ");
-    const stack = [...new Set(items.flatMap((p) => p.stack))];
-    return `| ${thumb} | **${group.label}**<br>${names} | ${md(group.line)} | ${md(stack.join(", "))} |`;
+    const names = items.map((p) => `<a href="${p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href}">${p.name}</a>`).join(" · ");
+    return `${thumb}<br><b>${group.label}</b>: ${names}<br><sub>${group.line}</sub>`;
   }
   const p = data.projects.find((x) => x.id === key);
-  const link = p.links[0] ? `<br>[${p.links[0].label} →](${p.links[0].href})` : "";
-  return `| ${thumb} | **${p.name}**${link} | ${md(p.what)} | ${md(p.stack.join(", "))} |`;
+  const link = p.links[0] ? ` · <a href="${p.links[0].href}">${p.links[0].label}</a>` : "";
+  return `${thumb}<br><b>${p.name}</b>${link}<br><sub>${p.what}</sub>`;
+}
+
+// Three cells a row, each a thumbnail over its name and one line, so GitHub keeps the thumbnails at their width.
+function workGrid(columns = 3) {
+  const rows = [];
+  for (let i = 0; i < cv.selectedWork.length; i += columns) rows.push(cv.selectedWork.slice(i, i + columns));
+  const cell = (key) => `    <td width="33%" valign="top">${workCell(key)}</td>`;
+  const tr = (row) => ["  <tr>", ...row.map(cell), "  </tr>"].join("\n");
+  return ["<table>", ...rows.map(tr), "</table>"].join("\n");
 }
 
 const blocks = {
@@ -158,7 +171,7 @@ const blocks = {
     return ["| | |", "|---|---|", ...rows.map(([k, v]) => `| **${k}** | ${md(v)} |`)].join("\n");
   },
   impact: () => cv.impact.map((r) => `- **${r.where}:** ${r.result}`).join("\n"),
-  work: () => ["| | Project | What it is | Stack |", "|---|---|---|---|", ...cv.selectedWork.map(workRow)].join("\n"),
+  work: () => workGrid(),
   experience() {
     // every employer on the site is a Kovix Consulting engagement: the CV lists them as its projects
     const line = (e) => `${e.name} (${e.title}, ${short(e.period)})`;

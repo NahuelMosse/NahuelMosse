@@ -1,7 +1,7 @@
 <!-- Rendered by scripts/sync_portfolio.mjs from this template, data/portfolio.json and data/cv.json. Edit those, not README.md. -->
 <a href="https://nawi.dev"><img src="assets/banner.svg" alt="NAWI. Nahuel Mosse, Buenos Aires. I design, build and lead digital products, and I put AI to work for them. Technical Lead at Kovix Consulting." width="100%"></a>
 
-<p align="center"><a href="https://nawi.dev">Portfolio</a> · <a href="https://linkedin.com/in/nahuelmosse">LinkedIn</a> · <a href="mailto:nahuelgamail@gmail.com">Email</a> · <a href="https://github.com/NahuelMosse/Portfolio/blob/portfolio-present-d/cv/CV.pdf">CV (PDF, Spanish)</a></p>
+<p align="center"><a href="https://nawi.dev">Portfolio</a> · <a href="https://linkedin.com/in/nahuelmosse">LinkedIn</a> · <a href="mailto:nahuelgamail@gmail.com">Email</a> · <a href="cv/Nahuel-Mosse-CV.pdf">CV (PDF, Spanish)</a></p>
 
 ### At a glance
 
@@ -24,13 +24,17 @@
 
 ### Selected work
 
-| | Project | What it is | Stack |
-|---|---|---|---|
-| <img src="assets/thumbs/grit.webp" alt="" width="200"> | **Grit** | A local-first training app for Android and iOS, built in Flutter with Riverpod and SQLite. | Flutter, Riverpod, SQLite |
-| <img src="assets/thumbs/club.webp" alt="" width="200"> | **ClubNahuelMosse**<br>[Repository →](https://github.com/NahuelMosse/ClubNahuelMosse) | A Flutter app with a REST API for booking sports courts. | Flutter, REST API |
-| <img src="assets/thumbs/cebador.webp" alt="" width="200"> | **Cebador**<br>[Visit the site →](https://nahuelmosse.github.io/cebador-landing/) | The website of a fictional canned yerba mate soda brand, as a design concept. | Landing site, Motion, GitHub Pages |
-| <img src="assets/thumbs/guardia.webp" alt="" width="200"> | **Triaje**<br>[Play Triaje →](https://nahuelmosse.itch.io/triaje) | A browser game about ER triage, published on itch.io. | Browser game, itch.io |
-| <img src="assets/thumbs/tools.webp" alt="" width="200"> | **Tools**<br>[motion-audit](https://github.com/NahuelMosse/motion-audit) · [http-attack](https://github.com/NahuelMosse/http-attack) · [migrations-safe](https://github.com/NahuelMosse/migrations-safe) | Three npm packages I wrote, each one also a Claude Code skill. | Node.js, Playwright, Claude Code skill, No runtime dependencies, SQL |
+<table>
+  <tr>
+    <td width="33%" valign="top"><img src="assets/thumbs/grit.webp" alt="" width="240"><br><b>Grit</b><br><sub>A local-first training app for Android and iOS, built in Flutter with Riverpod and SQLite.</sub></td>
+    <td width="33%" valign="top"><img src="assets/thumbs/club.webp" alt="" width="240"><br><b>ClubNahuelMosse</b> · <a href="https://github.com/NahuelMosse/ClubNahuelMosse">Repository</a><br><sub>A Flutter app with a REST API for booking sports courts.</sub></td>
+    <td width="33%" valign="top"><img src="assets/thumbs/cebador.webp" alt="" width="240"><br><b>Cebador</b> · <a href="https://nahuelmosse.github.io/cebador-landing/">Visit the site</a><br><sub>The website of a fictional canned yerba mate soda brand, as a design concept.</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><img src="assets/thumbs/guardia.webp" alt="" width="240"><br><b>Triaje</b> · <a href="https://nahuelmosse.itch.io/triaje">Play Triaje</a><br><sub>A browser game about ER triage, published on itch.io.</sub></td>
+    <td width="33%" valign="top"><img src="assets/thumbs/tools.webp" alt="" width="240"><br><b>Tools</b>: <a href="https://github.com/NahuelMosse/motion-audit">motion-audit</a> · <a href="https://github.com/NahuelMosse/http-attack">http-attack</a> · <a href="https://github.com/NahuelMosse/migrations-safe">migrations-safe</a><br><sub>Three npm packages I wrote, each one also a Claude Code skill.</sub></td>
+  </tr>
+</table>
 
 ### Experience
 

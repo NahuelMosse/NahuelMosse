@@ -1,6 +1,6 @@
 {
-  "source": "Facts the portfolio does not carry, kept by hand. From the CV (NahuelMosse/Portfolio, branch portfolio-present-d, cv/CV.pdf, commit 66429b9) unless noted: currentRole from the user; offDuty from the earlier portfolio copy; the Mobile skills from the portfolio's app projects.",
-  "url": "https://github.com/NahuelMosse/Portfolio/blob/portfolio-present-d/cv/CV.pdf",
+  "source": "Facts the portfolio does not carry, kept by hand. From the CV (cv/Nahuel-Mosse-CV.pdf, copied from the portfolio checkout's cv/CV.pdf by the sync) unless noted: currentRole from the user; offDuty from the earlier portfolio copy; the Mobile skills from the portfolio's app projects.",
+  "url": "cv/Nahuel-Mosse-CV.pdf",
   "language": "Spanish",
   "currentRole": "Technical Lead at Kovix Consulting",
   "languages": [

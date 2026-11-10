@@ -178,7 +178,13 @@ def banner(f, d, cv):
     for line in lines:
         body.append(f["text"].path(line, 26, W - 44, y, BONE, anchor="end"))
         y += 34
-    body.append(f["label"].path(cv["currentRole"].replace(" at ", " · ").upper(), 15, W - 44, y + 14, RED, tracking=0.16, anchor="end"))
+    # a local ink scrim under the role line, so the red reads where it crosses the chair
+    role = cv["currentRole"].replace(" at ", " · ").upper()
+    role_w = f["label"].width(role, 15, 0.16)
+    body.append(f'<linearGradient id="role" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{INK}" stop-opacity="0"/>'
+                f'<stop offset="0.18" stop-color="{INK}" stop-opacity="0.85"/></linearGradient>'
+                f'<rect x="{W - 44 - role_w - 80:.1f}" y="{y - 8:.1f}" width="{role_w + 124:.1f}" height="34" fill="url(#role)"/>')
+    body.append(f["label"].path(role, 15, W - 44, y + 14, RED, tracking=0.16, anchor="end"))
     alt = f"{i['mark']}. {i['professionalName']}, {i['base']}. {i['promise']} {cv['currentRole']}."
     return svg(W, H, alt, "\n  ".join(body))
 
