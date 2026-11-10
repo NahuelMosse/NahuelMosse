@@ -1,0 +1,513 @@
+{
+  "source": {
+    "kind": "checkout",
+    "ref": "portfolio-present-d@5ad08d6",
+    "payloadVersion": "2.0.0",
+    "syncedAt": "2026-11-10T23:08:54.458Z"
+  },
+  "site": {
+    "url": "https://nawi.dev"
+  },
+  "identity": {
+    "mark": "NAWI",
+    "professionalName": "Nahuel Mosse",
+    "promise": "I design, build and lead digital products, and I put AI to work for them.",
+    "role": "Technical Lead · Technical Project Manager",
+    "base": "Buenos Aires",
+    "knownFor": "designing, building and leading digital products",
+    "email": "nahuelgamail@gmail.com",
+    "github": "https://github.com/NahuelMosse",
+    "linkedin": "https://linkedin.com/in/nahuelmosse",
+    "location": "Buenos Aires, Argentina"
+  },
+  "groups": [
+    {
+      "id": "apps",
+      "label": "Apps",
+      "noun": "app",
+      "line": "Mobile products I design, build and ship end to end.",
+      "projects": [
+        "grit",
+        "club"
+      ]
+    },
+    {
+      "id": "landings",
+      "label": "Websites",
+      "noun": "website",
+      "line": "Live websites that sell a product in a single scroll.",
+      "projects": [
+        "cebador",
+        "sonria",
+        "miga"
+      ]
+    },
+    {
+      "id": "game",
+      "label": "Game",
+      "noun": "game",
+      "line": "A playable idea, built and published.",
+      "projects": [
+        "guardia"
+      ]
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "noun": "tool",
+      "line": "Three npm packages I wrote, each one also a Claude Code skill.",
+      "projects": [
+        "motion-audit",
+        "http-attack",
+        "migrations-safe"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "grit",
+      "name": "Grit",
+      "what": "A local-first training app for Android and iOS, built in Flutter with Riverpod and SQLite.",
+      "problem": "Training logs need to work in a gym with no signal and still feel instant.",
+      "role": "I rebuilt it from its specs, end to end: product, design and code.",
+      "line": "Specified with Spec Kit; AI agents wrote the code against the specs.",
+      "stack": [
+        "Flutter",
+        "Riverpod",
+        "SQLite"
+      ],
+      "links": [],
+      "pieces": [
+        {
+          "frame": "phone",
+          "file": "grit-hoy.webp",
+          "alt": "Grit's Today screen with the active training session"
+        },
+        {
+          "frame": "phone",
+          "file": "grit-serie.webp",
+          "alt": "Grit's set entry screen, with 80 kg typed in"
+        },
+        {
+          "frame": "phone",
+          "file": "grit-descanso.webp",
+          "alt": "Grit's rest timer counting down between sets"
+        },
+        {
+          "frame": "phone",
+          "file": "grit-completado.webp",
+          "alt": "Grit's summary of the completed session"
+        },
+        {
+          "frame": "phone",
+          "file": "grit-ejercicio.webp",
+          "alt": "Grit's exercise detail with a 60 kg record"
+        }
+      ]
+    },
+    {
+      "id": "guardia",
+      "name": "Triaje",
+      "what": "A browser game about ER triage, published on itch.io.",
+      "problem": "Deciding who gets treated first under pressure is hard to explain, but easy to play.",
+      "role": "I designed the rules and built the game.",
+      "line": "Built with Claude Code; its trailers and ads made with AI.",
+      "stack": [
+        "Browser game",
+        "itch.io"
+      ],
+      "links": [
+        {
+          "label": "Play Triaje",
+          "href": "https://nahuelmosse.itch.io/triaje"
+        }
+      ],
+      "pieces": [
+        {
+          "frame": "browser",
+          "file": "triaje-title.webp",
+          "alt": "The title screen of the Triaje game"
+        },
+        {
+          "frame": "browser",
+          "file": "triaje-play-2.webp",
+          "alt": "A shift of Triaje in play, with the waiting room open"
+        },
+        {
+          "frame": "browser",
+          "file": "triaje-page.webp",
+          "alt": "The Triaje page on itch.io at desktop width"
+        },
+        {
+          "frame": "browser",
+          "file": "triaje-scrolled.webp",
+          "alt": "The Triaje page on itch.io, further down"
+        },
+        {
+          "frame": "phone",
+          "file": "triaje-mobile.webp",
+          "alt": "The Triaje page on itch.io on a phone"
+        }
+      ]
+    },
+    {
+      "id": "motion-audit",
+      "name": "motion-audit",
+      "what": "Checks that a website moves the way it should: every button responds when pressed, and nothing stutters.",
+      "problem": "A site can look fine in a screenshot and still feel broken to use.",
+      "role": "I built it and published it for other developers to use.",
+      "line": "It watches the real page in a real browser, frame by frame, and reports what feels wrong.",
+      "stack": [
+        "Node.js",
+        "Playwright",
+        "Claude Code skill"
+      ],
+      "links": [
+        {
+          "label": "npm",
+          "href": "https://www.npmjs.com/package/motion-audit"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/NahuelMosse/motion-audit"
+        }
+      ],
+      "pieces": []
+    },
+    {
+      "id": "http-attack",
+      "name": "http-attack",
+      "what": "Attacks your back end the way a hacker would, before a real one does.",
+      "problem": "Most security holes live in the cases nobody thought to test.",
+      "role": "I built it and published it for other developers to use.",
+      "line": "It tries bad input, request floods and other users' accounts, then reports what broke and how serious it is.",
+      "stack": [
+        "Node.js",
+        "No runtime dependencies",
+        "Claude Code skill"
+      ],
+      "links": [
+        {
+          "label": "npm",
+          "href": "https://www.npmjs.com/package/http-attack"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/NahuelMosse/http-attack"
+        }
+      ],
+      "pieces": []
+    },
+    {
+      "id": "migrations-safe",
+      "name": "migrations-safe",
+      "what": "Tests database changes on a copy before they touch the real one.",
+      "problem": "One careless change to a database can lose customer data or stop a running business.",
+      "role": "I built it and published it for other developers to use.",
+      "line": "It checks the change, then runs it on a copy of the data first, on every major database.",
+      "stack": [
+        "Node.js",
+        "SQL",
+        "Claude Code skill"
+      ],
+      "links": [
+        {
+          "label": "npm",
+          "href": "https://www.npmjs.com/package/migrations-safe"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/NahuelMosse/migrations-safe"
+        }
+      ],
+      "pieces": []
+    },
+    {
+      "id": "cebador",
+      "name": "Cebador",
+      "what": "The website of a fictional canned yerba mate soda brand, as a design concept.",
+      "problem": "A new brand needs an identity that is felt before it is read.",
+      "role": "I did the art direction, the motion and the code.",
+      "line": "Built with Claude Code agents; every behavior is covered by a test.",
+      "stack": [
+        "Landing site",
+        "Motion",
+        "GitHub Pages"
+      ],
+      "links": [
+        {
+          "label": "Visit the site",
+          "href": "https://nahuelmosse.github.io/cebador-landing/"
+        }
+      ],
+      "pieces": [
+        {
+          "frame": "browser",
+          "file": "cebador-1280-poster.webp",
+          "alt": "The Cebador site scrolling at desktop width"
+        },
+        {
+          "frame": "phone",
+          "file": "cebador-390-poster.webp",
+          "alt": "The Cebador site scrolling on a phone"
+        },
+        {
+          "frame": "browser",
+          "file": "cebador-s2-1280.webp",
+          "alt": "The Cebador site's origin section at desktop width"
+        },
+        {
+          "frame": "browser",
+          "file": "cebador-s3-1280.webp",
+          "alt": "The Cebador site's reviews section at desktop width"
+        },
+        {
+          "frame": "phone",
+          "file": "cebador-s2-390.webp",
+          "alt": "The Cebador site's origin section on a phone"
+        }
+      ]
+    },
+    {
+      "id": "sonria",
+      "name": "Sonría",
+      "what": "A one-page website for a fictional neighborhood dental clinic in Buenos Aires.",
+      "problem": "A dental clinic's site has to help someone with a toothache right away and let them book without calling.",
+      "role": "I did the design, the copy and the code.",
+      "line": "Built with Claude Code agents; every behavior is covered by a test.",
+      "stack": [
+        "HTML, CSS, JS",
+        "Playwright",
+        "GitHub Pages"
+      ],
+      "links": [
+        {
+          "label": "Visit the site",
+          "href": "https://nahuelmosse.github.io/sonria/"
+        },
+        {
+          "label": "Repository",
+          "href": "https://github.com/NahuelMosse/sonria"
+        }
+      ],
+      "pieces": [
+        {
+          "frame": "browser",
+          "file": "sonria-hero-1440.webp",
+          "alt": "The Sonría site's first screen at desktop width, with the urgency card"
+        },
+        {
+          "frame": "browser",
+          "file": "sonria-tratamientos-1440.webp",
+          "alt": "The Sonría site's treatments with indicative prices at desktop width"
+        },
+        {
+          "frame": "browser",
+          "file": "sonria-turno-1440.webp",
+          "alt": "The Sonría site's four-step appointment at desktop width"
+        },
+        {
+          "frame": "phone",
+          "file": "sonria-hero-390.webp",
+          "alt": "The Sonría site's first screen on a phone, with the urgency by WhatsApp"
+        },
+        {
+          "frame": "phone",
+          "file": "sonria-tratamientos-390.webp",
+          "alt": "The Sonría site's treatments on a phone"
+        },
+        {
+          "frame": "phone",
+          "file": "sonria-turno-390.webp",
+          "alt": "The Sonría site's appointment on a phone"
+        }
+      ]
+    },
+    {
+      "id": "miga",
+      "name": "Miga",
+      "what": "The website of a fictional sourdough bakery in Buenos Aires.",
+      "problem": "A bakery's site has to show today's bread and let people order ahead for pickup.",
+      "role": "I did the design, the copy and the code.",
+      "line": "Built with Claude Code agents; every behavior is covered by a test.",
+      "stack": [
+        "HTML, CSS, JS",
+        "Playwright",
+        "GitHub Pages"
+      ],
+      "links": [
+        {
+          "label": "Visit the site",
+          "href": "https://nahuelmosse.github.io/miga/"
+        },
+        {
+          "label": "Repository",
+          "href": "https://github.com/NahuelMosse/miga"
+        }
+      ],
+      "pieces": [
+        {
+          "frame": "browser",
+          "file": "miga-hero-1440.webp",
+          "alt": "The Miga site's first screen at desktop width, over a sourdough loaf"
+        },
+        {
+          "frame": "browser",
+          "file": "miga-lista-1440.webp",
+          "alt": "The Miga site's list of the day's bread with prices at desktop width"
+        },
+        {
+          "frame": "browser",
+          "file": "miga-pedir-1440.webp",
+          "alt": "The Miga site's order-to-pickup steps at desktop width"
+        },
+        {
+          "frame": "phone",
+          "file": "miga-hero-390.webp",
+          "alt": "The Miga site's first screen on a phone"
+        },
+        {
+          "frame": "phone",
+          "file": "miga-lista-390.webp",
+          "alt": "The Miga site's list of the day's bread on a phone"
+        },
+        {
+          "frame": "phone",
+          "file": "miga-pedir-390.webp",
+          "alt": "The Miga site's order-to-pickup steps on a phone"
+        }
+      ]
+    },
+    {
+      "id": "club",
+      "name": "ClubNahuelMosse",
+      "what": "A Flutter app with a REST API for booking sports courts.",
+      "problem": "Booking a court over text messages is slow, and double bookings happen.",
+      "role": "I built the app and the API.",
+      "line": "Specs first, then Claude Code agents.",
+      "stack": [
+        "Flutter",
+        "REST API"
+      ],
+      "links": [
+        {
+          "label": "Repository",
+          "href": "https://github.com/NahuelMosse/ClubNahuelMosse"
+        }
+      ],
+      "pieces": [
+        {
+          "frame": "phone",
+          "file": "club-login.webp",
+          "alt": "ClubNahuelMosse login screen"
+        },
+        {
+          "frame": "phone",
+          "file": "club-sedes.webp",
+          "alt": "ClubNahuelMosse venue list"
+        },
+        {
+          "frame": "phone",
+          "file": "club-horarios.webp",
+          "alt": "ClubNahuelMosse court schedule"
+        },
+        {
+          "frame": "phone",
+          "file": "club-listo.webp",
+          "alt": "ClubNahuelMosse reservation confirmed"
+        }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "id": "smart-warehousing",
+      "name": "Smart Warehousing",
+      "title": "AI Engineering Enablement Lead / SDD Coach",
+      "period": "09/2026 – Present",
+      "current": true,
+      "what": "Warehouse engineering teams adopting AI-assisted development.",
+      "problem": "Each team used AI agents its own way, with no shared method and no review of their output.",
+      "role": "I lead AI enablement across the teams: the method, the training and hands-on coaching."
+    },
+    {
+      "id": "grupo-st",
+      "name": "Grupo ST",
+      "title": "Technical Lead",
+      "period": "08/2026 – Present",
+      "current": true,
+      "what": "A credit risk platform that manages loan documents and approvals, delivered AI-first.",
+      "problem": "Approving a loan meant passing paperwork by hand from person to person.",
+      "role": "As technical lead, I set the architecture and run delivery on specs and tests."
+    },
+    {
+      "id": "visma",
+      "name": "Visma",
+      "title": "Technical Lead",
+      "period": "01/2026 – Present",
+      "current": true,
+      "what": "A payroll onboarding product for a Nordic software company.",
+      "problem": "Onboarding a new payroll customer took too long and relied on manual steps.",
+      "role": "I'm the client's main technical contact: scope, architecture, security, cloud and mentoring."
+    },
+    {
+      "id": "fravega",
+      "name": "Frávega",
+      "title": "Senior Full Stack Developer",
+      "period": "06/2023 – 01/2026",
+      "current": false,
+      "what": "The warehouse system behind a major retailer's online orders.",
+      "problem": "Packing orders and handing them off to the sorter was slow and error-prone.",
+      "role": "I built the order flow and the seller portal, and planned the critical releases."
+    },
+    {
+      "id": "justo",
+      "name": "Jüsto",
+      "title": "Senior Full Stack Developer",
+      "period": "11/2022 – 12/2023",
+      "current": false,
+      "what": "A multi-warehouse system for an online supermarket.",
+      "problem": "Inventory lived in spreadsheets and people's heads across distribution centers.",
+      "role": "I designed the system, coordinated the team and kept it stable through peak sales."
+    }
+  ],
+  "offer": {
+    "freelance": {
+      "title": "Freelance",
+      "line": "Digital products and websites with a visual identity of their own, from design to launch.",
+      "detail": "I handle the whole product myself: design, code and launch. Everything above is my own work.",
+      "door": "Let’s talk about your project",
+      "subject": "Freelance project · Nahuel Mosse",
+      "prompts": [
+        "What are you building, and for whom?",
+        "What should it look and feel like?",
+        "When do you need the first version?"
+      ],
+      "href": "mailto:nahuelgamail@gmail.com?subject=Freelance%20project%20%C2%B7%20Nahuel%20Mosse&body=1.%20What%20are%20you%20building%2C%20and%20for%20whom%3F%0A2.%20What%20should%20it%20look%20and%20feel%20like%3F%0A3.%20When%20do%20you%20need%20the%20first%20version%3F"
+    },
+    "tpm": {
+      "title": "Technical Project Manager",
+      "line": "For companies: I lead teams that ship with AI under human review, and I still write code.",
+      "detail": "AI-first delivery: Spec-Driven Development, agents orchestrated with Claude Code, every requirement traced to a test, and every pull request reviewed by a person.",
+      "door": "Bring AI-first delivery to your team",
+      "subject": "Technical Project Manager role · Nahuel Mosse",
+      "prompts": [
+        "What does your team deliver today?",
+        "Where does delivery slow down?",
+        "Who reviews the AI-assisted work?"
+      ],
+      "href": "mailto:nahuelgamail@gmail.com?subject=Technical%20Project%20Manager%20role%20%C2%B7%20Nahuel%20Mosse&body=1.%20What%20does%20your%20team%20deliver%20today%3F%0A2.%20Where%20does%20delivery%20slow%20down%3F%0A3.%20Who%20reviews%20the%20AI-assisted%20work%3F"
+    }
+  },
+  "credits": {
+    "studies": [
+      "Associate Degree in Computer Science · Universidad de Morón · 2025",
+      "Technical High School Diploma, Electromechanics · Colegio Emaús · 2021"
+    ],
+    "certifications": [
+      "EF SET C2 Proficient",
+      "English Level 8 · Liceo Cultural Británico",
+      "Applied Software Architecture · Platzi"
+    ]
+  }
+}

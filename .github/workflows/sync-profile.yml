@@ -1,0 +1,25 @@
+name: Sync profile from portfolio
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Re-syncs the text from the deployed payload, and leaves it alone while the site serves an older payload than
+      # data/portfolio.json. The art needs the portfolio's fonts, so it is rebuilt locally with scripts/build_art.py.
+      - run: node scripts/sync_portfolio.mjs --from https://nawi.dev/portfolio.json
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: sync profile from portfolio [skip ci]"
+          file_pattern: "README.md data/portfolio.json"
