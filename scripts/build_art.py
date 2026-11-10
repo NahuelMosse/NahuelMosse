@@ -182,8 +182,8 @@ def banner(f, d, cv):
     role = cv["currentRole"].replace(" at ", " · ").upper()
     role_w = f["label"].width(role, 15, 0.16)
     body.append(f'<linearGradient id="role" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{INK}" stop-opacity="0"/>'
-                f'<stop offset="0.18" stop-color="{INK}" stop-opacity="0.85"/></linearGradient>'
-                f'<rect x="{W - 44 - role_w - 80:.1f}" y="{y - 8:.1f}" width="{role_w + 124:.1f}" height="34" fill="url(#role)"/>')
+                f'<stop offset="0.25" stop-color="{INK}" stop-opacity="0.92"/></linearGradient>'
+                f'<rect x="{W - 44 - role_w - 140:.1f}" y="{y - 8:.1f}" width="{role_w + 184:.1f}" height="34" fill="url(#role)"/>')
     body.append(f["label"].path(role, 15, W - 44, y + 14, RED, tracking=0.16, anchor="end"))
     alt = f"{i['mark']}. {i['professionalName']}, {i['base']}. {i['promise']} {cv['currentRole']}."
     return svg(W, H, alt, "\n  ".join(body))
