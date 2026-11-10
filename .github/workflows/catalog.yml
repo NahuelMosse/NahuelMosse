@@ -1,0 +1,125 @@
+name: Catalog widgets
+
+# Renders every generated widget of the README catalog into assets/catalog/gen and commits them.
+on:
+  push:
+    branches: [profile-catalog]
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-widgets
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Snake
+        uses: Platane/snk@v3
+        continue-on-error: true
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            assets/catalog/gen/snake-noir.svg?color_snake=#d2231b&color_dots=#1d1b18,#5c2a22,#8a2a1f,#b4261c,#d2231b
+            assets/catalog/gen/snake-light.svg?palette=github-light&color_snake=#d2231b
+            assets/catalog/gen/snake-dark.svg?palette=github-dark&color_snake=#d2231b
+
+      - name: Arcade contribution graphs
+        uses: abozanona/pacman-contribution-graph@main
+        continue-on-error: true
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          games: pacman,breakout
+
+      - name: 3D contribution skyline
+        uses: yoshi389111/github-profile-3d-contrib@latest
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
+          SETTING_JSON: catalog/3d-noir.json
+
+      - name: Profile summary cards
+        uses: vn7n24fzkq/github-profile-summary-cards@release
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          USERNAME: ${{ github.repository_owner }}
+          AUTO_PUSH: false
+          THEME: github_dark
+          ANIMATION: rise
+          TIME_ZONE: America/Argentina/Buenos_Aires
+
+      - name: readme-kit cards
+        uses: Sagargupta16/readme-kit-action@v1
+        continue-on-error: true
+        with:
+          config: catalog/profile.yml
+          output-dir: assets/catalog/kit
+
+      - name: Metrics · isocalendar
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          user: ${{ github.repository_owner }}
+          filename: metrics-isocalendar.svg
+          output_action: none
+          base: ""
+          config_timezone: America/Argentina/Buenos_Aires
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+
+      - name: Metrics · habits, languages, achievements
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          user: ${{ github.repository_owner }}
+          filename: metrics-plugins.svg
+          output_action: none
+          base: header
+          config_timezone: America/Argentina/Buenos_Aires
+          plugin_habits: yes
+          plugin_habits_charts: yes
+          plugin_habits_from: 200
+          plugin_languages: yes
+          plugin_languages_details: bytes-size, percentage
+          plugin_achievements: yes
+          plugin_achievements_display: compact
+          plugin_notable: yes
+          plugin_introduction: yes
+
+      - name: Collect generated files
+        run: |
+          mkdir -p assets/catalog/gen/arcade assets/catalog/gen/3d assets/catalog/gen/summary assets/catalog/gen/metrics
+          cp dist/*.svg assets/catalog/gen/arcade/ 2>/dev/null || true
+          cp profile-3d-contrib/profile-3d-noir.svg profile-3d-contrib/profile-night-rainbow.svg profile-3d-contrib/profile-gitblock.svg assets/catalog/gen/3d/ 2>/dev/null || true
+          cp profile-summary-card-output/github_dark/*.svg assets/catalog/gen/summary/ 2>/dev/null || true
+          sudo cp /metrics_renders/*.svg assets/catalog/gen/metrics/ 2>/dev/null || true
+          sudo chown -R "$(id -u)" assets/catalog/gen || true
+          rm -rf dist profile-3d-contrib profile-summary-card-output
+          ls -R assets/catalog/gen assets/catalog/kit 2>/dev/null || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Self-hosted stats cards and live blocks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/catalog/stats.mjs
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: render catalog widgets [skip ci]"
+          file_pattern: "assets/catalog README.md"

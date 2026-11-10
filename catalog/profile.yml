@@ -1,0 +1,63 @@
+# Input for Sagargupta16/readme-kit-action (catalog entry). Cards render dark; the accent is the portfolio red.
+theme:
+  accent: "#d2231b"
+github:
+  user: NahuelMosse
+hero:
+  name: Nahuel Mosse
+  kicker: NAWI · BUENOS AIRES
+  role: Technical Lead at Kovix Consulting
+  taglines:
+    - Technical Lead at Kovix Consulting
+    - Heading into Technical Project Management
+    - Teams that ship with AI, under human review
+    - Still writing code
+  status: Technical Lead · Kovix Consulting
+  location: Buenos Aires, Argentina
+terminal:
+  title: nawi@buenos-aires
+  prompt: "$"
+  commands:
+    - command: whoami
+      output: Technical Lead · Kovix Consulting
+    - command: cat next.txt
+      output: Technical Project Manager
+    - command: ls clients/
+      output: smart-warehousing  grupo-st  visma
+timeline:
+  title: Record
+  milestones:
+    - year: "2022"
+      title: Jüsto
+      subtitle: Senior Full Stack
+    - year: "2023"
+      title: Frávega
+      subtitle: Senior Full Stack
+    - year: "2025"
+      title: Analista en Informática
+      subtitle: Universidad de Morón
+    - year: "2026"
+      title: Technical Lead
+      subtitle: Visma · Grupo ST · Smart Warehousing
+stats:
+  - github: merged-prs
+    label: merged PRs
+  - github: repos
+    label: public repos
+  - value: "4+"
+    label: years shipping
+    color: amber
+buttons:
+  - label: Portfolio
+    icon: vercel
+    url: https://nawi.dev
+  - label: LinkedIn
+    icon: linkedin
+    url: https://linkedin.com/in/nahuelmosse
+  - label: Email
+    icon: gmail
+    url: mailto:nahuelgamail@gmail.com
+footer:
+  kicker: OFF DUTY
+  lines:
+    - CS2 · Rocket League · chess · Formula 1

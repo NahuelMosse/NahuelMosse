@@ -1,0 +1,27 @@
+name: Say hi
+description: Leave a note for Nahuel. Recruiters and collaborators welcome.
+title: "Hi from "
+labels: ["say-hi"]
+body:
+  - type: input
+    id: who
+    attributes:
+      label: Who are you?
+      placeholder: Name, company and role
+    validations:
+      required: true
+  - type: dropdown
+    id: about
+    attributes:
+      label: What is it about?
+      options:
+        - A role (Technical Lead / TPM)
+        - Freelance project
+        - One of the tools
+        - Just saying hi
+  - type: textarea
+    id: message
+    attributes:
+      label: Message
+    validations:
+      required: true
