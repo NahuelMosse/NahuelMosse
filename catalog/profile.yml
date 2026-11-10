@@ -19,11 +19,11 @@ terminal:
   prompt: "$"
   commands:
     - command: whoami
-      output: Technical Lead · Kovix Consulting
+      output: ["Technical Lead · Kovix Consulting"]
     - command: cat next.txt
-      output: Technical Project Manager
+      output: ["Technical Project Manager"]
     - command: ls clients/
-      output: smart-warehousing  grupo-st  visma
+      output: ["smart-warehousing  grupo-st  visma"]
 timeline:
   title: Record
   milestones:

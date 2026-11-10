@@ -125,12 +125,6 @@ Native HTML · setup: none · shown here with the snake's GitHub light and dark 
 
 <img src="assets/catalog/gen/3d/profile-3d-noir.svg" alt="3D isometric contribution skyline in the noir palette" width="100%">
 
-<details><summary>Built-in variants: night rainbow, gitblock</summary>
-
-<img src="assets/catalog/gen/3d/profile-night-rainbow.svg" alt="3D skyline, night rainbow" width="100%">
-<img src="assets/catalog/gen/3d/profile-gitblock.svg" alt="3D skyline, gitblock" width="100%">
-</details>
-
 ### 17 · Isometric calendar (metrics)
 [lowlighter/metrics](https://github.com/lowlighter/metrics) `isocalendar` · self-hosted via Actions · setup: `GITHUB_TOKEN` (a PAT adds private activity) · daily
 
