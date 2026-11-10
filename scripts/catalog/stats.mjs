@@ -92,9 +92,9 @@ const total = Object.values(bytes).reduce((a, b) => a + b, 0) || 1;
 const top = Object.entries(bytes).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([n, b]) => [n, (b / total) * 100]);
 const shades = [RED, BONE, "#b8ad97", DIM, "#5c564b", "#3a3732"];
 let x = 24;
-const bar = top.map(([n, p], i) => { const w = (p / 100) * 412; const r = `<rect class="g" style="animation-delay:${i * 0.08}s" x="${x.toFixed(1)}" y="56" width="${Math.max(w, 1).toFixed(1)}" height="12" fill="${shades[i]}"/>`; x += w; return r; }).join("");
-const legend = top.map(([n, p], i) => `<g class="f" style="animation-delay:${0.3 + i * 0.06}s"><rect x="${24 + (i % 2) * 210}" y="${92 + Math.floor(i / 2) * 26}" width="10" height="10" fill="${shades[i]}"/><text x="${42 + (i % 2) * 210}" y="${101 + Math.floor(i / 2) * 26}" fill="${BONE}" font-size="14">${esc(n)} <tspan fill="${DIM}">${p.toFixed(1)}%</tspan></text></g>`).join("");
-card("languages.svg", 460, 190, "TOP LANGUAGES · PUBLIC REPOS", bar + legend, top.map(([n, p]) => `${n} ${p.toFixed(1)}%`).join(", "));
+const bar = top.map(([n, p], i) => { const w = (p / 100) * 412; const r = `<rect class="g" style="animation-delay:${i * 0.08}s" x="${x.toFixed(1)}" y="64" width="${Math.max(w, 1).toFixed(1)}" height="14" fill="${shades[i]}"/>`; x += w; return r; }).join("");
+const legend = top.map(([n, p], i) => `<g class="f" style="animation-delay:${0.3 + i * 0.06}s"><rect x="${24 + (i % 2) * 210}" y="${112 + Math.floor(i / 2) * 34}" width="10" height="10" fill="${shades[i]}"/><text x="${42 + (i % 2) * 210}" y="${121 + Math.floor(i / 2) * 34}" fill="${BONE}" font-size="15">${esc(n)} <tspan fill="${DIM}">${p.toFixed(1)}%</tspan></text></g>`).join("");
+card("languages.svg", 460, 260, "TOP LANGUAGES · PUBLIC REPOS", bar + legend, top.map(([n, p]) => `${n} ${p.toFixed(1)}%`).join(", "));
 
 // Live README blocks.
 const events = await rest(`/users/${USER}/events/public?per_page=100`);

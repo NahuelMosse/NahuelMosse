@@ -137,23 +137,32 @@ Native HTML · setup: none · shown here with the snake's GitHub light and dark 
 ### 18 · Stats, streak and top languages (self-made)
 `scripts/catalog/stats.mjs` · self-hosted via Actions · setup: `GITHUB_TOKEN` · daily
 
-<img src="assets/catalog/gen/stats.svg" alt="GitHub stats" width="49%"> <img src="assets/catalog/gen/languages.svg" alt="Top languages" width="49%">
-<img src="assets/catalog/gen/streak.svg" alt="Contribution streak" width="49%">
+<table><tr>
+<td><img src="assets/catalog/gen/stats.svg" alt="GitHub stats" width="400"></td>
+<td><img src="assets/catalog/gen/languages.svg" alt="Top languages" width="400"></td>
+</tr><tr>
+<td colspan="2"><img src="assets/catalog/gen/streak.svg" alt="Contribution streak" width="400"></td>
+</tr></table>
 
 ### 19 · Profile summary cards
 [vn7n24fzkq/github-profile-summary-cards](https://github.com/vn7n24fzkq/github-profile-summary-cards) · self-hosted via Actions · setup: `GITHUB_TOKEN` · daily · fixed themes (here `github_dark`)
 
 <img src="assets/catalog/gen/summary/0-profile-details.svg" alt="Profile details" width="100%">
-<img src="assets/catalog/gen/summary/1-repos-per-language.svg" alt="Repos per language" width="32%"> <img src="assets/catalog/gen/summary/2-most-commit-language.svg" alt="Most commit language" width="32%"> <img src="assets/catalog/gen/summary/3-stats.svg" alt="Stats" width="32%">
-<img src="assets/catalog/gen/summary/4-productive-time.svg" alt="Productive time" width="49%">
+<table><tr>
+<td><img src="assets/catalog/gen/summary/1-repos-per-language.svg" alt="Repos per language" width="260"></td>
+<td><img src="assets/catalog/gen/summary/2-most-commit-language.svg" alt="Most commit language" width="260"></td>
+<td><img src="assets/catalog/gen/summary/3-stats.svg" alt="Stats" width="260"></td>
+</tr><tr>
+<td colspan="3"><img src="assets/catalog/gen/summary/4-productive-time.svg" alt="Productive time" width="520"></td>
+</tr></table>
 
 ### 20 · readme-kit stats strip
 readme-kit-action · self-hosted · setup: `GITHUB_TOKEN`
 
 <img src="assets/catalog/kit/stats.svg" alt="readme-kit stats" width="100%">
 
-### 21 · Metrics plugins: habits, languages, achievements, notable, introduction
-lowlighter/metrics · self-hosted via Actions · setup: `GITHUB_TOKEN` (a PAT unlocks private repos and more plugins) · daily
+### 21 · Metrics plugins: introduction, languages, notable contributions
+lowlighter/metrics · self-hosted via Actions · setup: `GITHUB_TOKEN` · daily · **the habits and achievements plugins fail with `GITHUB_TOKEN` and need a PAT**. The "About me" text is the GitHub profile bio.
 
 <img src="assets/catalog/gen/metrics/metrics-plugins.svg" alt="Metrics: habits, languages, achievements, notable contributions">
 
@@ -221,7 +230,7 @@ Native HTML table (the current PR #1 layout) · self-hosted · setup: none
 Native Mermaid `timeline` · setup: none · edited by hand
 
 ```mermaid
-%%{init: {"theme":"base","themeVariables":{"cScale0":"#d2231b","cScaleLabel0":"#ede4d0","cScale1":"#3a3732","cScaleLabel1":"#ede4d0","cScale2":"#d2231b","cScaleLabel2":"#ede4d0","cScale3":"#3a3732","cScaleLabel3":"#ede4d0","cScale4":"#d2231b","cScaleLabel4":"#ede4d0"}}}%%
+%%{init: {"theme":"base","themeVariables":{"cScale0":"#d2231b","cScaleLabel0":"#ede4d0","cScale1":"#3a3732","cScaleLabel1":"#ede4d0","cScale2":"#d2231b","cScaleLabel2":"#ede4d0","cScale3":"#3a3732","cScaleLabel3":"#ede4d0","cScale4":"#d2231b","cScaleLabel4":"#ede4d0","titleColor":"#ede4d0","textColor":"#ede4d0"}}}%%
 timeline
     title Kovix Consulting engagements
     2022 : Jüsto · Senior Full Stack

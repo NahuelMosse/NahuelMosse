@@ -61,12 +61,14 @@ ${body}
 // Neofetch-style card: an ASCII mark on the left, key/value facts on the right.
 function neofetch() {
   const art = [
-    "███╗   ██╗",
-    "████╗  ██║",
-    "██╔██╗ ██║",
-    "██║╚██╗██║",
-    "██║ ╚████║",
-    "╚═╝  ╚═══╝",
+    "██     ██",
+    "███    ██",
+    "████   ██",
+    "██ ██  ██",
+    "██  ██ ██",
+    "██   ████",
+    "██    ███",
+    "██     ██",
   ];
   const facts = [
     ["nawi", "@github"],
@@ -80,12 +82,12 @@ function neofetch() {
     ["", "Ing. en Informática · 4th year"],
     ["lang", "es native · en C2"],
   ];
-  const W = 1000, H = 330;
-  const artTxt = art.map((l, i) => `<text x="48" y="${96 + i * 30}" fill="${RED}" font-size="26" xml:space="preserve">${esc(l.replace(/[╗╔╝╚═║]/g, "█"))}</text>`).join("");
+  const W = 1000, H = 350;
+  const artTxt = art.map((l, i) => `<text x="48" y="${78 + i * 30}" fill="${RED}" font-size="30" xml:space="preserve">${esc(l)}</text>`).join("");
   const rows = facts.map(([k, v], i) => i === 0
     ? `<text x="380" y="62" font-size="20"><tspan fill="${RED}">${k}</tspan><tspan fill="${BONE}">${v}</tspan></text><rect x="380" y="74" width="170" height="2" fill="${DIM}"/>`
     : `<text x="380" y="${80 + i * 24}" font-size="18"><tspan fill="${RED}">${k.padEnd(8, " ")}</tspan><tspan fill="${BONE}"> ${esc(v)}</tspan></text>`).join("");
-  const swatches = [INK, "#3a3732", DIM, BONE, RED, "#7d1510"].map((c, i) => `<rect x="${380 + i * 34}" y="${H - 48}" width="30" height="18" fill="${c}" stroke="#3a3732"/>`).join("");
+  const swatches = [INK, "#3a3732", DIM, BONE, RED, "#7d1510"].map((c, i) => `<rect x="${380 + i * 34}" y="${H - 36}" width="30" height="14" fill="${c}" stroke="#3a3732"/>`).join("");
   writeFileSync(join(out, "neofetch.svg"), `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${facts.map((f) => f.join(": ")).join(". ")}">
 <style>${fontFace}text{font-family:CP,"Courier New",monospace;white-space:pre}</style>
 <rect width="${W}" height="${H}" fill="${INK}"/>${artTxt}${rows}${swatches}</svg>`);

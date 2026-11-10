@@ -38,7 +38,7 @@ timeline:
       subtitle: Universidad de Morón
     - year: "2026"
       title: Technical Lead
-      subtitle: Visma · Grupo ST · Smart Warehousing
+      subtitle: 3 client engagements
 stats:
   - github: merged-prs
     label: merged PRs
