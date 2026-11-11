@@ -5,8 +5,7 @@ Rebuilt by hand, not by the daily workflow:
     python scripts/build_previews.py --portfolio ../Portfolio-d --site http://localhost:<port>
 
 --site is a `next start` of the portfolio checkout's build, for the portfolio's own preview. The footage:
-- Portfolio, motion-audit, http-attack, migrations-safe: recorded by scripts/record_previews.mjs (the site scrolled; each
-  tool run on its own fixtures and its output replayed in a terminal).
+- Portfolio: the site scrolled, recorded by scripts/record_previews.mjs.
 - cebador-landing: the portfolio's recording of the live landing (public/film/pieces/cebador-1280.webm).
 - ClubNahuelMosse: a Flutter app, so its real screens from the portfolio (public/film/pieces/club-*.webp) cross-fade in
   three phones.
@@ -126,8 +125,6 @@ def main():
     try:
         if (raw / "portfolio.webm").exists():
             save("Portfolio", recorded(raw, "portfolio", seconds=9.0, speed=1.35), soft)
-        for tool in ("motion-audit", "http-attack", "migrations-safe"):
-            save(tool, recorded(raw, tool), soft)
         cebador = portfolio / "public" / "film" / "pieces" / "cebador-1280.webm"
         # its first 12 s are the hero settling in; the scroll through the page starts after
         save("cebador-landing", frames_from_video(cebador, 12.5, 8.0, speed=2.0), soft)

@@ -1,5 +1,5 @@
 // Live widgets of the profile README, redrawn daily by .github/workflows/profile.yml: the featured repo cards (the text
-// under each animated preview), npm downloads of the dev-kit tools, the 3D contribution skyline, the heatmap, the
+// under each animated preview), the dev-kit tools' cards, npm downloads of the dev-kit tools, the 3D contribution skyline, the heatmap, the
 // streak and "currently building". Every widget is written twice, <name>.dark.svg and <name>.light.svg, on a transparent
 // background in the portfolio palette, for the README's <picture> to pick by the reader's GitHub theme.
 // Needs GITHUB_TOKEN (the Actions token is enough; locally, `GITHUB_TOKEN=$(gh auth token)`).
@@ -163,24 +163,24 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
   });
 }
 
-// Featured repo cards: the text under each repo's animated preview (assets/previews/, built by build_previews.py): name,
-// English description, language, stars and last push.
+// Featured repo cards, three to a row: the text under each repo's animated preview (assets/previews/, built by
+// build_previews.py): name, English description, language, stars and last push.
 for (const name of FEATURED) {
   const r = repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
   if (!r) continue;
   const text = describe(name) || r.description || "";
-  const lines = wrap(text, 52);
+  const lines = wrap(text, 36);
   if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-  emit(`repo-${name}`, 440, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
+  emit(`repo-${name}`, 300, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
     const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
     return `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
 <text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">REPOSITORY</text>
-<text x="24" y="62" fill="${T.fg}" font-size="22">${esc(r.name)}</text>
+<text x="24" y="62" fill="${T.fg}" font-size="19">${esc(r.name)}</text>
 ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
 <circle cx="30" cy="138" r="6" fill="${T.red}"/><text x="44" y="142" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
-<g transform="translate(186 138)">${star}</g><text x="200" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
-<text x="416" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
-${hair(T, 24, 166.5, 416, 166.5)}`;
+<g transform="translate(150 138)">${star}</g><text x="164" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
+<text x="284" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
+${hair(T, 24, 166.5, 284, 166.5)}`;
   });
 }
 
@@ -212,6 +212,19 @@ ${hair(T, 24, 166.5, 416, 166.5)}`;
   else buckets.push(...dayList.map((d) => byDay[d]));
   const total = pkgs.reduce((a, k) => a + k.total, 0);
   const week = pkgs.reduce((a, k) => a + lastWeek(k), 0);
+  // The tools' own cards, three to a row under the projects: name, what it does, version and downloads this week.
+  for (const k of pkgs) {
+    const lines = wrap(describe(k.p) || "", 36);
+    if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
+    emit(`tool-${k.p}`, 300, 170, `${k.p} v${k.version}: ${describe(k.p) || ""} ${fmt(lastWeek(k))} downloads in the last 7 days.`, (T) =>
+      `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
+<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">NPM · v${esc(k.version)}</text>
+<text x="24" y="62" fill="${T.fg}" font-size="19">${esc(k.p)}</text>
+${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
+<text x="24" y="144" fill="${T.red}" font-size="18">${fmt(lastWeek(k))}</text>
+<text x="${30 + fmt(lastWeek(k)).length * 11}" y="143" fill="${T.dim}" font-size="11" letter-spacing="2">DOWNLOADS THIS WEEK</text>
+${hair(T, 24, 166.5, 284, 166.5)}`);
+  }
   const W = 1100, H = 400;
   const label = `npm downloads of the dev-kit tools since publication: ${fmt(total)} in total, ${fmt(week)} in the last 7 days. `
     + pkgs.map((k) => `${k.p} v${k.version}: ${fmt(k.total)}, ${fmt(lastWeek(k))} in the last 7 days`).join(". ");

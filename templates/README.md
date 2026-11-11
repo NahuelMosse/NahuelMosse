@@ -9,11 +9,12 @@
 
 {{repo_cards}}
 
+{{tool_cards}}
+
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-npm.dark.svg"><img src="assets/static/header-npm.light.svg" alt="02 · npm" width="100%"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm.dark.svg"><img src="assets/live/npm.light.svg" alt="npm downloads of the dev-kit tools since publication, the last 7 days and each package's counts" width="100%"></picture>
 
-<p align="center">{{npm_links}}</p>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-contributions.dark.svg"><img src="assets/static/header-contributions.light.svg" alt="03 · Contributions" width="100%"></picture>
 

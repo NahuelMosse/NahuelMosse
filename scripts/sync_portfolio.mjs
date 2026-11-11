@@ -121,21 +121,22 @@ const blocks = {
       `<img src="https://komarev.com/ghpvc/?username=${data.identity.github?.split("/").pop() ?? "NahuelMosse"}&style=pixel" width="1" height="1" alt="">`,
     ].join("\n");
   },
-  // Two repos a row: their animated previews (assets/previews/, built by scripts/build_previews.py), then their cards,
-  // drawn daily by scripts/live.mjs; each links to its repository.
+  // The featured repos, three to a row: their animated previews (assets/previews/, built by scripts/build_previews.py),
+  // then their cards, drawn daily by scripts/live.mjs; each links to its repository.
   repo_cards() {
     const owner = data.identity.github?.split("/").pop() ?? "NahuelMosse";
     const href = (name) => `https://github.com/${owner}/${name}`;
-    const preview = (name) => `<a href="${href(name)}"><img src="assets/previews/${name}.webp" alt="${name}, moving" width="49%"></a>`;
-    const card = (name) => `<a href="${href(name)}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "49%")}</a>`;
-    const rows = [];
-    for (let i = 0; i < repos.featured.length; i += 2) {
-      const pair = repos.featured.slice(i, i + 2);
-      rows.push(`<p align="center">\n${pair.map(preview).join("\n")}\n<br>\n${pair.map(card).join("\n")}\n</p>`);
-    }
-    return rows.join("\n\n");
+    const preview = (name) => `<a href="${href(name)}"><img src="assets/previews/${name}.webp" alt="${name}, moving" width="32%"></a>`;
+    const card = (name) => `<a href="${href(name)}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "32%")}</a>`;
+    return `<p align="center">\n${repos.featured.map(preview).join("\n")}\n<br>\n${repos.featured.map(card).join("\n")}\n</p>`;
   },
-  npm_links: () => repos.npm.map((p) => `<a href="https://www.npmjs.com/package/${p}"><code>${p}</code></a>`).join(" · "),
+  // The dev-kit tools, one row of three cards (drawn daily by scripts/live.mjs) linking to GitHub, and npm under them.
+  tool_cards() {
+    const owner = data.identity.github?.split("/").pop() ?? "NahuelMosse";
+    const card = (p) => `<a href="https://github.com/${owner}/${p}">${pic(`assets/live/tool-${p}`, `${p}: ${repos.repos[p]?.description ?? ""}`, "32%")}</a>`;
+    const npm = repos.npm.map((p) => `<a href="https://www.npmjs.com/package/${p}"><code>${p}</code></a>`).join(" · ");
+    return `<p align="center">\n${repos.npm.map(card).join("\n")}\n</p>\n\n<p align="center">on npm: ${npm}</p>`;
+  },
 };
 
 const cv = await readJson(CV);
