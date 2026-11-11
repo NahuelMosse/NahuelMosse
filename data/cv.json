@@ -1,7 +1,5 @@
 {
-  "source": "Facts the portfolio does not carry, kept by hand. From the CV (cv/Nahuel-Mosse-CV.pdf, copied from the portfolio checkout's cv/CV.pdf by the sync) unless noted: currentRole from the user; offDuty from the earlier portfolio copy; the Mobile skills from the portfolio's app projects.",
-  "url": "cv/Nahuel-Mosse-CV.pdf",
-  "language": "Spanish",
+  "source": "Facts the portfolio does not carry, kept by hand. From the CV in the portfolio checkout (cv/CV.pdf, in Spanish, so it is not linked from the profile) unless noted: currentRole from the user; offDuty from the earlier portfolio copy; the Mobile skills from the portfolio's app projects.",
   "currentRole": "Technical Lead at Kovix Consulting",
   "languages": [
     "Spanish (native)",
