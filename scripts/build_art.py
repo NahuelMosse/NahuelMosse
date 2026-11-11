@@ -130,31 +130,31 @@ def banner(f, d, cv, portfolio, T, art):
     """Typographic cold open on a transparent ground: NAWI, the promise and the role, a red thread drawn under the mark
     that ends in a wax seal; in the dark theme the sealed file from the portfolio sits at the right, faded out at every
     edge so the band has no border."""
-    W, H = 1200, 360
+    W, H = 1012, 304
     i = d["identity"]
     body = []
     if art:
         im = Image.open(portfolio / "public" / "film" / "pf-file-sealed-16x9.webp").convert("RGB")
-        aw, ah = 640, 360
+        aw, ah = 540, 304
         body.append(f'<radialGradient id="fade" cx=".5" cy=".5" r=".5"><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
                     f'<mask id="m" maskUnits="userSpaceOnUse" x="{W - aw}" y="0" width="{aw}" height="{ah}"><rect x="{W - aw}" y="0" width="{aw}" height="{ah}" fill="url(#fade)"/></mask>'
                     f'<g mask="url(#m)">{image(uri(cover(im, aw, ah, (0.55, 0.6))), W - aw, 0, aw, ah)}</g>')
-    size = 230
-    base = 40 + size * 0.72
-    body.append(f'<g class="u">{f["display"].path(i["mark"], size, 36, base, T["fg"], tracking=-0.02)}</g>')
+    size = 194
+    base = 34 + size * 0.72
+    body.append(f'<g class="u">{f["display"].path(i["mark"], size, 22, base, T["fg"], tracking=-0.02)}</g>')
     mark_w = f["display"].width(i["mark"], size, -0.02)
     # the thread runs from under the mark to a seal at its end
-    y = base + 26
-    pts = " ".join(f"L{36 + (mark_w + 60) * k / 30:.1f} {y + 5 * math.sin(k / 30 * 9.42):.1f}" for k in range(1, 31))
-    sx = 36 + mark_w + 60
-    body.append(f'<path d="M36 {y} {pts}" pathLength="1" fill="none" stroke="{T["red"]}" stroke-width="2.5" stroke-linecap="round" class="d"/>'
-                f'<circle cx="{sx:.1f}" cy="{y:.1f}" r="7" fill="{T["red"]}" class="u" style="animation-delay:2.4s"/>')
-    ty = y + 44
-    for line in f["text"].wrap(i["promise"], 24, 640):
-        body.append(f'<g class="u" style="animation-delay:.5s">{f["text"].path(line, 24, 38, ty, T["fg"])}</g>')
-        ty += 32
+    y = base + 22
+    pts = " ".join(f"L{22 + (mark_w + 50) * k / 30:.1f} {y + 4.2 * math.sin(k / 30 * 9.42):.1f}" for k in range(1, 31))
+    sx = 22 + mark_w + 50
+    body.append(f'<path d="M22 {y} {pts}" pathLength="1" fill="none" stroke="{T["red"]}" stroke-width="2.5" stroke-linecap="round" class="d"/>'
+                f'<circle cx="{sx:.1f}" cy="{y:.1f}" r="6" fill="{T["red"]}" class="u" style="animation-delay:2.4s"/>')
+    ty = y + 38
+    for line in f["text"].wrap(i["promise"], 20, 540):
+        body.append(f'<g class="u" style="animation-delay:.5s">{f["text"].path(line, 20, 24, ty, T["fg"])}</g>')
+        ty += 27
     role = cv["currentRole"].replace(" at ", " · ").upper()
-    body.append(f'<g class="u" style="animation-delay:.8s">{f["label"].path(role, 15, 38, ty + 10, T["red"], tracking=0.16)}</g>')
+    body.append(f'<g class="u" style="animation-delay:.8s">{f["label"].path(role, 11, 24, ty + 8, T["red"], tracking=0.18)}</g>')
     alt = f"{i['mark']}. {i['professionalName']}, {i['base']}. {i['promise']} {cv['currentRole']}."
     return svg(W, H, alt, "\n  ".join(body))
 
