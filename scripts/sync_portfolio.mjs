@@ -121,13 +121,19 @@ const blocks = {
       `<img src="https://komarev.com/ghpvc/?username=${data.identity.github?.split("/").pop() ?? "NahuelMosse"}&style=pixel" width="1" height="1" alt="">`,
     ].join("\n");
   },
-  // Two cards a row, each linking to its repository; the cards themselves are drawn daily by scripts/live.mjs.
+  // Two repos a row: their animated previews (assets/previews/, built by scripts/build_previews.py), then their cards,
+  // drawn daily by scripts/live.mjs; each links to its repository.
   repo_cards() {
     const owner = data.identity.github?.split("/").pop() ?? "NahuelMosse";
-    const cell = (name) => `<a href="https://github.com/${owner}/${name}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "49%")}</a>`;
+    const href = (name) => `https://github.com/${owner}/${name}`;
+    const preview = (name) => `<a href="${href(name)}"><img src="assets/previews/${name}.webp" alt="${name}, moving" width="49%"></a>`;
+    const card = (name) => `<a href="${href(name)}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "49%")}</a>`;
     const rows = [];
-    for (let i = 0; i < repos.featured.length; i += 2) rows.push(repos.featured.slice(i, i + 2).map(cell).join("\n"));
-    return rows.map((r) => `<p align="center">\n${r}\n</p>`).join("\n\n");
+    for (let i = 0; i < repos.featured.length; i += 2) {
+      const pair = repos.featured.slice(i, i + 2);
+      rows.push(`<p align="center">\n${pair.map(preview).join("\n")}\n<br>\n${pair.map(card).join("\n")}\n</p>`);
+    }
+    return rows.join("\n\n");
   },
   npm_links: () => repos.npm.map((p) => `<a href="https://www.npmjs.com/package/${p}"><code>${p}</code></a>`).join(" · "),
 };

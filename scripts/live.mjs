@@ -1,5 +1,5 @@
-// Live widgets of the profile README, redrawn daily by .github/workflows/profile.yml: the featured repo cards (each with
-// its image band from assets/cards/), npm downloads of the dev-kit tools, the 3D contribution skyline, the heatmap, the
+// Live widgets of the profile README, redrawn daily by .github/workflows/profile.yml: the featured repo cards (the text
+// under each animated preview), npm downloads of the dev-kit tools, the 3D contribution skyline, the heatmap, the
 // streak and "currently building". Every widget is written twice, <name>.dark.svg and <name>.light.svg, on a transparent
 // background in the portfolio palette, for the README's <picture> to pick by the reader's GitHub theme.
 // Needs GITHUB_TOKEN (the Actions token is enough; locally, `GITHUB_TOKEN=$(gh auth token)`).
@@ -163,36 +163,24 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
   });
 }
 
-// Featured repo cards: the image band from assets/cards/ with soft edges inside a hairline frame, then name, English
-// description, language, stars and last push.
+// Featured repo cards: the text under each repo's animated preview (assets/previews/, built by build_previews.py): name,
+// English description, language, stars and last push.
 for (const name of FEATURED) {
   const r = repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
   if (!r) continue;
   const text = describe(name) || r.description || "";
   const lines = wrap(text, 52);
   if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-  const band = (theme) => {
-    const key = META[name]?.image;
-    const file = [`${key}.${theme}.webp`, `${key}.webp`].map((f) => join(root, "assets", "cards", f)).find((f) => key && existsSync(f));
-    return file && readFileSync(file).toString("base64");
-  };
-  emit(`repo-${name}`, 440, 330, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
-    const img = band(T === THEMES.dark ? "dark" : "light");
-    const pic = img
-      ? `<defs><linearGradient id="v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".16" stop-color="#fff"/><stop offset=".6" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<linearGradient id="h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".1" stop-color="#fff"/><stop offset=".9" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<mask id="mv" maskUnits="userSpaceOnUse" x="10" y="10" width="420" height="160"><rect x="10" y="10" width="420" height="160" fill="url(#v)"/></mask>
-<mask id="mh" maskUnits="userSpaceOnUse" x="10" y="10" width="420" height="160"><rect x="10" y="10" width="420" height="160" fill="url(#h)"/></mask></defs>
-<g mask="url(#mh)"><g mask="url(#mv)"><image href="data:image/webp;base64,${img}" x="10" y="10" width="420" height="160" preserveAspectRatio="xMidYMid slice"/></g></g>`
-      : "";
+  emit(`repo-${name}`, 440, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
     const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
-    return `${frame(T, 440, 330)}${pic}<rect x="24" y="176" width="48" height="3" fill="${T.red}" class="g"/>
-<text x="24" y="206" fill="${T.dim}" font-size="11" letter-spacing="3">REPOSITORY</text>
-<text x="24" y="234" fill="${T.fg}" font-size="22">${esc(r.name)}</text>
-${lines.slice(0, 2).map((l, i) => `<text x="24" y="${260 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-<circle cx="30" cy="308" r="6" fill="${T.red}"/><text x="44" y="312" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
-<g transform="translate(186 308)">${star}</g><text x="200" y="312" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
-<text x="416" y="312" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>`;
+    return `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
+<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">REPOSITORY</text>
+<text x="24" y="62" fill="${T.fg}" font-size="22">${esc(r.name)}</text>
+${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
+<circle cx="30" cy="138" r="6" fill="${T.red}"/><text x="44" y="142" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
+<g transform="translate(186 138)">${star}</g><text x="200" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
+<text x="416" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
+${hair(T, 24, 166.5, 416, 166.5)}`;
   });
 }
 

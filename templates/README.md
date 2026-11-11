@@ -1,4 +1,4 @@
-<!-- Rendered by scripts/sync_portfolio.mjs from this template and data/. Edit those, not README.md. Every image comes in a dark and a light variant for the reader's GitHub theme; the ones in assets/live/ are redrawn daily by .github/workflows/profile.yml, the ones in assets/static/ and assets/cards/ by scripts/build_art.py and build_plates.py. -->
+<!-- Rendered by scripts/sync_portfolio.mjs from this template and data/. Edit those, not README.md. Every image but the project previews (one animated WebP each, faded to transparent at the edges) comes in a dark and a light variant for the reader's GitHub theme; the ones in assets/live/ are redrawn daily by .github/workflows/profile.yml, the ones in assets/static/ by scripts/build_art.py and build_plates.py, the previews in assets/previews/ by scripts/build_previews.py. -->
 {{banner}}
 
 <p align="center">

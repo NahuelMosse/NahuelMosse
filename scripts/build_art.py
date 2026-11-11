@@ -1,6 +1,5 @@
 """Builds the README's banner (assets/static/banner.dark.svg and banner.light.svg, one per GitHub theme), set in the
-portfolio's fonts, and the image bands of the repo cards (assets/cards/). Needs the portfolio checkout for its fonts and
-art, so it runs locally, not in the daily workflow:
+portfolio's fonts. Needs the portfolio checkout for its fonts and art, so it runs locally, not in the daily workflow:
 
     python scripts/build_art.py --portfolio ../Portfolio-d
 
@@ -24,23 +23,11 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
 STATIC = ASSETS / "static"
-CARDS_DIR = ASSETS / "cards"
 
 # design/tokens.css: one red as the only accent over ink and bone.
 INK = "#0c0c0b"
 BONE = "#ede4d0"
 RED = "#d2231b"
-
-# The image band of each featured repo card (data/repos.json): an object scene from the portfolio (no person in it), or for
-# a dev-kit tool its real GitHub page in a duotone per theme, cropped to the file list so no avatar shows.
-CARDS = {
-    "club": dict(scene="pf-exhibit-club-4x5.webp", focus=(0.5, 0.42)),
-    "cebador": dict(scene="pf-exhibit-cebador-4x5.webp", focus=(0.5, 0.5)),
-    "portfolio": dict(scene="pf-file-sealed-16x9.webp", focus=(0.5, 0.62)),
-    "motion-audit": dict(page="kit-skill-motion-audit.webp"),
-    "http-attack": dict(page="kit-skill-http-attack.webp"),
-    "migrations-safe": dict(page="kit-skill-migrations-safe.webp"),
-}
 
 # The GitHub pages the README sits on, and the type colors of each theme.
 THEMES = {
@@ -172,27 +159,6 @@ def banner(f, d, cv, portfolio, T, art):
     return svg(W, H, alt, "\n  ".join(body))
 
 
-def card_image(portfolio, key, theme):
-    """An 840 x 320 band (2x the card's 420 x 160): an object scene cropped to cover, or a GitHub page cropped to its
-    file list and sidebar, in a duotone: inverted for the dark theme (paper to ink, lines to red, text to bone), straight
-    for the light one (text to ink, lines to red, paper kept white)."""
-    W, H = 840, 320
-    t = CARDS[key]
-    if "scene" in t:
-        return cover(Image.open(portfolio / "public" / "film" / t["scene"]).convert("RGB"), W, H, t["focus"], scale=1)
-    page = Image.open(portfolio / "public" / "film" / "pieces" / t["page"]).convert("L")
-    page = page.crop((0, round(page.height * 0.3), page.width, page.height))
-    page = cover(page, W, H, (0.5, 0.0), scale=1)
-    lut = []
-    for c in range(3):
-        a, b, e = (int(x[1 + 2 * c:3 + 2 * c], 16) for x in (INK, RED, BONE if theme == "dark" else "#ffffff"))
-        if theme == "dark":
-            lut += [round(a + (b - a) * (255 - v) / 128) if v > 127 else round(b + (e - b) * (127 - v) / 127) for v in range(256)]
-        else:
-            lut += [round(a + (b - a) * v / 128) if v < 128 else round(b + (e - b) * (v - 128) / 127) for v in range(256)]
-    return Image.merge("RGB", [page.point(lut[i * 256:(i + 1) * 256]) for i in range(3)])
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--portfolio", type=Path, default=ROOT.parent / "Portfolio-d")
@@ -208,15 +174,7 @@ def main():
     STATIC.mkdir(parents=True, exist_ok=True)
     for theme, T in THEMES.items():
         (STATIC / f"banner.{theme}.svg").write_text(banner(f, d, cv, portfolio, T, art=theme == "dark"), encoding="utf-8", newline="\n")
-    CARDS_DIR.mkdir(parents=True, exist_ok=True)
-    for old in CARDS_DIR.glob("*.webp"):
-        old.unlink()
-    for key, t in CARDS.items():
-        for theme in (("dark", "light") if "page" in t else (None,)):
-            name = f"{key}.{theme}.webp" if theme else f"{key}.webp"
-            card_image(portfolio, key, theme).save(CARDS_DIR / name, "WEBP", quality=72, method=6)
-    print("banners:", ", ".join(f"{p.name} {p.stat().st_size // 1024} KB" for p in sorted(STATIC.glob("banner.*.svg"))),
-          "; cards:", len(list(CARDS_DIR.glob("*.webp"))))
+    print("banners:", ", ".join(f"{p.name} {p.stat().st_size // 1024} KB" for p in sorted(STATIC.glob("banner.*.svg"))))
 
 
 if __name__ == "__main__":
