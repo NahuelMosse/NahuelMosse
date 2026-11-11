@@ -1,5 +1,6 @@
-"""Builds the README's banner (assets/static/banner.svg), set in the portfolio's fonts, and the image bands of the repo
-cards (assets/cards/). Needs the portfolio checkout for its fonts and art, so it runs locally, not in the daily workflow:
+"""Builds the README's banner (assets/static/banner.dark.svg and banner.light.svg, one per GitHub theme), set in the
+portfolio's fonts, and the image bands of the repo cards (assets/cards/). Needs the portfolio checkout for its fonts and
+art, so it runs locally, not in the daily workflow:
 
     python scripts/build_art.py --portfolio ../Portfolio-d
 
@@ -11,6 +12,7 @@ import argparse
 import base64
 import io
 import json
+import math
 from pathlib import Path
 
 import uharfbuzz as hb
@@ -24,27 +26,26 @@ ASSETS = ROOT / "assets"
 STATIC = ASSETS / "static"
 CARDS_DIR = ASSETS / "cards"
 
-# design/tokens.css: one red as the only accent over ink and bone, and each product's and employer's own color.
+# design/tokens.css: one red as the only accent over ink and bone.
 INK = "#0c0c0b"
 BONE = "#ede4d0"
 RED = "#d2231b"
-BONE_70 = "#ede4d0b3"
-BONE_35 = "#ede4d059"
-SPOT = {
-    "kit": "#b3261e", "grit": "#1f55d6", "triaje": "#36d1a8", "cebador": "#f0a8ac", "club": "#cdeb3a", "sonria": "#6a4bd8",
-    "miga": "#e8a33d", "fravega": "#b8188a", "grupo-st": "#004f87", "justo": "#00a37c", "smart-warehousing": "#f7901e",
-    "visma": "#7f56fa",
-}
 
-# The image band of each featured repo card (data/repos.json): the project's scene from the portfolio, or for a dev-kit
-# tool its real page in a red duotone, so the three tools read apart and stay on the palette.
+# The image band of each featured repo card (data/repos.json): an object scene from the portfolio (no person in it), or for
+# a dev-kit tool its real GitHub page in a duotone per theme, cropped to the file list so no avatar shows.
 CARDS = {
-    "club": dict(scene="ill-scene-club-16x9.webp", focus=(0.5, 0.45)),
-    "cebador": dict(scene="ill-scene-cebador-16x9.webp", focus=(0.6, 0.45)),
-    "portfolio": dict(scene="ill-cover-16x9.webp", focus=(0.5, 0.25)),
+    "club": dict(scene="pf-exhibit-club-4x5.webp", focus=(0.5, 0.42)),
+    "cebador": dict(scene="pf-exhibit-cebador-4x5.webp", focus=(0.5, 0.5)),
+    "portfolio": dict(scene="pf-file-sealed-16x9.webp", focus=(0.5, 0.62)),
     "motion-audit": dict(page="kit-skill-motion-audit.webp"),
     "http-attack": dict(page="kit-skill-http-attack.webp"),
     "migrations-safe": dict(page="kit-skill-migrations-safe.webp"),
+}
+
+# The GitHub pages the README sits on, and the type colors of each theme.
+THEMES = {
+    "dark": dict(bg="#0d1117", fg=BONE, dim="#9a9283", red=RED),
+    "light": dict(bg="#ffffff", fg=INK, dim="#6b655a", red="#c41f17"),
 }
 
 
@@ -113,13 +114,6 @@ def uri(im, quality=74):
     return "data:image/webp;base64," + base64.b64encode(out.getvalue()).decode()
 
 
-def fit(im, width):
-    """The image at most `width` pixels wide, kept to its ratio."""
-    if im.width <= width:
-        return im
-    return im.resize((round(width), round(im.height * width / im.width)), Image.LANCZOS)
-
-
 def cover(im, w, h, focus=(0.5, 0.5), scale=1.25):
     """object-fit: cover into w x h at `focus`, at `scale` times the plate's pixels."""
     k = max(w / im.width, h / im.height)
@@ -134,78 +128,68 @@ def image(src, x, y, w, h, extra=""):
     return f'<image href="{src}" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" preserveAspectRatio="none"{extra}/>'
 
 
-def fade(uid, x, y, w, h, fx, fy, inner, bottom_only=False):
-    """inner with its edges faded out: fx of the width at each side and fy of the height, as the site's masks do."""
-    def grad(gid, horizontal, f, start=True):
-        end = 'x2="1" y2="0"' if horizontal else 'x2="0" y2="1"'
-        first = '<stop offset="0" stop-color="#000"/>' if start else '<stop offset="0" stop-color="#fff"/>'
-        return (f'<linearGradient id="{gid}" x1="0" y1="0" {end}>{first}<stop offset="{f}" stop-color="#fff"/>'
-                f'<stop offset="{1 - f}" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>')
-    rect = f'x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}"'
-    defs = (f'<defs>{grad(uid + "h", True, fx)}{grad(uid + "v", False, fy, not bottom_only)}'
-            f'<mask id="{uid}mh" maskUnits="userSpaceOnUse" {rect}><rect {rect} fill="url(#{uid}h)"/></mask>'
-            f'<mask id="{uid}mv" maskUnits="userSpaceOnUse" {rect}><rect {rect} fill="url(#{uid}v)"/></mask></defs>')
-    return f'{defs}<g mask="url(#{uid}mh)"><g mask="url(#{uid}mv)">{inner}</g></g>'
-
-
-GRAIN = """<filter id="grain" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
-      <feColorMatrix values="0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.82  0 0 0 0.09 0"/>
-    </filter>"""
-
-
 def svg(w, h, label, body):
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{esc(label)}">
   <title>{esc(label)}</title>
-  <defs>{GRAIN}</defs>
+  <style>@keyframes draw{{to{{stroke-dashoffset:0}}}}.d{{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.6s cubic-bezier(.65,0,.35,1) .3s both}}
+  @keyframes up{{from{{opacity:0;transform:translateY(12px)}}to{{opacity:1;transform:none}}}}.u{{animation:up .9s cubic-bezier(.16,1,.3,1) both}}
+  @media (prefers-reduced-motion:reduce){{*{{animation:none!important}}.d{{stroke-dashoffset:0}}}}</style>
   {body}
-  <rect width="{w}" height="{h}" filter="url(#grain)"/>
 </svg>
 """
 
 
-def banner(f, d, cv, portfolio):
-    """The cold open (hero-poster.tsx) cut to a band: the cover drawing, NAWI across it, the promise and the role now."""
-    W, H = 1200, 400
+def banner(f, d, cv, portfolio, T, art):
+    """Typographic cold open on a transparent ground: NAWI, the promise and the role, a red thread drawn under the mark
+    that ends in a wax seal; in the dark theme the sealed file from the portfolio sits at the right, faded out at every
+    edge so the band has no border."""
+    W, H = 1200, 360
     i = d["identity"]
-    art = Image.open(portfolio / "public" / "film" / "ill-cover-16x9.webp")
-    body = [f'<rect width="{W}" height="{H}" fill="{INK}"/>',
-            fade("cover", 0, 0, W, H, 0.05, 0.1, image(uri(cover(art, W, H, (0.5, 0.18))), 0, 0, W, H)),
-            f'<linearGradient id="side" x1="0" y1="0" x2="1" y2="0"><stop offset="0.45" stop-color="{INK}" stop-opacity="0"/>'
-            f'<stop offset="0.75" stop-color="{INK}" stop-opacity="0.88"/></linearGradient><rect width="{W}" height="{H}" fill="url(#side)"/>']
-    size = 250
-    body.append(f'<g style="mix-blend-mode:screen">{f["display"].path(i["mark"], size, W - 40, 40 + size * 0.7, BONE, tracking=-0.02, anchor="end")}</g>')
-    lines = f["text"].wrap(i["promise"], 26, 520)
-    y = 40 + size * 0.7 + 52
-    for line in lines:
-        body.append(f["text"].path(line, 26, W - 44, y, BONE, anchor="end"))
-        y += 34
-    # a local ink scrim under the role line, so the red reads where it crosses the chair
+    body = []
+    if art:
+        im = Image.open(portfolio / "public" / "film" / "pf-file-sealed-16x9.webp").convert("RGB")
+        aw, ah = 640, 360
+        body.append(f'<radialGradient id="fade" cx=".5" cy=".5" r=".5"><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
+                    f'<mask id="m" maskUnits="userSpaceOnUse" x="{W - aw}" y="0" width="{aw}" height="{ah}"><rect x="{W - aw}" y="0" width="{aw}" height="{ah}" fill="url(#fade)"/></mask>'
+                    f'<g mask="url(#m)">{image(uri(cover(im, aw, ah, (0.55, 0.6))), W - aw, 0, aw, ah)}</g>')
+    size = 230
+    base = 40 + size * 0.72
+    body.append(f'<g class="u">{f["display"].path(i["mark"], size, 36, base, T["fg"], tracking=-0.02)}</g>')
+    mark_w = f["display"].width(i["mark"], size, -0.02)
+    # the thread runs from under the mark to a seal at its end
+    y = base + 26
+    pts = " ".join(f"L{36 + (mark_w + 60) * k / 30:.1f} {y + 5 * math.sin(k / 30 * 9.42):.1f}" for k in range(1, 31))
+    sx = 36 + mark_w + 60
+    body.append(f'<path d="M36 {y} {pts}" pathLength="1" fill="none" stroke="{T["red"]}" stroke-width="2.5" stroke-linecap="round" class="d"/>'
+                f'<circle cx="{sx:.1f}" cy="{y:.1f}" r="7" fill="{T["red"]}" class="u" style="animation-delay:2.4s"/>')
+    ty = y + 44
+    for line in f["text"].wrap(i["promise"], 24, 640):
+        body.append(f'<g class="u" style="animation-delay:.5s">{f["text"].path(line, 24, 38, ty, T["fg"])}</g>')
+        ty += 32
     role = cv["currentRole"].replace(" at ", " · ").upper()
-    role_w = f["label"].width(role, 15, 0.16)
-    body.append(f'<linearGradient id="role" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{INK}" stop-opacity="0"/>'
-                f'<stop offset="0.25" stop-color="{INK}" stop-opacity="0.92"/></linearGradient>'
-                f'<rect x="{W - 44 - role_w - 140:.1f}" y="{y - 8:.1f}" width="{role_w + 184:.1f}" height="34" fill="url(#role)"/>')
-    body.append(f["label"].path(role, 15, W - 44, y + 14, RED, tracking=0.16, anchor="end"))
+    body.append(f'<g class="u" style="animation-delay:.8s">{f["label"].path(role, 15, 38, ty + 10, T["red"], tracking=0.16)}</g>')
     alt = f"{i['mark']}. {i['professionalName']}, {i['base']}. {i['promise']} {cv['currentRole']}."
     return svg(W, H, alt, "\n  ".join(body))
 
 
-def card_image(portfolio, key):
-    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a light page inverted into a dark
-    duotone (paper to ink, lines to red, text to bone), cropped below GitHub's dark top bar, which would invert to a
-    light strip."""
-    W, H = 880, 336
+def card_image(portfolio, key, theme):
+    """An 840 x 320 band (2x the card's 420 x 160): an object scene cropped to cover, or a GitHub page cropped to its
+    file list and sidebar, in a duotone: inverted for the dark theme (paper to ink, lines to red, text to bone), straight
+    for the light one (text to ink, lines to red, paper kept white)."""
+    W, H = 840, 320
     t = CARDS[key]
     if "scene" in t:
         return cover(Image.open(portfolio / "public" / "film" / t["scene"]).convert("RGB"), W, H, t["focus"], scale=1)
     page = Image.open(portfolio / "public" / "film" / "pieces" / t["page"]).convert("L")
-    page = page.crop((0, round(page.height * 0.12), page.width, page.height))
+    page = page.crop((0, round(page.height * 0.3), page.width, page.height))
     page = cover(page, W, H, (0.5, 0.0), scale=1)
     lut = []
     for c in range(3):
-        a, b, e = int(INK[1 + 2 * c:3 + 2 * c], 16), int(RED[1 + 2 * c:3 + 2 * c], 16), int(BONE[1 + 2 * c:3 + 2 * c], 16)
-        lut += [round(a + (b - a) * (255 - v) / 128) if v > 127 else round(b + (e - b) * (127 - v) / 127) for v in range(256)]
+        a, b, e = (int(x[1 + 2 * c:3 + 2 * c], 16) for x in (INK, RED, BONE if theme == "dark" else "#ffffff"))
+        if theme == "dark":
+            lut += [round(a + (b - a) * (255 - v) / 128) if v > 127 else round(b + (e - b) * (127 - v) / 127) for v in range(256)]
+        else:
+            lut += [round(a + (b - a) * v / 128) if v < 128 else round(b + (e - b) * (v - 128) / 127) for v in range(256)]
     return Image.merge("RGB", [page.point(lut[i * 256:(i + 1) * 256]) for i in range(3)])
 
 
@@ -222,11 +206,17 @@ def main():
     d = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf-8"))
     cv = json.loads((ROOT / "data" / "cv.json").read_text(encoding="utf-8"))
     STATIC.mkdir(parents=True, exist_ok=True)
-    (STATIC / "banner.svg").write_text(banner(f, d, cv, portfolio), encoding="utf-8", newline="\n")
+    for theme, T in THEMES.items():
+        (STATIC / f"banner.{theme}.svg").write_text(banner(f, d, cv, portfolio, T, art=theme == "dark"), encoding="utf-8", newline="\n")
     CARDS_DIR.mkdir(parents=True, exist_ok=True)
-    for key in CARDS:
-        card_image(portfolio, key).save(CARDS_DIR / f"{key}.webp", "WEBP", quality=72, method=6)
-    print("banner.svg:", (STATIC / "banner.svg").stat().st_size // 1024, "KB;", len(CARDS), "card images")
+    for old in CARDS_DIR.glob("*.webp"):
+        old.unlink()
+    for key, t in CARDS.items():
+        for theme in (("dark", "light") if "page" in t else (None,)):
+            name = f"{key}.{theme}.webp" if theme else f"{key}.webp"
+            card_image(portfolio, key, theme).save(CARDS_DIR / name, "WEBP", quality=72, method=6)
+    print("banners:", ", ".join(f"{p.name} {p.stat().st_size // 1024} KB" for p in sorted(STATIC.glob("banner.*.svg"))),
+          "; cards:", len(list(CARDS_DIR.glob("*.webp"))))
 
 
 if __name__ == "__main__":

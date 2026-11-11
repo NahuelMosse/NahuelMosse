@@ -1,9 +1,9 @@
 {
   "source": {
     "kind": "checkout",
-    "ref": "portfolio-present-d@5ad08d6",
+    "ref": "portfolio-present-d@7751965",
     "payloadVersion": "2.0.0",
-    "syncedAt": "2026-11-10T23:13:07.499Z"
+    "syncedAt": "2026-11-11T01:22:12.150Z"
   },
   "site": {
     "url": "https://nawi.dev"

@@ -1,34 +1,26 @@
-<!-- Rendered by scripts/sync_portfolio.mjs from this template and data/. Edit those, not README.md. The images in assets/live/ are redrawn daily by .github/workflows/profile.yml; the ones in assets/static/ and assets/cards/ by scripts/build_*.py and build_icons.mjs. -->
-<a href="{{site}}"><img src="assets/static/banner.svg" alt="{{banner_alt}}" width="100%"></a>
+<!-- Rendered by scripts/sync_portfolio.mjs from this template and data/. Edit those, not README.md. Every image comes in a dark and a light variant for the reader's GitHub theme; the ones in assets/live/ are redrawn daily by .github/workflows/profile.yml, the ones in assets/static/ and assets/cards/ by scripts/build_art.py and build_plates.py. -->
+{{banner}}
 
 <p align="center">
-{{badges}}
+{{links}}
 </p>
 
-<img src="assets/static/glance.svg" alt="At a glance: Technical Lead at Kovix Consulting; next, Technical Project Manager; 4+ years since 11/2022 across 5 clients; English C2 (EF SET); based in Buenos Aires, UTC−3." width="100%">
-
-<img src="assets/static/header-projects.svg" alt="01 · Projects" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-projects.dark.svg"><img src="assets/static/header-projects.light.svg" alt="01 · Projects" width="100%"></picture>
 
 {{repo_cards}}
 
-<img src="assets/live/npm.svg" alt="npm downloads of the dev-kit tools: motion-audit, http-attack and migrations-safe" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-npm.dark.svg"><img src="assets/static/header-npm.light.svg" alt="02 · npm" width="100%"></picture>
 
-<img src="assets/static/header-record.svg" alt="02 · Record" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm.dark.svg"><img src="assets/live/npm.light.svg" alt="npm downloads of the dev-kit tools since publication, the last 7 days and each package's counts" width="100%"></picture>
 
-<img src="assets/static/career-timeline.svg" alt="Career timeline: Kovix Consulting engagements at Jüsto, Frávega, Visma, Grupo ST and Smart Warehousing, an Associate Degree in Computer Science in 2025 and Computer Engineering in progress" width="100%">
+<p align="center">{{npm_links}}</p>
 
-<img src="assets/static/timezone.svg" alt="Working hours in Buenos Aires overlap with New York, San Francisco, London and Madrid" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-contributions.dark.svg"><img src="assets/static/header-contributions.light.svg" alt="03 · Contributions" width="100%"></picture>
 
-<img src="assets/static/header-stack.svg" alt="03 · Stack" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/skyline.dark.svg"><img src="assets/live/skyline.light.svg" alt="Contributions in the last 12 months as a 3D skyline" width="100%"></picture>
 
-<img src="assets/static/stack-icons.svg" alt="Stack: Node.js, NestJS, TypeScript, React, Next.js, Angular, Flutter, PostgreSQL, Prisma, Redis, Docker, Kubernetes, Terraform, Jest, Claude Code, Tailwind CSS" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/heatmap.dark.svg"><img src="assets/live/heatmap.light.svg" alt="Contribution heatmap, last 12 months" width="100%"></picture>
 
-<p align="center"><img src="assets/live/donut.svg" alt="Languages across public repositories" width="460"></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Contribution streak" width="540"></picture></p>
 
-<img src="assets/static/header-activity.svg" alt="04 · Activity" width="100%">
-
-<img src="assets/live/building.svg" alt="Currently building" width="100%">
-
-<img src="assets/live/heatmap.svg" alt="Contribution heatmap, last 12 months" width="100%">
-
-<p align="center"><img src="assets/live/streak.svg" alt="Contribution streak" width="460"></p>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/building.dark.svg"><img src="assets/live/building.light.svg" alt="Currently building" width="100%"></picture>

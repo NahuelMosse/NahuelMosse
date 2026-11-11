@@ -103,27 +103,30 @@ await writeFile(DATA, JSON.stringify(data, null, 2) + "\n");
 // ---------- README ----------
 
 const repos = await readJson(new URL("data/repos.json", ROOT));
-const badge = (href, label, message, color, extra = "") =>
-  `<a href="${href}"><img src="https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(message)}-${color}?style=for-the-badge&labelColor=0c0c0b${extra}" alt="${label}"></a>`;
+// One image per GitHub theme: assets/<dir>/<name>.dark.svg and .light.svg, picked by the reader's color scheme.
+const pic = (path, alt, width = "100%") =>
+  `<picture><source media="(prefers-color-scheme: dark)" srcset="${path}.dark.svg"><img src="${path}.light.svg" alt="${alt.replace(/"/g, "&quot;")}" width="${width}"></picture>`;
 
 const blocks = {
   site: () => data.site.url,
-  banner_alt: () => `${data.identity.mark}. ${data.identity.professionalName}, ${data.identity.base}. ${data.identity.promise} ${cv.currentRole}.`.replace(/"/g, "&quot;"),
-  badges() {
+  banner: () => `<a href="${data.site.url}">${pic("assets/static/banner", `${data.identity.mark}. ${data.identity.professionalName}, ${data.identity.base}. ${data.identity.promise} ${cv.currentRole}.`)}</a>`,
+  links() {
     const { email, linkedin } = data.identity;
     return [
-      badge(data.site.url, "portfolio", new URL(data.site.url).host, "d2231b"),
-      badge(linkedin, "linkedin", linkedin.split("/").filter(Boolean).pop(), "3a3732", "&logo=linkedin&logoColor=ede4d0"),
-      badge(`mailto:${email}`, "email", "write me", "3a3732", "&logo=gmail&logoColor=ede4d0"),
+      `<a href="${data.site.url}">${pic("assets/static/link-portfolio", "Portfolio", "30%")}</a>`,
+      `<a href="${linkedin}">${pic("assets/static/link-linkedin", "LinkedIn", "30%")}</a>`,
+      `<a href="mailto:${email}">${pic("assets/static/link-email", "Email", "30%")}</a>`,
     ].join("\n");
   },
   // Two cards a row, each linking to its repository; the cards themselves are drawn daily by scripts/live.mjs.
   repo_cards() {
-    const cell = (name) => `    <td width="50%"><a href="https://github.com/${data.identity.github?.split("/").pop() ?? "NahuelMosse"}/${name}"><img src="assets/live/repo-${name}.svg" alt="${name}: ${repos.repos[name]?.description ?? ""}" width="100%"></a></td>`;
+    const owner = data.identity.github?.split("/").pop() ?? "NahuelMosse";
+    const cell = (name) => `<a href="https://github.com/${owner}/${name}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "49%")}</a>`;
     const rows = [];
-    for (let i = 0; i < repos.featured.length; i += 2) rows.push(["  <tr>", ...repos.featured.slice(i, i + 2).map(cell), "  </tr>"].join("\n"));
-    return ["<table>", ...rows, "</table>"].join("\n");
+    for (let i = 0; i < repos.featured.length; i += 2) rows.push(repos.featured.slice(i, i + 2).map(cell).join("\n"));
+    return rows.map((r) => `<p align="center">\n${r}\n</p>`).join("\n\n");
   },
+  npm_links: () => repos.npm.map((p) => `<a href="https://www.npmjs.com/package/${p}"><code>${p}</code></a>`).join(" · "),
 };
 
 const cv = await readJson(CV);
