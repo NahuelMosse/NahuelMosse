@@ -1,0 +1,15 @@
+{
+  "source": "English descriptions for the live repo cards and the \"currently building\" card, keyed by repository; copied from the portfolio where it has some. A repo without one falls back to its GitHub description on a card and is skipped by \"currently building\". `image` is the card's band in assets/cards/, built by scripts/build_art.py from the portfolio's scenes and screens.",
+  "featured": ["ClubNahuelMosse", "cebador-landing", "motion-audit", "http-attack", "migrations-safe", "Portfolio"],
+  "npm": ["motion-audit", "http-attack", "migrations-safe"],
+  "repos": {
+    "ClubNahuelMosse": { "description": "A Flutter app with a REST API for booking sports courts.", "image": "club" },
+    "cebador-landing": { "description": "The website of a fictional canned yerba mate soda brand, as a design concept.", "image": "cebador" },
+    "motion-audit": { "description": "Checks that a website moves the way it should: every button responds when pressed, and nothing stutters.", "image": "motion-audit" },
+    "http-attack": { "description": "Attacks your back end the way a hacker would, before a real one does.", "image": "http-attack" },
+    "migrations-safe": { "description": "Tests database changes on a copy before they touch the real one.", "image": "migrations-safe" },
+    "Portfolio": { "description": "My portfolio: a scroll-snapped narrative site in Next.js, with its content also served as JSON and llms.txt.", "image": "portfolio" },
+    "sonria": { "description": "A one-page website for a fictional neighborhood dental clinic in Buenos Aires." },
+    "miga": { "description": "The website of a fictional sourdough bakery in Buenos Aires." }
+  }
+}

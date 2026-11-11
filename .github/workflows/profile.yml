@@ -1,0 +1,39 @@
+name: Profile
+
+# Re-syncs the README text from the deployed portfolio, redraws the live widgets in assets/live/ and fails on any Spanish.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [profile-revamp]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Leaves the text alone while the site serves an older payload than data/portfolio.json.
+      - name: Sync text from the portfolio
+        run: node scripts/sync_portfolio.mjs --from https://nawi.dev/portfolio.json
+      - name: Live widgets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/live.mjs
+      - name: English-only check
+        run: node scripts/check_english.mjs
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: refresh profile [skip ci]"
+          file_pattern: "README.md data/portfolio.json assets/live"

@@ -1,7 +1,7 @@
-"""Builds the README's art from data/: assets/banner.svg, set in the portfolio's fonts, and the work thumbnails in
-assets/thumbs/. Needs the portfolio's fonts, so it runs locally, not in the daily sync:
+"""Builds the README's banner (assets/static/banner.svg), set in the portfolio's fonts, and the image bands of the repo
+cards (assets/cards/). Needs the portfolio checkout for its fonts and art, so it runs locally, not in the daily workflow:
 
-    python scripts/build_art.py --fonts ../Portfolio-d/public/fonts
+    python scripts/build_art.py --portfolio ../Portfolio-d
 
 The fonts are Indian Type Foundry (Fontshare) and SIL OFL fonts that are not committed here; every word is drawn as outlines,
 and the drawings are embedded, since an SVG shown through <img> cannot load anything external.
@@ -17,11 +17,12 @@ import uharfbuzz as hb
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageChops
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
-ART = ASSETS / "art"
+STATIC = ASSETS / "static"
+CARDS_DIR = ASSETS / "cards"
 
 # design/tokens.css: one red as the only accent over ink and bone, and each product's and employer's own color.
 INK = "#0c0c0b"
@@ -35,14 +36,15 @@ SPOT = {
     "visma": "#7f56fa",
 }
 
-# The thumbnail of each selected piece of work: the product's field (showcase.css) and what fills it: the lead screen of its
-# device (project-group.tsx), or for a tool, its ink plate printed on the field by multiply.
-THUMBS = {
-    "grit": dict(field=SPOT["grit"], piece="grit-hoy.webp", device="phone"),
-    "club": dict(field=SPOT["club"], piece="club-login.webp", device="phone"),
-    "cebador": dict(field=SPOT["cebador"], piece="cebador-1280-poster.webp", device="browser"),
-    "guardia": dict(field=SPOT["triaje"], piece="triaje-title.webp", device="browser"),
-    "tools": dict(field=SPOT["kit"], plate="plate-motion-audit-16x9.webp"),
+# The image band of each featured repo card (data/repos.json): the project's scene from the portfolio, or for a dev-kit
+# tool its real page in a red duotone, so the three tools read apart and stay on the palette.
+CARDS = {
+    "club": dict(scene="ill-scene-club-16x9.webp", focus=(0.5, 0.45)),
+    "cebador": dict(scene="ill-scene-cebador-16x9.webp", focus=(0.6, 0.45)),
+    "portfolio": dict(scene="ill-cover-16x9.webp", focus=(0.5, 0.25)),
+    "motion-audit": dict(page="kit-skill-motion-audit.webp"),
+    "http-attack": dict(page="kit-skill-http-attack.webp"),
+    "migrations-safe": dict(page="kit-skill-migrations-safe.webp"),
 }
 
 
@@ -162,11 +164,11 @@ def svg(w, h, label, body):
 """
 
 
-def banner(f, d, cv):
+def banner(f, d, cv, portfolio):
     """The cold open (hero-poster.tsx) cut to a band: the cover drawing, NAWI across it, the promise and the role now."""
     W, H = 1200, 400
     i = d["identity"]
-    art = Image.open(ART / "ill-cover-16x9.webp")
+    art = Image.open(portfolio / "public" / "film" / "ill-cover-16x9.webp")
     body = [f'<rect width="{W}" height="{H}" fill="{INK}"/>',
             fade("cover", 0, 0, W, H, 0.05, 0.1, image(uri(cover(art, W, H, (0.5, 0.18))), 0, 0, W, H)),
             f'<linearGradient id="side" x1="0" y1="0" x2="1" y2="0"><stop offset="0.45" stop-color="{INK}" stop-opacity="0"/>'
@@ -189,30 +191,25 @@ def banner(f, d, cv):
     return svg(W, H, alt, "\n  ".join(body))
 
 
-def thumb(key):
-    """A 16:9 thumbnail: a phone's screen standing on the field, a page filling it from its top, or a tool's plate."""
-    W, H = 480, 270
-    t = THUMBS[key]
-    canvas = Image.new("RGB", (W, H), t["field"])
-    if "plate" in t:
-        plate = cover(Image.open(ART / t["plate"]).convert("RGB"), W, H, scale=1)
-        canvas = ImageChops.multiply(canvas, plate)
-    elif t["device"] == "browser":
-        canvas = cover(Image.open(ART / "pieces" / t["piece"]).convert("RGB"), W, H, (0.5, 0.0), scale=1)
-    else:
-        shot = Image.open(ART / "pieces" / t["piece"]).convert("RGB")
-        sw = 150
-        shot = shot.resize((sw, round(shot.height * sw / shot.width)), Image.LANCZOS).crop((0, 0, sw, H - 24))
-        frame = Image.new("RGB", (sw + 12, H - 12), INK)
-        frame.paste(shot, (6, 6))
-        canvas.paste(frame, ((W - frame.width) // 2, 12))
-    return canvas
+def card_image(portfolio, key):
+    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a page in an ink-to-red-to-bone duotone."""
+    W, H = 880, 336
+    t = CARDS[key]
+    if "scene" in t:
+        return cover(Image.open(portfolio / "public" / "film" / t["scene"]).convert("RGB"), W, H, t["focus"], scale=1)
+    page = cover(Image.open(portfolio / "public" / "film" / "pieces" / t["page"]).convert("L"), W, H, (0.5, 0.0), scale=1)
+    lut = []
+    for c in range(3):
+        a, b, e = int(INK[1 + 2 * c:3 + 2 * c], 16), int(RED[1 + 2 * c:3 + 2 * c], 16), int(BONE[1 + 2 * c:3 + 2 * c], 16)
+        lut += [round(a + (b - a) * v / 128) if v < 128 else round(b + (e - b) * (v - 128) / 127) for v in range(256)]
+    return Image.merge("RGB", [page.point(lut[i * 256:(i + 1) * 256]) for i in range(3)])
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--fonts", type=Path, default=ROOT.parent / "Portfolio-d" / "public" / "fonts")
-    fonts = ap.parse_args().fonts
+    ap.add_argument("--portfolio", type=Path, default=ROOT.parent / "Portfolio-d")
+    portfolio = ap.parse_args().portfolio
+    fonts = portfolio / "public" / "fonts"
     f = {
         "display": Face(fonts / "boska-700.woff2"),
         "text": Face(fonts / "general-sans-400.woff2"),
@@ -220,11 +217,12 @@ def main():
     }
     d = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf-8"))
     cv = json.loads((ROOT / "data" / "cv.json").read_text(encoding="utf-8"))
-    (ASSETS / "banner.svg").write_text(banner(f, d, cv), encoding="utf-8")
-    (ASSETS / "thumbs").mkdir(exist_ok=True)
-    for key in cv["selectedWork"]:
-        thumb(key).save(ASSETS / "thumbs" / f"{key}.webp", "WEBP", quality=80, method=6)
-    print("banner.svg:", (ASSETS / "banner.svg").stat().st_size // 1024, "KB;", len(cv["selectedWork"]), "thumbnails")
+    STATIC.mkdir(parents=True, exist_ok=True)
+    (STATIC / "banner.svg").write_text(banner(f, d, cv, portfolio), encoding="utf-8", newline="\n")
+    CARDS_DIR.mkdir(parents=True, exist_ok=True)
+    for key in CARDS:
+        card_image(portfolio, key).save(CARDS_DIR / f"{key}.webp", "WEBP", quality=72, method=6)
+    print("banner.svg:", (STATIC / "banner.svg").stat().st_size // 1024, "KB;", len(CARDS), "card images")
 
 
 if __name__ == "__main__":

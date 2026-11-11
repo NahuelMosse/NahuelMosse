@@ -102,87 +102,31 @@ await writeFile(DATA, JSON.stringify(data, null, 2) + "\n");
 
 // ---------- README ----------
 
-const cv = await readJson(CV);
-const md = (s) => String(s).replace(/\|/g, "\|");
-const short = (period) => period.replace(/\s*–\s*Present/i, "–present").replace(/\s*–\s*/, "–");
-
-// Whole years since the earliest start date in the experience, as the site states its periods (MM/YYYY).
-function experienceYears(now = new Date()) {
-  const starts = data.experience.map((e) => e.period.match(/(\d{2})\/(\d{4})/)).filter(Boolean);
-  const [, m, y] = starts.sort((a, b) => a[2] - b[2] || a[1] - b[1])[0];
-  const months = (now.getUTCFullYear() - Number(y)) * 12 + (now.getUTCMonth() + 1 - Number(m));
-  return { years: Math.floor(months / 12), since: `${m}/${y}` };
-}
-
-// The site's studies in English, each followed by its legal Spanish title where it has one, and the degree in progress;
-// school diplomas left out.
-function studies() {
-  const [first] = data.credits.studies;
-  const [title, school, year] = first.split(" · ");
-  const local = cv.localNames[title];
-  return [`${title}${local ? ` (${local})` : ""} · ${school} · ${year}`, ...cv.inProgress];
-}
-
-// A selected entry is a project id, or a group id that stands for all its projects in one cell.
-function workCell(key) {
-  const group = data.groups.find((g) => g.id === key);
-  const thumb = `<img src="assets/thumbs/${key}.webp" alt="" width="240">`;
-  if (group) {
-    const items = group.projects.map((id) => data.projects.find((p) => p.id === id));
-    const names = items.map((p) => `<a href="${p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href}">${p.name}</a>`).join(" · ");
-    return `${thumb}<br><b>${group.label}</b>: ${names}<br><sub>${group.line}</sub>`;
-  }
-  const p = data.projects.find((x) => x.id === key);
-  const link = p.links[0] ? ` · <a href="${p.links[0].href}">${p.links[0].label}</a>` : "";
-  return `${thumb}<br><b>${p.name}</b>${link}<br><sub>${p.what}</sub>`;
-}
-
-// Three cells a row, each a thumbnail over its name and one line, so GitHub keeps the thumbnails at their width.
-function workGrid(columns = 3) {
-  const rows = [];
-  for (let i = 0; i < cv.selectedWork.length; i += columns) rows.push(cv.selectedWork.slice(i, i + columns));
-  const cell = (key) => `    <td width="33%" valign="top">${workCell(key)}</td>`;
-  const tr = (row) => ["  <tr>", ...row.map(cell), "  </tr>"].join("\n");
-  return ["<table>", ...rows.map(tr), "</table>"].join("\n");
-}
+const repos = await readJson(new URL("data/repos.json", ROOT));
+const badge = (href, label, message, color, extra = "") =>
+  `<a href="${href}"><img src="https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(message)}-${color}?style=for-the-badge&labelColor=0c0c0b${extra}" alt="${label}"></a>`;
 
 const blocks = {
   site: () => data.site.url,
   banner_alt: () => `${data.identity.mark}. ${data.identity.professionalName}, ${data.identity.base}. ${data.identity.promise} ${cv.currentRole}.`.replace(/"/g, "&quot;"),
-  links() {
+  badges() {
     const { email, linkedin } = data.identity;
-    const a = (href, label) => `<a href="${href}">${label}</a>`;
-    return [a(data.site.url, "Portfolio"), a(linkedin, "LinkedIn"), a(`mailto:${email}`, "Email")].join(" · ");
+    return [
+      badge(data.site.url, "portfolio", new URL(data.site.url).host, "d2231b"),
+      badge(linkedin, "linkedin", linkedin.split("/").filter(Boolean).pop(), "3a3732", "&logo=linkedin&logoColor=ede4d0"),
+      badge(`mailto:${email}`, "email", "write me", "3a3732", "&logo=gmail&logoColor=ede4d0"),
+    ].join("\n");
   },
-  glance() {
-    const { years, since } = experienceYears();
-    const rows = [
-      ["Role now", cv.currentRole],
-      ["Target role", data.offer.tpm.title],
-      ["Experience", `${years}+ years, since ${since}`],
-      ["Based in", data.identity.location],
-      ["Languages", cv.languages.join(" · ")],
-      ["Studies", studies().join("<br>")],
-      ["Focus", data.offer.tpm.line.replace(/^For companies:\s*/, "").replace(/^./, (c) => c.toUpperCase())],
-    ];
-    return ["| | |", "|---|---|", ...rows.map(([k, v]) => `| **${k}** | ${md(v)} |`)].join("\n");
-  },
-  impact: () => cv.impact.map((r) => `- **${r.where}:** ${r.result}`).join("\n"),
-  work: () => workGrid(),
-  experience() {
-    // every employer on the site is a Kovix Consulting engagement: the CV lists them as its projects
-    const line = (e) => `${e.name} (${e.title}, ${short(e.period)})`;
-    const now = data.experience.filter((e) => e.current).map(line).join(" · ");
-    const before = data.experience.filter((e) => !e.current).map(line).join(" · ");
-    return [`- **${cv.currentRole}**, client engagements: ${now}`, `- **Earlier Kovix engagements:** ${before}`].join("\n");
-  },
-  stack: () => cv.skills.map((s) => `**${s.area}** ${s.items.join(", ")}`).join(" · "),
-  footer() {
-    const u = data.site.url;
-    return `Off duty: ${cv.offDuty}. · Machine-readable: [portfolio.json](${u}/portfolio.json) · [llms.txt](${u}/llms.txt)`;
+  // Two cards a row, each linking to its repository; the cards themselves are drawn daily by scripts/live.mjs.
+  repo_cards() {
+    const cell = (name) => `    <td width="50%"><a href="https://github.com/${data.identity.github?.split("/").pop() ?? "NahuelMosse"}/${name}"><img src="assets/live/repo-${name}.svg" alt="${name}: ${repos.repos[name]?.description ?? ""}" width="100%"></a></td>`;
+    const rows = [];
+    for (let i = 0; i < repos.featured.length; i += 2) rows.push(["  <tr>", ...repos.featured.slice(i, i + 2).map(cell), "  </tr>"].join("\n"));
+    return ["<table>", ...rows, "</table>"].join("\n");
   },
 };
 
+const cv = await readJson(CV);
 const template = await readFile(TEMPLATE, "utf8");
 const readme = template.replace(/\{\{(\w+)\}\}/g, (_, name) => {
   if (!blocks[name]) throw new Error(`templates/README.md names an unknown block: ${name}`);
