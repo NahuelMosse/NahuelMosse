@@ -1,0 +1,101 @@
+{
+  "source": "Facts the portfolio does not carry, kept by hand. From the CV in the portfolio checkout (cv/CV.pdf, in Spanish, so it is not linked from the profile) unless noted: currentRole from the user; offDuty from the earlier portfolio copy; the Mobile skills from the portfolio's app projects.",
+  "currentRole": "Technical Lead at Kovix Consulting",
+  "languages": [
+    "Spanish (native)",
+    "English C2 Proficient (EF SET)"
+  ],
+  "impact": [
+    {
+      "where": "Visma",
+      "result": "Azure OpenAI integration cut one onboarding stage from 2 months to 1 week"
+    },
+    {
+      "where": "Frávega",
+      "result": "Average receiving time from 7 h 48 min to 46 min (about 90% less)"
+    },
+    {
+      "where": "Frávega",
+      "result": "Sellers BFF at 40,000 requests a day; business processes simplified by 80%"
+    },
+    {
+      "where": "Jüsto",
+      "result": "10+ releases, 50% less preparation time, 40 million operations"
+    }
+  ],
+  "skills": [
+    {
+      "area": "Lead",
+      "items": [
+        "Technical leadership",
+        "Requirements elicitation",
+        "Planning",
+        "Mentoring",
+        "Scrum",
+        "Kanban"
+      ]
+    },
+    {
+      "area": "AI",
+      "items": [
+        "Claude Code multi-agent",
+        "Spec-Driven Development",
+        "Azure OpenAI"
+      ]
+    },
+    {
+      "area": "Backend",
+      "items": [
+        "Node.js",
+        "NestJS",
+        "TypeScript",
+        "PostgreSQL",
+        "Prisma",
+        "Redis",
+        "DDD"
+      ]
+    },
+    {
+      "area": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "Angular",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "area": "Mobile",
+      "items": [
+        "Flutter",
+        "Riverpod",
+        "SQLite"
+      ]
+    },
+    {
+      "area": "Cloud & QA",
+      "items": [
+        "Azure",
+        "Kubernetes",
+        "Terraform",
+        "Docker",
+        "Playwright",
+        "Jest"
+      ]
+    }
+  ],
+  "localNames": {
+    "Associate Degree in Computer Science": "Analista en Informática"
+  },
+  "inProgress": [
+    "Computer Engineering (Ingeniería en Informática) · Universidad de Morón · 4th year, in progress"
+  ],
+  "selectedWork": [
+    "grit",
+    "club",
+    "cebador",
+    "guardia",
+    "tools"
+  ],
+  "offDuty": "CS2, Rocket League, Minecraft, Smite, The Witcher 3, Cyberpunk 2077, chess and Formula 1"
+}

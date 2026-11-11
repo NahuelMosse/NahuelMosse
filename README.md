@@ -1,98 +1,45 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img src="assets/banner-light.svg" alt="Nahuel Mosse — Full Stack Engineer, Buenos Aires · Kovix Consulting" width="100%">
-</picture>
+<!-- Rendered by scripts/sync_portfolio.mjs from this template and data/. Edit those, not README.md. Every image but the project previews (one animated WebP each, faded to transparent at the edges) comes in a dark and a light variant for the reader's GitHub theme; the ones in assets/live/ are redrawn daily by .github/workflows/profile.yml, the ones in assets/static/ by scripts/build_art.py and build_plates.py, the previews in assets/previews/ by scripts/build_previews.py. -->
+<a href="https://nawi.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/banner.dark.svg"><img src="assets/static/banner.light.svg" alt="NAWI. Nahuel Mosse, Buenos Aires. I design, build and lead digital products, and I put AI to work for them. Technical Lead at Kovix Consulting." width="100%"></picture></a>
 
 <p align="center">
-  <a href="https://nahuelmosse.vercel.app">
-    <img src="https://img.shields.io/badge/Portfolio-135b42?style=for-the-badge&logo=vercel&logoColor=f2eee7" alt="Portfolio">
-  </a>
-  <a href="https://linkedin.com/in/nahuelmosse">
-    <img src="https://img.shields.io/badge/LinkedIn-9e6033?style=for-the-badge&logo=linkedin&logoColor=f2eee7" alt="LinkedIn">
-  </a>
+<a href="https://nawi.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-portfolio.dark.svg"><img src="assets/static/link-portfolio.light.svg" alt="Portfolio" width="23%"></picture></a>
+<a href="https://linkedin.com/in/nahuelmosse"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-linkedin.dark.svg"><img src="assets/static/link-linkedin.light.svg" alt="LinkedIn" width="23%"></picture></a>
+<a href="mailto:nahuelgamail@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-email.dark.svg"><img src="assets/static/link-email.light.svg" alt="Email" width="23%"></picture></a>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/views.dark.svg"><img src="assets/live/views.light.svg" alt="Profile views" width="23%"></picture>
+<img src="https://komarev.com/ghpvc/?username=NahuelMosse&style=pixel" width="1" height="1" alt="">
 </p>
 
-<div align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-projects.dark.svg"><img src="assets/static/header-projects.light.svg" alt="01 · Projects" width="100%"></picture>
 
-<h3><code>nahuelmosse@github ~ $ whoami</code></h3>
+<p align="center">
+<a href="https://github.com/NahuelMosse/ClubNahuelMosse"><img src="assets/previews/ClubNahuelMosse.webp" alt="ClubNahuelMosse, moving" width="32%"></a>
+<a href="https://github.com/NahuelMosse/cebador-landing"><img src="assets/previews/cebador-landing.webp" alt="cebador-landing, moving" width="32%"></a>
+<a href="https://github.com/NahuelMosse/Portfolio"><img src="assets/previews/Portfolio.webp" alt="Portfolio, moving" width="32%"></a>
+<br>
+<a href="https://github.com/NahuelMosse/ClubNahuelMosse"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/repo-ClubNahuelMosse.dark.svg"><img src="assets/live/repo-ClubNahuelMosse.light.svg" alt="ClubNahuelMosse: A Flutter app with a REST API for booking sports courts." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/cebador-landing"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/repo-cebador-landing.dark.svg"><img src="assets/live/repo-cebador-landing.light.svg" alt="cebador-landing: The website of a fictional canned yerba mate soda brand, as a design concept." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/Portfolio"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/repo-Portfolio.dark.svg"><img src="assets/live/repo-Portfolio.light.svg" alt="Portfolio: My portfolio: a scroll-snapped narrative site in Next.js, with its content also served as JSON and llms.txt." width="32%"></picture></a>
+</p>
 
-<table>
-  <tr>
-    <td valign="top">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/ascii-dark.svg">
-        <source media="(prefers-color-scheme: light)" srcset="assets/ascii-light.svg">
-        <img src="assets/ascii-light.svg" alt="ASCII portrait printing line by line" width="340">
-      </picture>
-    </td>
-    <td valign="top">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="assets/card-dark.svg">
-        <source media="(prefers-color-scheme: light)" srcset="assets/card-light.svg">
-        <img src="assets/card-light.svg" alt="role: Full Stack Engineer; now: Kovix Consulting, 4 years; based: Buenos Aires; backend: Node.js, NestJS, TypeScript; front: React, Angular, Next.js; data: PostgreSQL, MongoDB; testing: Jest, Vitest, Playwright; tooling: Docker, Git, Linux; after hours: Python, Java, Flutter; study: Computer Engineering, 4th year, Universidad de Morón" width="450">
-      </picture>
-    </td>
-  </tr>
-</table>
+<p align="center">
+<a href="https://github.com/NahuelMosse/motion-audit"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-motion-audit.dark.svg"><img src="assets/live/tool-motion-audit.light.svg" alt="motion-audit: Checks that every button responds and no animation stutters." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/http-attack"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-http-attack.dark.svg"><img src="assets/live/tool-http-attack.light.svg" alt="http-attack: Attacks your back end like a hacker, before a real one does." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/migrations-safe"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-migrations-safe.dark.svg"><img src="assets/live/tool-migrations-safe.light.svg" alt="migrations-safe: Tests database changes on a copy before they touch the real one." width="32%"></picture></a>
+</p>
 
-<h3><code>nahuelmosse@github ~ $ ./contributions.sh</code></h3>
+<p align="center">on npm: <a href="https://www.npmjs.com/package/motion-audit"><code>motion-audit</code></a> · <a href="https://www.npmjs.com/package/http-attack"><code>http-attack</code></a> · <a href="https://www.npmjs.com/package/migrations-safe"><code>migrations-safe</code></a></p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/heatmap-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/heatmap-light.svg">
-  <img src="assets/heatmap-light.svg" alt="GitHub contribution calendar for the last year, refreshed daily" width="100%">
-</picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-npm.dark.svg"><img src="assets/static/header-npm.light.svg" alt="02 · npm" width="100%"></picture>
 
-</div>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm.dark.svg"><img src="assets/live/npm.light.svg" alt="npm downloads of the dev-kit tools since publication, the last 7 days and each package's counts" width="100%"></picture>
 
-### How it started
 
-I got my first computer at 12 and used it for Minecraft. At 15 I built my own PC, found a Python tutorial and decided I was going to build Jarvis. I gave up.
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-contributions.dark.svg"><img src="assets/static/header-contributions.light.svg" alt="03 · Contributions" width="100%"></picture>
 
-At 18 a programming class made it click. The assignment needed two `while` loops — I went and taught myself a GUI library for C instead. Then I spent more time debugging my classmates' missing semicolons than my own code.
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/skyline.dark.svg"><img src="assets/live/skyline.light.svg" alt="Contributions in the last 12 months as a 3D skyline" width="100%"></picture>
 
-Enrolled in Computer Engineering, had my first job by the first semester. Still here, still obsessed.
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/heatmap.dark.svg"><img src="assets/live/heatmap.light.svg" alt="Contribution heatmap, last 12 months" width="100%"></picture>
 
-### What I've shipped
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Streak, active days and merged pull requests, with the last 120 days of contributions" width="100%"></picture>
 
-Four years at **Kovix Consulting**, building the internal systems behind consumer-facing companies — warehouse management, back-office, the tooling operations actually runs on. API contracts across teams, query optimisation, release planning, mentoring.
-
-```
-Frávega · receiving flow      7h 48m  ──▶  46m average
-Frávega · BFF for Sellers     40k requests/day · 1.2M/month
-Frávega · process redesign    ~80% fewer manual steps
-Jüsto   · releases            10+ to production, no major incidents
-```
-
-### Selected work
-
-**[Portfolio](https://github.com/NahuelMosse/Portfolio)** · [live](https://nahuelmosse.vercel.app)<br>
-Scroll-snapped narrative site. All copy lives in one source file and is served as HTML, JSON and `llms.txt` from the same data.<br>
-`Next.js` `TypeScript` `Tailwind` `Framer Motion`
-
-**[nasa-calendar](https://github.com/NahuelMosse/nasa-calendar)**<br>
-Calendar built on NASA's Astronomy Picture of the Day API, server-side rendered.<br>
-`Next.js` `React` `TypeScript`
-
-**[Node-Mongo](https://github.com/NahuelMosse/Node-Mongo)**<br>
-Interactive CLI over MongoDB with a layered domain / repository / service split.<br>
-`TypeScript` `MongoDB` `Mongoose`
-
-**[ias_mosse_api](https://github.com/NahuelMosse/ias_mosse_api)**<br>
-REST API with a Dockerised Postgres and a Make-driven dev workflow.<br>
-`Python` `PostgreSQL` `Docker`
-
-**[FinalProgramacion4](https://github.com/NahuelMosse/FinalProgramacion4)**<br>
-Recruitment domain model built around inheritance for hierarchical and non-hierarchical roles.<br>
-`Java`
-
-### Before software
-
-Trained as an **electromechanical technician** through secondary school — seven years of taking apart systems that fail in physical, visible ways. It turns out to be good preparation for the ones that don't.
-
-National finalist, **Argentine Physics Olympiad** (2019) · National runner-up, **Mateclubes** (2018) · Merit scholarship at Universidad de Morón, where I'm in the 4th year of Computer Engineering.
-
-### Machine-readable
-
-My CV is also data — [portfolio.json](https://nahuelmosse.vercel.app/portfolio.json) for structured parsing, [llms.txt](https://nahuelmosse.vercel.app/llms.txt) if you're an agent reading this on someone's behalf.
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/building.dark.svg"><img src="assets/live/building.light.svg" alt="Currently building" width="100%"></picture>
