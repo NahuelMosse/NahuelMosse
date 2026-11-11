@@ -74,7 +74,8 @@ def main():
     site = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf8"))["site"]["url"]
     chip("portfolio", "Portfolio", site.split("//")[-1].rstrip("/"))
     chip("linkedin", "LinkedIn", "in/" + i["linkedin"].rstrip("/").split("/")[-1])
-    chip("email", "Email", i["email"])
+    cv = json.loads((ROOT / "data" / "cv.json").read_text(encoding="utf8"))
+    chip("email", "Email", cv.get("email") or i["email"])
     print("built:", ", ".join(sorted(p.name for p in OUT.glob("*.svg"))))
 
 

@@ -111,7 +111,8 @@ const blocks = {
   site: () => data.site.url,
   banner: () => `<a href="${data.site.url}">${pic("assets/static/banner", `${data.identity.mark}. ${data.identity.professionalName}, ${data.identity.base}. ${data.identity.promise} ${cv.currentRole}.`)}</a>`,
   links() {
-    const { email, linkedin } = data.identity;
+    const { linkedin } = data.identity;
+    const email = cv.email ?? data.identity.email;
     return [
       `<a href="${data.site.url}">${pic("assets/static/link-portfolio", "Portfolio", "23%")}</a>`,
       `<a href="${linkedin}">${pic("assets/static/link-linkedin", "LinkedIn", "23%")}</a>`,

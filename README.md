@@ -4,7 +4,7 @@
 <p align="center">
 <a href="https://nawi.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-portfolio.dark.svg"><img src="assets/static/link-portfolio.light.svg" alt="Portfolio" width="23%"></picture></a>
 <a href="https://linkedin.com/in/nahuelmosse"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-linkedin.dark.svg"><img src="assets/static/link-linkedin.light.svg" alt="LinkedIn" width="23%"></picture></a>
-<a href="mailto:nahuelgamail@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-email.dark.svg"><img src="assets/static/link-email.light.svg" alt="Email" width="23%"></picture></a>
+<a href="mailto:contact@nahuelmosse.com"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/link-email.dark.svg"><img src="assets/static/link-email.light.svg" alt="Email" width="23%"></picture></a>
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/views.dark.svg"><img src="assets/live/views.light.svg" alt="Profile views" width="23%"></picture>
 <img src="https://komarev.com/ghpvc/?username=NahuelMosse&style=pixel" width="1" height="1" alt="">
 </p>
