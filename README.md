@@ -51,7 +51,6 @@ Self-made SVG (`build_noir.py`) · self-hosted · setup: none · static
 <a href="https://nawi.dev"><img src="https://img.shields.io/badge/portfolio-nawi.dev-d2231b?style=for-the-badge&labelColor=0c0c0b" alt="Portfolio"></a>
 <a href="https://linkedin.com/in/nahuelmosse"><img src="https://img.shields.io/badge/linkedin-nahuelmosse-ede4d0?style=for-the-badge&logo=linkedin&logoColor=ede4d0&labelColor=0c0c0b&color=3a3732" alt="LinkedIn"></a>
 <a href="mailto:nahuelgamail@gmail.com"><img src="https://img.shields.io/badge/email-write%20me-ede4d0?style=for-the-badge&logo=gmail&logoColor=ede4d0&labelColor=0c0c0b&color=3a3732" alt="Email"></a>
-<a href="cv/Nahuel-Mosse-CV.pdf"><img src="https://img.shields.io/badge/CV-PDF-d2231b?style=for-the-badge&labelColor=0c0c0b" alt="CV"></a>
 </p>
 
 ### 08 · readme-kit buttons
@@ -178,7 +177,7 @@ Self-made SVG from [Simple Icons](https://simpleicons.org) paths (`build_local.m
 ## Work
 
 ### 25 · Animated device mockups
-Real screens from the portfolio in a bone device frame with a red tab, crossfading (`build_noir.py`, animated WebP) · self-hosted · setup: none · static
+Real screens from the portfolio in a bone device frame with a red tab, crossfading (`build_noir.py`, animated WebP) · self-hosted · setup: none · static · **the Grit, Club, Cebador and Triaje screens show those products' own Spanish UI; only the dev-kit pages are in English**
 
 <table><tr>
 <td width="25%"><img src="assets/catalog/local/mockup-grit.webp" alt="Grit screens" width="200"></td>
@@ -189,12 +188,12 @@ Real screens from the portfolio in a bone device frame with a red tab, crossfadi
 </tr></table>
 
 ### 26 · Animated project preview
-Animated WebP cut from the portfolio's Cebador video (`ffmpeg`) · self-hosted · setup: none · static
+Animated WebP cut from the portfolio's Cebador video (`ffmpeg`) · self-hosted · setup: none · static · **the site's copy is Spanish**
 
 <a href="https://nahuelmosse.github.io/cebador-landing/"><img src="assets/catalog/local/cebador.webp" alt="Cebador landing, scrolling" width="60%"></a>
 
 ### 27 · Project grid with thumbnails
-HTML table with the PR #1 thumbnails · self-hosted · setup: none · static
+HTML table with the PR #1 thumbnails · self-hosted · setup: none · static · **the app screens are in Spanish**
 
 <table>
   <tr>
@@ -205,7 +204,7 @@ HTML table with the PR #1 thumbnails · self-hosted · setup: none · static
 </table>
 
 ### 28 · Noir repo cards
-Self-made (`stats.mjs`), live stars, language and last push · self-hosted · setup: `GITHUB_TOKEN` · live
+Self-made (`stats.mjs`), live stars, language and last push; descriptions from the English overrides in `catalog/profile.yml` · self-hosted · setup: `GITHUB_TOKEN` · live
 
 <table><tr>
 <td><a href="https://github.com/NahuelMosse/ClubNahuelMosse"><img src="assets/catalog/gen/repo-ClubNahuelMosse.svg" alt="ClubNahuelMosse" width="400"></a></td>
@@ -224,7 +223,7 @@ Self-made (`stats.mjs`) from the npm registry and downloads API · self-hosted �
 <img src="assets/catalog/gen/npm.svg" alt="npm downloads" width="100%">
 
 ### 30 · Currently building
-Self-made (`stats.mjs`): the most recently pushed public repo and the latest pull request · self-hosted · setup: `GITHUB_TOKEN` · live
+Self-made (`stats.mjs`): the most recently pushed public repo with an English description in `catalog/profile.yml`, and its latest pull-request activity; raw PR titles are never shown · self-hosted · setup: `GITHUB_TOKEN` · live
 
 <img src="assets/catalog/gen/building.svg" alt="Currently building" width="100%">
 
@@ -256,23 +255,18 @@ timeline
     title Kovix Consulting engagements
     2022 : Jüsto · Senior Full Stack
     2023 : Frávega · Senior Full Stack
-    2025 : Analista en Informática · UM
+    2025 : Associate Degree in CS (Analista en Informática) · UM
     2026 : Visma · Technical Lead
          : Grupo ST · Technical Lead
          : Smart Warehousing · AI Enablement Lead
 ```
 
 ### 35 · Studies and certifications
-Self-made SVG cards with the university and institute logos (`build_noir.py`) · self-hosted · setup: none · static
+Self-made SVG cards with the university and institute logos; each degree shows its English name over the legal Spanish title (`build_noir.py`) · self-hosted · setup: none · static
 
 <img src="assets/catalog/local/education.svg" alt="Studies and certifications" width="100%">
 
-### 36 · LinkedIn recommendations
-Self-made SVG. The CV only carries summaries of the two recommendations, not quotes, so the cards say so (`build_noir.py`) · self-hosted · setup: none · static
-
-<img src="assets/catalog/local/recommendations.svg" alt="LinkedIn recommendations" width="100%">
-
-### 37 · Working-hours overlap
+### 36 · Working-hours overlap
 Self-made SVG: Buenos Aires hours against US and European hubs, in standard time (`build_noir.py`) · self-hosted · setup: none · static
 
 <img src="assets/catalog/local/timezone.svg" alt="Working hours overlap" width="100%">
@@ -281,7 +275,7 @@ Self-made SVG: Buenos Aires hours against US and European hubs, in standard time
 
 ## Footer
 
-### 38 · Animated footer
+### 37 · Animated footer
 Self-made SVG: red thread, signature drawn in, contact line (`build_noir.py`) · self-hosted · setup: none · static
 
 <img src="assets/catalog/local/footer.svg" alt="Nawi. nawi.dev, Buenos Aires" width="100%">

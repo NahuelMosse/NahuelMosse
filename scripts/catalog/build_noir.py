@@ -1,5 +1,5 @@
 """Builds the catalog's static noir art in the portfolio's fonts: the signature, career timeline, impact numbers, at-a-glance
-tiles, education cards, recommendation cards, section headers, red-thread divider, footer, time-zone overlap card and the
+tiles, education cards, section headers, red-thread divider, footer, time-zone overlap card and the
 animated device mockups of each project. Words in Boska and General Sans are drawn as outlines (their license does not allow
 committing the font files); Courier Prime is embedded from fonts/. Runs locally with the portfolio checkout next to this repo:
 
@@ -68,11 +68,11 @@ def timeline(f, d):
     nodes = [
         ("11/2022", "Jüsto", "Senior Full Stack", "work"),
         ("06/2023", "Frávega", "Senior Full Stack", "work"),
-        ("2025", "Analista", "en Informática · UM", "study"),
+        ("2025", "Associate Degree", "Analista en Informática · UM", "study"),
         ("01/2026", "Visma", "Technical Lead", "work"),
         ("08/2026", "Grupo ST", "Technical Lead", "work"),
         ("09/2026", "Smart W.", "AI Enablement Lead", "work"),
-        ("NOW", "Ingeniería", "4th year · UM", "study"),
+        ("NOW", "Computer Eng.", "Ingeniería en Informática · 4th yr", "study"),
     ]
     W, H, x0, x1, y = 1100, 320, 120, 980, 170
     step = (x1 - x0) / (len(nodes) - 1)
@@ -133,14 +133,14 @@ def glance(f):
 def education(f, portfolio):
     d = f["display"]
     logos = {"um": portfolio / "public" / "logo-UM.webp", "liceo": portfolio / "public" / "logo-liceo-cultural-britanico.webp"}
-    cards = [("um", "Analista en Informática", "Universidad de Morón", "2025 · GRADUATED"),
-             ("um", "Ingeniería en Informática", "Universidad de Morón", "4TH YEAR · IN PROGRESS"),
-             (None, "EF SET C2", "English, Proficient", "CERTIFICATE"),
-             ("liceo", "English Level 8", "Liceo Cultural Británico", "CERTIFICATE"),
-             (None, "Software Architecture", "Applied · Platzi", "COURSE")]
-    W, H, tw = 1100, 250, 202
+    cards = [("um", "Associate Degree in Computer Science", "Analista en Informática", "Universidad de Morón", "2025 · GRADUATED"),
+             ("um", "Computer Engineering", "Ingeniería en Informática", "Universidad de Morón", "4TH YEAR · IN PROGRESS"),
+             (None, "EF SET C2", "English, Proficient", "EF SET", "CERTIFICATE"),
+             ("liceo", "English Level 8", "Liceo Cultural Británico", "Buenos Aires", "CERTIFICATE"),
+             (None, "Software Architecture", "Applied Software Architecture", "Platzi", "COURSE")]
+    W, H, tw = 1100, 280, 202
     body = label(20, 34, "STUDIES AND CERTIFICATIONS", BONE, 13, 3)
-    for i, (logo, title, org, tag) in enumerate(cards):
+    for i, (logo, title, legal, org, tag) in enumerate(cards):
         x = 20 + i * (tw + 12)
         mark = ""
         if logo and logos[logo].exists():
@@ -149,29 +149,13 @@ def education(f, portfolio):
         else:
             mark = f'<rect x="{x + 18}" y="64" width="44" height="44" fill="none" stroke="{RED}" stroke-width="2"/>' + label(x + 40, 92, title.split()[-1][:3].upper(), RED, 12, 1, "middle")
         lines = f["text"].wrap(title, 19, tw - 36)
-        tl = "".join(f["text"].path(t, 19, x + 18, 140 + j * 24, BONE) for j, t in enumerate(lines[:2]))
-        body += (f'<g class="u" style="animation-delay:{i * 0.12:.2f}s"><rect x="{x}" y="48" width="{tw}" height="184" fill="{PANEL}" stroke="{LINE}"/>{mark}'
-                 + tl + label(x + 18, 196, org, DIM, 11, 0.5) + label(x + 18, 218, tag, RED if "PROGRESS" in tag else DIM, 10, 2) + "</g>")
-    svg("education.svg", W, H, "Studies and certifications: " + "; ".join(f"{t}, {o}, {g}" for _, t, o, g in cards), body)
+        lines = f["text"].wrap(title, 17, tw - 36)
+        tl = "".join(f["text"].path(t, 17, x + 18, 136 + j * 21, BONE) for j, t in enumerate(lines[:2]))
+        body += (f'<g class="u" style="animation-delay:{i * 0.12:.2f}s"><rect x="{x}" y="48" width="{tw}" height="214" fill="{PANEL}" stroke="{LINE}"/>{mark}'
+                 + tl + label(x + 18, 196, legal, BONE, 10, 0.2) + label(x + 18, 216, org, DIM, 11, 0.5)
+                 + label(x + 18, 244, tag, RED if "PROGRESS" in tag else DIM, 10, 2) + "</g>")
+    svg("education.svg", W, H, "Studies and certifications: " + "; ".join(f"{t} ({l}), {o}, {g}" for _, t, l, o, g in cards), body)
 
-
-def recommendations(f):
-    t = f["text"]
-    recs = [("Braian Lo Surdo", "Técnico en Programación Informática",
-             "Highlights speed, efficiency, a collaborative spirit, enthusiasm and warmth in teamwork."),
-            ("Enzo Codini", "Full Stack Developer",
-             "Highlights the technical and human contribution in complex projects, the willingness and quality of the work; calls Nahuel a reference for the team.")]
-    W, H = 1100, 270
-    body = label(20, 34, "RECOMMENDED ON LINKEDIN · SUMMARIES FROM THE CV", BONE, 13, 3)
-    for i, (name, role, text) in enumerate(recs):
-        x = 20 + i * 540
-        lines = t.wrap(text, 18, 470)
-        body += (f'<g class="u" style="animation-delay:{i * 0.2:.1f}s"><rect x="{x}" y="50" width="520" height="200" fill="{PANEL}" stroke="{LINE}"/>'
-                 + f["display"].path("“", 80, x + 22, 128, RED)
-                 + "".join(t.path(l, 18, x + 70, 96 + j * 26, BONE) for j, l in enumerate(lines[:4]))
-                 + f'<rect x="{x + 70}" y="{196}" width="40" height="2" fill="{RED}"/>'
-                 + label(x + 70, 222, name.upper(), BONE, 12, 2.4) + label(x + 70, 240, role, DIM, 11, 0.5) + "</g>")
-    svg("recommendations.svg", W, H, "LinkedIn recommendations: " + "; ".join(f"{n}, {r}: {x}" for n, r, x in recs), body)
 
 
 def header(f, n, word, detail):
@@ -288,7 +272,6 @@ def main():
     impact(f)
     glance(f)
     education(f, portfolio)
-    recommendations(f)
     for n, word, detail in [(1, "PROJECTS", "5 CASE FILES"), (2, "RECORD", "KOVIX CONSULTING"), (3, "STACK", "WHAT I BUILD WITH"), (4, "ACTIVITY", "LIVE FROM GITHUB")]:
         header(f, n, word, detail)
     divider()

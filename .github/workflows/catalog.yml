@@ -60,6 +60,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/catalog/stats.mjs
 
+      - name: English-only check
+        run: node scripts/check_english.mjs
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: render catalog widgets [skip ci]"

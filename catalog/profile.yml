@@ -24,8 +24,8 @@ timeline:
       title: Frávega
       subtitle: Senior Full Stack
     - year: "2025"
-      title: Analista en Informática
-      subtitle: Universidad de Morón
+      title: Associate Degree in CS
+      subtitle: Analista en Informática · UM
     - year: "2026"
       title: Technical Lead
       subtitle: 3 client engagements
@@ -39,3 +39,15 @@ buttons:
   - label: Email
     icon: gmail
     url: mailto:nahuelgamail@gmail.com
+# English descriptions for the live repo cards and the "currently building" card, keyed by repository.
+# Read by scripts/catalog/stats.mjs; a repo without an entry falls back to its GitHub description on the repo cards and is
+# skipped by "currently building". Copy from the portfolio where it has some.
+descriptions:
+  ClubNahuelMosse: "A Flutter app with a REST API for booking sports courts."
+  cebador-landing: "The website of a fictional canned yerba mate soda brand, as a design concept."
+  motion-audit: "Checks that a website moves the way it should: every button responds when pressed, and nothing stutters."
+  http-attack: "Attacks your back end the way a hacker would, before a real one does."
+  migrations-safe: "Tests database changes on a copy before they touch the real one."
+  Portfolio: "My portfolio: a scroll-snapped narrative site in Next.js, with its content also served as JSON and llms.txt."
+  sonria: "A one-page website for a fictional neighborhood dental clinic in Buenos Aires."
+  miga: "The website of a fictional sourdough bakery in Buenos Aires."

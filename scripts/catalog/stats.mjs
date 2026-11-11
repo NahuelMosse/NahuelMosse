@@ -15,6 +15,10 @@ if (!token) throw new Error("GITHUB_TOKEN is required");
 const TZ = -3; // Buenos Aires, no daylight saving.
 const FEATURED = ["ClubNahuelMosse", "cebador-landing", "motion-audit", "http-attack", "migrations-safe", "Portfolio"];
 const NPM = ["motion-audit", "http-attack", "migrations-safe"];
+// English descriptions keyed by repo, from the `descriptions:` block of catalog/profile.yml.
+const DESCRIPTIONS = Object.fromEntries(
+  (readFileSync(join(root, "catalog", "profile.yml"), "utf8").split(/^descriptions:\s*$/m)[1] || "")
+    .split("\n").map((l) => l.match(/^  ([\w.-]+):\s*"(.*)"\s*$/)).filter(Boolean).map((m) => [m[1], m[2]]));
 
 const INK = "#0c0c0b", BONE = "#ede4d0", RED = "#d2231b", DIM = "#8a8273", LINE = "#2a2824", PANEL = "#141311";
 const SCALE = ["#1d1b18", "#4a1d17", "#7a2219", "#a8241b", RED];
@@ -217,36 +221,37 @@ ${grid}<line x1="${x0}" x2="${x1}" y1="${y1}" y2="${y1}" stroke="${DIM}"/><path 
     "Contribution mix: " + axes.map(([k, v]) => `${k} ${v}`).join(", "));
 }
 
-// Currently building: the most recently pushed public repo and the latest PR.
+// Currently building: the most recently pushed public repo that has an English description in catalog/profile.yml, and
+// the latest pull request activity in such a repo. Raw PR and commit titles are never printed.
 {
-  const latest = repos.find((r) => r.name !== USER) || repos[0];
-  const events = await rest(`/users/${USER}/events/public?per_page=50`);
-  let pr = null;
-  for (const e of events) {
-    if (e.type !== "PullRequestEvent") continue;
-    const n = e.payload.number ?? e.payload.pull_request?.number;
-    pr = await rest(`/repos/${e.repo.name}/pulls/${n}`).catch(() => null);
-    if (pr) { pr.repoName = e.repo.name.split("/")[1]; break; }
-  }
+  const latest = repos.find((r) => r.name !== USER && DESCRIPTIONS[r.name]);
+  const events = await rest(`/users/${USER}/events/public?per_page=100`);
+  const prEvent = events.find((e) => e.type === "PullRequestEvent" && DESCRIPTIONS[e.repo.name.split("/")[1]]);
   const ago = (iso) => { const h = Math.round((Date.now() - new Date(iso)) / 36e5); return h < 1 ? "just now" : h < 24 ? `${h} h ago` : `${Math.round(h / 24)} d ago`; };
-  const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
-  card("building.svg", 900, 170, "",
-    `<circle cx="38" cy="36" r="6" fill="${RED}"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
+  const wrap = (t, n) => { const out = [""]; for (const w of t.split(/\s+/)) { if ((out.at(-1) + " " + w).trim().length > n) out.push(w); else out[out.length - 1] = (out.at(-1) + " " + w).trim(); } return out; };
+  if (latest) {
+    const desc = wrap(DESCRIPTIONS[latest.name], 58).slice(0, 2).map((l, i) => `<text x="32" y="${116 + i * 18}" fill="${DIM}" font-size="14">${esc(l)}</text>`).join("");
+    const prRepo = prEvent?.repo.name.split("/")[1];
+    const prVerb = prEvent ? (prEvent.payload.action === "closed" ? "Pull request closed" : `Pull request ${prEvent.payload.action}`) : "";
+    card("building.svg", 900, 190, "",
+      `<circle cx="38" cy="36" r="6" fill="${RED}"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
 <text x="54" y="41" fill="${RED}" font-size="13" letter-spacing="3">CURRENTLY BUILDING</text>
-<g class="u"><text x="32" y="88" fill="${BONE}" font-size="30">${esc(latest.name)}</text>
-<text x="32" y="116" fill="${DIM}" font-size="14">${esc(clip(latest.description || "", 60))}</text>
-<text x="32" y="146" fill="${DIM}" font-size="12" letter-spacing="1">${esc(latest.primaryLanguage?.name || "")} · pushed ${ago(latest.pushedAt)}</text></g>
-<line x1="520" y1="28" x2="520" y2="146" stroke="${LINE}"/>
-${pr ? `<g class="u" style="animation-delay:.2s"><text x="546" y="58" fill="${DIM}" font-size="12" letter-spacing="2">LATEST PULL REQUEST</text>
-<text x="546" y="90" fill="${BONE}" font-size="16">${esc(clip(pr.title, 34))}</text>
-<text x="546" y="116" fill="${DIM}" font-size="13">${esc(pr.repoName)} #${pr.number} · ${pr.merged_at ? "merged" : pr.state}</text></g>` : ""}`,
-    `Currently building ${latest.name}${pr ? `; latest pull request: ${pr.title}` : ""}`);
+<g class="u"><text x="32" y="88" fill="${BONE}" font-size="30">${esc(latest.name)}</text>${desc}
+<text x="32" y="170" fill="${DIM}" font-size="12" letter-spacing="1">${esc(latest.primaryLanguage?.name || "")} · last push ${ago(latest.pushedAt)}</text></g>
+<line x1="560" y1="28" x2="560" y2="166" stroke="${LINE}"/>
+${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="586" y="58" fill="${DIM}" font-size="12" letter-spacing="2">LATEST REVIEWABLE WORK</text>
+<text x="586" y="92" fill="${BONE}" font-size="18">${esc(prVerb)}</text>
+<text x="586" y="120" fill="${DIM}" font-size="14">${esc(prRepo)} · #${prEvent.payload.number ?? prEvent.payload.pull_request?.number}</text>
+<text x="586" y="146" fill="${DIM}" font-size="13">${prEvent.created_at.slice(0, 10)}</text></g>` : ""}`,
+      `Currently building ${latest.name}: ${DESCRIPTIONS[latest.name]}${prEvent ? ` ${prVerb} in ${prRepo} on ${prEvent.created_at.slice(0, 10)}.` : ""}`);
+  }
 }
 
 // Featured repo cards with live stars, language and last push.
 for (const name of FEATURED) {
   const r = repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
   if (!r) continue;
+  r.description = DESCRIPTIONS[name] || r.description;
   const lines = [""];
   for (const w of (r.description || "").split(/\s+/)) { if ((lines.at(-1) + " " + w).trim().length > 46) lines.push(w); else lines[lines.length - 1] = (lines.at(-1) + " " + w).trim(); }
   if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
