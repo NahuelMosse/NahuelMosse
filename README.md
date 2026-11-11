@@ -280,4 +280,35 @@ Self-made SVG: red thread, signature drawn in, contact line (`build_noir.py`) ·
 
 <img src="assets/catalog/local/footer.svg" alt="Nawi. nawi.dev, Buenos Aires" width="100%">
 
+---
+
+## Round 3 candidates
+
+Built to fill gaps in the PR #1 composition; not in that README yet.
+
+### 38 · Selected impact by engagement
+Self-made SVG: per role, a red bar shrinks from the before value to the result, or grows to it (`build_noir.py`) · self-hosted · setup: none · static
+
+<img src="assets/catalog/local/impact-by-role.svg" alt="Selected impact by engagement" width="100%">
+
+### 39 · Project spotlight
+Animated WebP: the project's name, line and stack beside its real screens crossfading in the bone phone frame with a red tab (`build_noir.py`) · self-hosted · setup: none · static · **Grit's screens show the app's own Spanish UI**
+
+<img src="assets/catalog/local/spotlight-grit.webp" alt="Project spotlight: Grit, a local-first training app for Android and iOS" width="100%">
+
+### 40 · Open to TPM roles
+Self-made SVG call to action: red panel, pulsing status dot, the TPM offer line; the whole card links to a prefilled email (`build_noir.py`) · self-hosted · setup: none · static
+
+<a href="mailto:nahuelgamail@gmail.com?subject=Technical%20Project%20Manager%20role%20%C2%B7%20Nahuel%20Mosse"><img src="assets/catalog/local/cta-tpm.svg" alt="Open to Technical Project Manager roles" width="100%"></a>
+
+### 41 · How I deliver
+Self-made SVG: the TPM offer's four steps (spec, agents, tests, review) on a red thread (`build_noir.py`) · self-hosted · setup: none · static
+
+<img src="assets/catalog/local/process.svg" alt="How I deliver: spec, agents, tests, review" width="100%">
+
+### 42 · Closing contact card
+Self-made SVG: Boska line over the three channels as tiles; links to the portfolio (`build_noir.py`) · self-hosted · setup: none · static
+
+<a href="https://nawi.dev"><img src="assets/catalog/local/contact.svg" alt="Contact: nawi.dev, LinkedIn, email" width="100%"></a>
+
 <sub>Courier Prime is used under the SIL Open Font License (`fonts/OFL-CourierPrime.txt`). Boska and General Sans appear only as outlines.</sub>

@@ -259,6 +259,131 @@ def device_frames(portfolio):
         frames[0].save(OUT / f"mockup-{key}.webp", save_all=True, append_images=frames[1:], duration=durations, loop=0, quality=72, method=6)
 
 
+def impact_by_role(f):
+    """Before/after bars per engagement: a bar shrinks to the result, or grows to it."""
+    d = f["display"]
+    rows = [("VISMA", "Technical Lead", "Onboarding stage", "2 months", "1 week", 60, 7, "shrink"),
+            ("FRÁVEGA", "Senior Full Stack", "Average receiving time", "7 h 48 min", "46 min", 468, 46, "shrink"),
+            ("FRÁVEGA", "Senior Full Stack", "Sellers BFF traffic", "", "40k req/day", 1, 1, "grow"),
+            ("JÜSTO", "Senior Full Stack", "Operations shipped", "", "40M", 1, 1, "grow")]
+    W, H, x0, bw = 1100, 380, 300, 560
+    body = label(20, 34, "SELECTED IMPACT · BY ENGAGEMENT", BONE, 13, 3)
+    for i, (who, role, what, before, after, b, a, mode) in enumerate(rows):
+        y = 70 + i * 76
+        end = bw * a / b if mode == "shrink" else bw * 0.92
+        frm, to = (bw, max(end, 6)) if mode == "shrink" else (0, end)
+        anim = (f'<animate attributeName="width" from="{frm:.1f}" to="{to:.1f}" dur="1.6s" begin="{0.4 + i * 0.25:.2f}s" '
+                f'fill="freeze" calcMode="spline" keySplines=".16 1 .3 1" keyTimes="0;1"/>')
+        ghost = f'<rect x="{x0}" y="{y + 10}" width="{bw}" height="22" fill="#1d1b18"/>'
+        if before:
+            ghost += label(x0 + bw - 8, y + 26, before, DIM, 11, 1, "end")
+        body += (f'<g class="u" style="animation-delay:{i * 0.15:.2f}s">' + label(20, y + 14, who, RED, 12, 3)
+                 + f["text"].path(role, 15, 20, y + 36, BONE) + label(x0, y + 2, what.upper(), DIM, 10, 2) + ghost
+                 + f'<rect x="{x0}" y="{y + 10}" width="{frm:.1f}" height="22" fill="{RED}">{anim}</rect>'
+                 + d.path(after, 30, W - 24, y + 34, BONE, anchor="end") + "</g>")
+    alt = "; ".join(f"{w} {wt}: {b} to {a}" if b_ else f"{w} {wt}: {a}" for w, _, wt, b_, a, b, *_ in rows)
+    svg("impact-by-role.svg", W, H, "Selected impact: " + alt, body)
+
+
+def cta(f):
+    """Open to Technical Project Manager roles: a red panel with a pulsing status dot and the offer line."""
+    d, t = f["display"], f["text"]
+    W, H = 1100, 260
+    body = (f'<rect x="20" y="20" width="{W - 40}" height="{H - 40}" fill="{RED}"/>'
+            f'<circle cx="62" cy="64" r="8" fill="{BONE}"><animate attributeName="opacity" values="1;.3;1" dur="1.6s" repeatCount="indefinite"/></circle>'
+            + label(80, 69, "OPEN TO ROLES", BONE, 14, 4)
+            + f'<g class="u">{d.path("Technical Project Manager", 58, 50, 150, INK)}</g>'
+            + t.path("I lead teams that ship with AI under human review, and I still write code.", 20, 52, 190, BONE)
+            + label(52, 222, "REMOTE · UTC–3 · ENGLISH C2 · BUENOS AIRES", INK, 13, 3)
+            + f'<g class="f" style="animation-delay:.8s"><rect x="{W - 300}" y="176" width="240" height="52" fill="{INK}"/>'
+            + label(W - 180, 208, "START A CONVERSATION →", BONE, 13, 2, "middle") + "</g>")
+    svg("cta-tpm.svg", W, H, "Open to Technical Project Manager roles. I lead teams that ship with AI under human review, and I still write code. Remote, UTC-3, English C2.", body)
+
+
+def process(f):
+    """How I deliver: the TPM offer's four steps on a red thread."""
+    d = f["display"]
+    steps = [("01", "Spec", "Spec-Driven Development:", "every change starts as a card"),
+             ("02", "Agents", "Agents orchestrated with", "Claude Code do the build"),
+             ("03", "Tests", "Every requirement traced", "to a test"),
+             ("04", "Review", "Every pull request", "reviewed by a person")]
+    W, H = 1100, 290
+    body = label(20, 34, "HOW I DELIVER · AI-FIRST, HUMAN-REVIEWED", BONE, 13, 3) + thread(120, 980, 110, amp=0, width=3)
+    for i, (n, word, l1, l2) in enumerate(steps):
+        cx = 120 + i * 287
+        c = RED if i < 3 else BONE
+        body += (f'<g class="u" style="animation-delay:{0.4 + i * 0.3:.1f}s"><circle cx="{cx}" cy="110" r="30" fill="{INK}" stroke="{c}" stroke-width="3"/>'
+                 + label(cx, 116, n, c, 16, 1, "middle") + d.path(word, 34, cx, 190, BONE, anchor="middle")
+                 + label(cx, 224, l1, DIM, 12, 0.3, "middle") + label(cx, 244, l2, DIM, 12, 0.3, "middle") + "</g>")
+    svg("process.svg", W, H, "How I deliver: " + "; ".join(f"{w}: {a} {b}" for _, w, a, b in steps), body)
+
+
+def contact(f):
+    """Closing contact card: the three channels as tiles under a Boska line."""
+    d = f["display"]
+    W, H = 1100, 300
+    tiles = [("PORTFOLIO", "nawi.dev"), ("LINKEDIN", "in/nahuelmosse"), ("EMAIL", "nahuelgamail@gmail.com")]
+    body = (label(20, 34, "CONTACT", RED, 13, 4) + f'<g class="u">{d.path("Let's talk.", 56, 20, 110, BONE)}</g>'
+            + thread(20, 1080, 140, amp=4, delay=0.3))
+    for i, (k, v) in enumerate(tiles):
+        x = 20 + i * 358
+        body += (f'<g class="u" style="animation-delay:{0.5 + i * 0.15:.2f}s"><rect x="{x}" y="170" width="344" height="100" fill="{PANEL}" stroke="{LINE}"/>'
+                 f'<rect x="{x}" y="170" width="4" height="100" fill="{RED}"/>' + label(x + 24, 204, k, RED, 12, 3)
+                 + f["text"].path(v, 22, x + 24, 244, BONE) + "</g>")
+    svg("contact.svg", W, H, "Contact: nawi.dev, linkedin.com/in/nahuelmosse, nahuelgamail@gmail.com", body)
+
+
+def spotlight(portfolio):
+    """Project spotlight: an animated WebP with the project's name and line on the left and its real screens crossfading in
+    a bone phone frame with a red tab on the right."""
+    from fontTools.ttLib import TTFont
+    from PIL import ImageFont
+
+    def pil_font(name, size):
+        tt = TTFont(portfolio / "public" / "fonts" / name)
+        tt.flavor = None
+        raw = io.BytesIO()
+        tt.save(raw)
+        raw.seek(0)
+        return ImageFont.truetype(raw, size)
+
+    W, H = 1100, 520
+    ink, bone, red, dim = (12, 12, 11), (237, 228, 208), (210, 35, 27), (138, 130, 115)
+    boska, gs, cp = pil_font("boska-700.woff2", 120), pil_font("general-sans-500.woff2", 26), pil_font("courier-prime-400.woff2", 18)
+    base = Image.new("RGB", (W, H), ink)
+    dr = ImageDraw.Draw(base)
+    dr.text((60, 70), "PROJECT SPOTLIGHT", fill=red, font=cp)
+    dr.text((54, 100), "Grit", fill=bone, font=boska)
+    y = 270
+    for line in ["A local-first training app for", "Android and iOS, built in Flutter", "with Riverpod and SQLite."]:
+        dr.text((60, y), line, fill=bone, font=gs)
+        y += 36
+    dr.text((60, 404), "FLUTTER · RIVERPOD · SQLITE", fill=dim, font=cp)
+    dr.rectangle((60, 444, 200, 448), fill=red)
+    sx, sy, sw, sh, pad = 720, 70, 230, 420, 10
+    dr.rounded_rectangle((sx - pad, sy - pad, sx + sw + pad, sy + sh + pad), radius=24, fill=bone)
+    dr.rectangle((sx - pad, sy - pad - 36, sx - pad + 110, sy - pad - 6), fill=red)
+    dr.text((sx - pad + 12, sy - pad - 32), "GRIT", fill=bone, font=cp)
+    shots = []
+    for n in ["grit-hoy", "grit-serie", "grit-descanso", "grit-completado"]:
+        im = Image.open(portfolio / "public" / "film" / "pieces" / f"{n}.webp").convert("RGB")
+        k = max(sw / im.width, sh / im.height)
+        shots.append(im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS).crop((0, 0, sw, sh)))
+    frames, durations = [], []
+    for i, shot in enumerate(shots):
+        nxt = shots[(i + 1) % len(shots)]
+        hold = base.copy()
+        hold.paste(shot, (sx, sy))
+        frames.append(hold)
+        durations.append(2000)
+        for t in (0.25, 0.5, 0.75):
+            fr = base.copy()
+            fr.paste(Image.blend(shot, nxt, t), (sx, sy))
+            frames.append(fr)
+            durations.append(90)
+    frames[0].save(OUT / "spotlight-grit.webp", save_all=True, append_images=frames[1:], duration=durations, loop=0, quality=74, method=6)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--portfolio", type=Path, default=ROOT.parent / "Portfolio-d")
@@ -277,6 +402,11 @@ def main():
     divider()
     footer(f)
     timezone(f)
+    impact_by_role(f)
+    cta(f)
+    process(f)
+    contact(f)
+    spotlight(portfolio)
     device_frames(portfolio)
     print("built:", ", ".join(sorted(p.name for p in OUT.iterdir())))
 
