@@ -34,7 +34,6 @@ const style = `@font-face{font-family:CP;src:url(data:font/woff2;base64,${font})
 @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}.g{transform-box:fill-box;transform-origin:left;animation:grow .9s cubic-bezier(.16,1,.3,1) both}
 @keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}.r{transform-box:fill-box;transform-origin:bottom;animation:rise .9s cubic-bezier(.16,1,.3,1) both}
 @keyframes draw{to{stroke-dashoffset:0}}.d{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2s cubic-bezier(.65,0,.35,1) both}
-@keyframes flick{0%,100%{transform:scale(1)}50%{transform:scale(1.06,.94)}}.fl{transform-box:fill-box;transform-origin:bottom;animation:flick 1.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}.d{stroke-dashoffset:0}}`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const fmt = (n) => Math.round(n).toLocaleString("en-US");
@@ -126,7 +125,10 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
   });
 }
 
-// Streak with a flame; today without contributions does not break the current streak.
+// Streak and merged PRs: four numbers, then the last 120 days as ticks under them, each as tall as its contributions;
+// the current streak in red, earlier active days faint, days without contributions left empty. Today without
+// contributions does not break the current streak. Merged PRs come from the search API restricted to public repos
+// (`is:public`), so the number is the same whichever token runs this; authored by the user, so no bot's PR counts.
 {
   let longest = 0, run = 0;
   for (const d of days) { run = d.contributionCount ? run + 1 : 0; longest = Math.max(longest, run); }
@@ -136,12 +138,28 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
     else if (i !== days.length - 1) break;
   }
   const active = days.filter((d) => d.contributionCount).length;
-  emit("streak", 540, 200, `Current streak ${current} days, longest ${longest}, ${active} active days in the last year`, (T) => {
-    const flame = `<g transform="translate(34 86)"><path class="fl" d="M24 0C30 14 44 20 44 38C44 52 35 62 22 62C9 62 0 52 0 39C0 28 7 22 11 14C13 22 17 26 21 27C19 17 20 8 24 0Z" fill="${T.red}"/>
-<path class="fl" style="animation-delay:.3s" d="M22 30C26 38 32 41 32 49C32 56 27 60 22 60C16 60 12 56 12 50C12 45 15 42 17 38C18 42 20 44 22 44C21 39 21 35 22 30Z" fill="${mix(T.red, "#ffd9c7", 0.6)}"/></g>`;
-    const big = (x, n, l, c) => `<g class="u"><text x="${x}" y="130" text-anchor="middle" fill="${c}" font-size="44">${fmt(n)}</text><text x="${x}" y="160" text-anchor="middle" fill="${T.dim}" font-size="12" letter-spacing="2">${l}</text></g>`;
-    return title(T, "STREAK · LAST 12 MONTHS") + flame + big(186, current, "CURRENT", T.red) + big(318, longest, "LONGEST", T.fg) + big(452, active, "ACTIVE DAYS", T.fg)
-      + hair(T, 252, 96, 252, 164) + hair(T, 384, 96, 384, 164) + hair(T, 24, 184, 516, 184);
+  const merged = (await rest(`/search/issues?q=${encodeURIComponent(`is:pr is:merged is:public author:${USER}`)}&per_page=1`)).total_count;
+  const N = 120, recent = days.slice(-N);
+  const streakFrom = recent.length - (days.at(-1).contributionCount ? current : current + 1);
+  const W = 1100, H = 300, x0 = 24, x1 = W - 24, base = 272, top = 196;
+  const step = (x1 - x0) / N;
+  const peak = Math.max(...recent.map((d) => d.contributionCount), 1);
+  emit("streak", W, H, `Current streak ${current} days, longest ${longest}, ${active} active days in the last year, ${merged} merged pull requests in public repositories`, (T) => {
+    const big = (x, n, l, c, d) => `<g class="u" style="animation-delay:${d}s"><text x="${x}" y="118" text-anchor="middle" fill="${c}" font-size="48">${fmt(n)}</text><text x="${x}" y="148" text-anchor="middle" fill="${T.dim}" font-size="12" letter-spacing="2">${l}</text></g>`;
+    const cols = [W * 0.125, W * 0.375, W * 0.625, W * 0.875];
+    const ticks = recent.map((d, i) => {
+      if (!d.contributionCount) return "";
+      const h = 8 + (base - top - 8) * Math.sqrt(d.contributionCount / peak);
+      const hot = i >= streakFrom;
+      return `<rect x="${(x0 + i * step + step * 0.25).toFixed(1)}" y="${(base - h).toFixed(1)}" width="${(step * 0.5).toFixed(1)}" height="${h.toFixed(1)}" fill="${hot ? T.red : T.fg}" fill-opacity="${hot ? 1 : 0.22}" class="r" style="animation-delay:${(0.4 + i * 0.012).toFixed(3)}s"><title>${d.date}: ${d.contributionCount}</title></rect>`;
+    }).join("");
+    return title(T, "STREAK · LAST 12 MONTHS")
+      + big(cols[0], current, "CURRENT STREAK", T.red, 0) + big(cols[1], longest, "LONGEST", T.fg, 0.08)
+      + big(cols[2], active, "ACTIVE DAYS", T.fg, 0.16) + big(cols[3], merged, "MERGED PRS · PUBLIC REPOS", T.fg, 0.24)
+      + hair(T, W * 0.25, 82, W * 0.25, 152) + hair(T, W * 0.5, 82, W * 0.5, 152) + hair(T, W * 0.75, 82, W * 0.75, 152)
+      + ticks + hair(T, x0, base + 0.5, x1, base + 0.5)
+      + `<text x="${x0}" y="${base + 20}" fill="${T.dim}" font-size="11" letter-spacing="2">${N} DAYS AGO</text>`
+      + `<text x="${x1}" y="${base + 20}" text-anchor="end" fill="${T.red}" font-size="11" letter-spacing="2">TODAY</text>`;
   });
 }
 

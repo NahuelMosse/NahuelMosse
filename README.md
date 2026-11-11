@@ -38,6 +38,6 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/heatmap.dark.svg"><img src="assets/live/heatmap.light.svg" alt="Contribution heatmap, last 12 months" width="100%"></picture>
 
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Contribution streak" width="540"></picture></p>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Streak, active days and merged pull requests, with the last 120 days of contributions" width="100%"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/building.dark.svg"><img src="assets/live/building.light.svg" alt="Currently building" width="100%"></picture>
