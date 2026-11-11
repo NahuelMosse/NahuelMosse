@@ -36,4 +36,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: refresh profile [skip ci]"
-          file_pattern: "README.md data/portfolio.json assets/live"
+          file_pattern: "README.md data/portfolio.json data/views.json assets/live"

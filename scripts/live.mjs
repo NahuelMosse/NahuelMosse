@@ -273,4 +273,21 @@ ${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="746" y="58" fill=
   }
 }
 
+// Profile views, drawn as a fourth link chip. The README counts each view with komarev.com's invisible 1x1 "pixel"
+// badge; komarev has no read-only endpoint, so this reads the number from its regular badge (one extra count a day) and
+// keeps the last good number in data/views.json when the service does not answer.
+{
+  const store = join(root, "data", "views.json");
+  const kept = existsSync(store) ? JSON.parse(readFileSync(store, "utf8")) : { count: 0, date: null };
+  const badge = await fetch(`https://komarev.com/ghpvc/?username=${USER}&style=flat-square`, { signal: AbortSignal.timeout(20000) })
+    .then((r) => (r.ok ? r.text() : "")).catch(() => "");
+  const read = Number(([...badge.matchAll(/>([\d,]+)</g)].at(-1)?.[1] ?? "").replace(/,/g, "") || NaN);
+  const views = Number.isFinite(read) && read >= kept.count ? { count: read, date: new Date().toISOString().slice(0, 10) } : kept;
+  writeFileSync(store, JSON.stringify(views, null, 2) + "\n");
+  emit("views", 300, 56, `Profile views: ${fmt(views.count)}`, (T) =>
+    `<text x="2" y="18" fill="${T.red}" font-size="11" letter-spacing="3">PROFILE VIEWS</text>`
+    + `<text x="2" y="42" fill="${T.fg}" font-size="18">${fmt(views.count)}</text>`
+    + `<rect x="2" y="51" width="296" height="2" fill="${T.red}" opacity=".5"/>`);
+}
+
 console.log(`live widgets ok: ${cal.totalContributions} contributions`);

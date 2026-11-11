@@ -113,9 +113,12 @@ const blocks = {
   links() {
     const { email, linkedin } = data.identity;
     return [
-      `<a href="${data.site.url}">${pic("assets/static/link-portfolio", "Portfolio", "30%")}</a>`,
-      `<a href="${linkedin}">${pic("assets/static/link-linkedin", "LinkedIn", "30%")}</a>`,
-      `<a href="mailto:${email}">${pic("assets/static/link-email", "Email", "30%")}</a>`,
+      `<a href="${data.site.url}">${pic("assets/static/link-portfolio", "Portfolio", "23%")}</a>`,
+      `<a href="${linkedin}">${pic("assets/static/link-linkedin", "LinkedIn", "23%")}</a>`,
+      `<a href="mailto:${email}">${pic("assets/static/link-email", "Email", "23%")}</a>`,
+      pic("assets/live/views", "Profile views", "23%"),
+      // komarev.com counts each view through this invisible pixel; scripts/live.mjs draws the number in the chip daily.
+      `<img src="https://komarev.com/ghpvc/?username=${data.identity.github?.split("/").pop() ?? "NahuelMosse"}&style=pixel" width="1" height="1" alt="">`,
     ].join("\n");
   },
   // Two cards a row, each linking to its repository; the cards themselves are drawn daily by scripts/live.mjs.
