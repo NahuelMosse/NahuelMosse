@@ -1,5 +1,5 @@
 {
-  "source": "English descriptions for the live repo cards and the \"currently building\" card, keyed by repository; copied from the portfolio where it has some. A repo without one falls back to its GitHub description on a card and is skipped by \"currently building\".",
+  "source": "English descriptions for the live repo cards and the \"currently building\" card, keyed by repository; copied from the portfolio where it has some. A repo without one falls back to its GitHub description on a card and is skipped by \"currently building\". `site` is where the project runs (the lab for its experiments): the README's preview of a featured repo links there.",
   "featured": [
     "ClubNahuelMosse",
     "cebador-landing",
@@ -15,7 +15,8 @@
       "description": "A Flutter app with a REST API for booking sports courts."
     },
     "cebador-landing": {
-      "description": "The website of a fictional canned yerba mate soda brand, as a design concept."
+      "description": "The website of a fictional canned yerba mate soda brand, as a design concept.",
+      "site": "https://lab.nawi.dev/cebador/"
     },
     "motion-audit": {
       "description": "Checks that every button responds and no animation stutters."
@@ -27,7 +28,8 @@
       "description": "Tests database changes on a copy before they touch the real one."
     },
     "Portfolio": {
-      "description": "My portfolio: a scroll-snapped narrative site in Next.js, with its content also served as JSON and llms.txt."
+      "description": "My portfolio: a scroll-snapped narrative site in Next.js, with its content also served as JSON and llms.txt.",
+      "site": "https://nawi.dev"
     },
     "sonria": {
       "description": "A one-page website for a fictional neighborhood dental clinic in Buenos Aires."
