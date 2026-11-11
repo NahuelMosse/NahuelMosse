@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    # Patch and minor updates of an ecosystem arrive in one pull request; each major gets its own.
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
