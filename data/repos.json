@@ -18,10 +18,10 @@
       "description": "The website of a fictional canned yerba mate soda brand, as a design concept."
     },
     "motion-audit": {
-      "description": "Checks that a website moves the way it should: every button responds when pressed, and nothing stutters."
+      "description": "Checks that every button responds and no animation stutters."
     },
     "http-attack": {
-      "description": "Attacks your back end the way a hacker would, before a real one does."
+      "description": "Attacks your back end like a hacker, before a real one does."
     },
     "migrations-safe": {
       "description": "Tests database changes on a copy before they touch the real one."

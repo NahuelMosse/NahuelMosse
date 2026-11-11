@@ -212,18 +212,17 @@ ${hair(T, 24, 166.5, 284, 166.5)}`;
   else buckets.push(...dayList.map((d) => byDay[d]));
   const total = pkgs.reduce((a, k) => a + k.total, 0);
   const week = pkgs.reduce((a, k) => a + lastWeek(k), 0);
-  // The tools' own cards, three to a row under the projects: name, what it does, version and downloads this week.
+  // The tools' own cards, three to a row under the projects: each is both an npm package and a Claude Code skill; name and
+  // what it does in two lines. Their downloads are in the npm card below.
   for (const k of pkgs) {
     const lines = wrap(describe(k.p) || "", 33);
     if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-    emit(`tool-${k.p}`, 300, 170, `${k.p} v${k.version}: ${describe(k.p) || ""} ${fmt(lastWeek(k))} downloads in the last 7 days.`, (T) =>
+    emit(`tool-${k.p}`, 300, 130, `${k.p}, an npm package and a Claude Code skill: ${describe(k.p) || ""}`, (T) =>
       `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
-<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">NPM · v${esc(k.version)}</text>
+<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="1.6">NPM PACKAGE · CLAUDE CODE SKILL</text>
 <text x="24" y="62" fill="${T.fg}" font-size="19">${esc(k.p)}</text>
 ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-<text x="24" y="144" fill="${T.red}" font-size="18">${fmt(lastWeek(k))}</text>
-<text x="${30 + fmt(lastWeek(k)).length * 11}" y="143" fill="${T.dim}" font-size="11" letter-spacing="2">DOWNLOADS THIS WEEK</text>
-${hair(T, 24, 166.5, 284, 166.5)}`);
+${hair(T, 24, 126.5, 284, 126.5)}`);
   }
   const W = 1100, H = 400;
   const label = `npm downloads of the dev-kit tools since publication: ${fmt(total)} in total, ${fmt(week)} in the last 7 days. `

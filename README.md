@@ -22,8 +22,8 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/NahuelMosse/motion-audit"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-motion-audit.dark.svg"><img src="assets/live/tool-motion-audit.light.svg" alt="motion-audit: Checks that a website moves the way it should: every button responds when pressed, and nothing stutters." width="32%"></picture></a>
-<a href="https://github.com/NahuelMosse/http-attack"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-http-attack.dark.svg"><img src="assets/live/tool-http-attack.light.svg" alt="http-attack: Attacks your back end the way a hacker would, before a real one does." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/motion-audit"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-motion-audit.dark.svg"><img src="assets/live/tool-motion-audit.light.svg" alt="motion-audit: Checks that every button responds and no animation stutters." width="32%"></picture></a>
+<a href="https://github.com/NahuelMosse/http-attack"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-http-attack.dark.svg"><img src="assets/live/tool-http-attack.light.svg" alt="http-attack: Attacks your back end like a hacker, before a real one does." width="32%"></picture></a>
 <a href="https://github.com/NahuelMosse/migrations-safe"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-migrations-safe.dark.svg"><img src="assets/live/tool-migrations-safe.light.svg" alt="migrations-safe: Tests database changes on a copy before they touch the real one." width="32%"></picture></a>
 </p>
 
