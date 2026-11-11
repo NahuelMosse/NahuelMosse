@@ -99,7 +99,7 @@ def timeline(f, d):
 
 def impact(f):
     d = f["display"]
-    tiles = [("1 wk", "VISMA", "Onboarding stage: 2 months → 1 week", "Azure OpenAI integration"),
+    tiles = [("1 wk", "VISMA", "2 months → 1 week", "Onboarding, Azure OpenAI"),
              ("–90%", "FRÁVEGA", "Average receiving time", "7 h 48 min → 46 min"),
              ("40k", "FRÁVEGA", "Requests a day, sellers BFF", "Processes simplified by 80%"),
              ("40M", "JÜSTO", "Operations over 10+ releases", "50% less preparation time")]
