@@ -43,24 +43,20 @@ def thread(T, x0, x1, y, amp=5, delay=0.4):
 
 
 def header(display, n, word, detail):
-    """A chapter header, drawn at the 1012 px the README shows it at, its label on the title baseline of the cards and its
-    text on their 24 px inset; the thread runs out to the cards' right edge."""
-    W, H = 1012, 136
+    W, H = 1100, 150
     w = display.width(word, 84)
     write(f"header-{word.lower()}", W, H, f"{n:02d} {word}. {detail}", lambda T: (
-        f'<text x="24" y="32" fill="{T["red"]}" font-size="14" letter-spacing="3">{esc(f"{n:02d}  ──  {detail}  ✦")}</text>'
-        f'<g class="u">{display.path(word, 84, 22, 112, T["fg"])}</g>' + thread(T, 40 + w, W - 6, 92)))
+        f'<text x="24" y="40" fill="{T["red"]}" font-size="16" letter-spacing="3">{esc(f"{n:02d}  ──  {detail}  ✦")}</text>'
+        f'<g class="u">{display.path(word, 84, 20, 124, T["fg"])}</g>' + thread(T, 40 + w, W - 30, 100)))
 
 
-def chip(name, key, value, pos):
-    """A link chip, the fourth of a row of four at 24.9 % (252 wide, 12 px gutters by an inset of 4 per place): the cards' frame
-    without a band, the channel in 11 px caps after the red mark, its address in 13 px. live.mjs draws the views chip the same way."""
-    W, H = 252, 64
+def chip(name, key, value):
+    """A link chip: the channel in red small caps, its address in the theme's type, a red rule under both."""
+    W, H = 300, 56
     write(f"link-{name}", W, H, f"{key}: {value}", lambda T: (
-        f'<g transform="translate({pos * 4} 0)"><rect x=".5" y=".5" width="239" height="63" fill="none" stroke="{T["fg"]}" stroke-opacity=".16"/>'
-        f'<rect x="16" y="16" width="8" height="8" fill="{T["red"]}"/>'
-        f'<text x="32" y="24" fill="{T["fg"]}" font-size="11" letter-spacing="1.5">{esc(key.upper())}</text>'
-        f'<text x="16" y="48" fill="{T["fg"]}" font-size="13">{esc(value)}</text></g>'))
+        f'<text x="2" y="18" fill="{T["red"]}" font-size="11" letter-spacing="3">{esc(key.upper())}</text>'
+        f'<text x="2" y="42" fill="{T["fg"]}" font-size="18">{esc(value)}</text>'
+        f'<rect x="2" y="51" width="{W - 4}" height="2" fill="{T["red"]}" opacity=".5"/>'))
 
 
 def main():
@@ -76,10 +72,10 @@ def main():
         header(display, n, word, detail)
     i = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf8"))["identity"]
     site = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf8"))["site"]["url"]
-    chip("portfolio", "Portfolio", site.split("//")[-1].rstrip("/"), 0)
-    chip("linkedin", "LinkedIn", "in/" + i["linkedin"].rstrip("/").split("/")[-1], 1)
+    chip("portfolio", "Portfolio", site.split("//")[-1].rstrip("/"))
+    chip("linkedin", "LinkedIn", "in/" + i["linkedin"].rstrip("/").split("/")[-1])
     cv = json.loads((ROOT / "data" / "cv.json").read_text(encoding="utf8"))
-    chip("email", "Email", cv.get("email") or i["email"], 2)
+    chip("email", "Email", cv.get("email") or i["email"])
     print("built:", ", ".join(sorted(p.name for p in OUT.glob("*.svg"))))
 
 
