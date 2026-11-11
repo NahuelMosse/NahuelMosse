@@ -9,7 +9,7 @@
 <rect x="24" y="4" width="48" height="3" fill="#d2231b" class="g"/>
 <text x="24" y="34" fill="#9a9283" font-size="11" letter-spacing="3">REPOSITORY</text>
 <text x="24" y="62" fill="#ede4d0" font-size="19">Portfolio</text>
-<text x="24" y="88" fill="#9a9283" font-size="13">My portfolio: a scroll-snapped</text><text x="24" y="107" fill="#9a9283" font-size="13">narrative site in Next.js, with its…</text>
+<text x="24" y="88" fill="#9a9283" font-size="13">My portfolio: a scroll-snapped</text><text x="24" y="107" fill="#9a9283" font-size="13">narrative site in Next.js, with…</text>
 <circle cx="30" cy="138" r="6" fill="#d2231b"/><text x="44" y="142" fill="#ede4d0" font-size="13">TypeScript</text>
 <g transform="translate(150 138)"><path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="#ede4d0"/></g><text x="164" y="142" fill="#ede4d0" font-size="13">1</text>
 <text x="284" y="142" text-anchor="end" fill="#9a9283" font-size="12">2026-11-11</text>

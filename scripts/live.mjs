@@ -169,7 +169,7 @@ for (const name of FEATURED) {
   const r = repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
   if (!r) continue;
   const text = describe(name) || r.description || "";
-  const lines = wrap(text, 36);
+  const lines = wrap(text, 33);
   if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
   emit(`repo-${name}`, 300, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
     const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
@@ -214,7 +214,7 @@ ${hair(T, 24, 166.5, 284, 166.5)}`;
   const week = pkgs.reduce((a, k) => a + lastWeek(k), 0);
   // The tools' own cards, three to a row under the projects: name, what it does, version and downloads this week.
   for (const k of pkgs) {
-    const lines = wrap(describe(k.p) || "", 36);
+    const lines = wrap(describe(k.p) || "", 33);
     if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
     emit(`tool-${k.p}`, 300, 170, `${k.p} v${k.version}: ${describe(k.p) || ""} ${fmt(lastWeek(k))} downloads in the last 7 days.`, (T) =>
       `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>

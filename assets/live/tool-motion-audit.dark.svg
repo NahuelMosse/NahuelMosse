@@ -9,7 +9,7 @@
 <rect x="24" y="4" width="48" height="3" fill="#d2231b" class="g"/>
 <text x="24" y="34" fill="#9a9283" font-size="11" letter-spacing="3">NPM · v1.0.0</text>
 <text x="24" y="62" fill="#ede4d0" font-size="19">motion-audit</text>
-<text x="24" y="88" fill="#9a9283" font-size="13">Checks that a website moves the way</text><text x="24" y="107" fill="#9a9283" font-size="13">it should: every button responds…</text>
+<text x="24" y="88" fill="#9a9283" font-size="13">Checks that a website moves the</text><text x="24" y="107" fill="#9a9283" font-size="13">way it should: every button…</text>
 <text x="24" y="144" fill="#d2231b" font-size="18">67</text>
 <text x="52" y="143" fill="#9a9283" font-size="11" letter-spacing="2">DOWNLOADS THIS WEEK</text>
 <line x1="24" y1="166.5" x2="284" y2="166.5" stroke="#ede4d0" stroke-opacity="0.16"/></svg>
