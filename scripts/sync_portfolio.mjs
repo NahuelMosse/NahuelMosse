@@ -8,7 +8,7 @@
 // The deployed payload carries only the text fields (no stacks, titles, periods, groups or credits), so it can update the
 // words of what the data already has, never add or drop an entry. A payload older than the data's is left alone.
 import { execFileSync } from "node:child_process";
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -29,12 +29,7 @@ const newer = (a, b) => {
   return 0;
 };
 
-// The CV is published from the checkout as a file of this repo, so the link does not depend on a branch of the portfolio.
-const CV_PDF = new URL("cv/Nahuel-Mosse-CV.pdf", ROOT);
-
 async function fromCheckout(dir) {
-  await mkdir(new URL("cv/", ROOT), { recursive: true });
-  await copyFile(join(dir, "cv/CV.pdf"), CV_PDF);
   const content = await import(pathToFileURL(join(dir, "features/portfolio/presentation/content.ts")).href);
   const machine = await readFile(join(dir, "lib/machine-readable.ts"), "utf8");
   const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" }).trim();
@@ -119,11 +114,13 @@ function experienceYears(now = new Date()) {
   return { years: Math.floor(months / 12), since: `${m}/${y}` };
 }
 
-// The site's studies, each with its Spanish name where it has one, and the degree in progress; school diplomas left out.
+// The site's studies in English, each followed by its legal Spanish title where it has one, and the degree in progress;
+// school diplomas left out.
 function studies() {
   const [first] = data.credits.studies;
   const [title, school, year] = first.split(" · ");
-  return [`${cv.localNames[title] ?? title} · ${school} · ${year}`, ...cv.inProgress.map((s) => s.replace(/^.*\((.*)\)(.*)$/, "$1$2"))];
+  const local = cv.localNames[title];
+  return [`${title}${local ? ` (${local})` : ""} · ${school} · ${year}`, ...cv.inProgress];
 }
 
 // A selected entry is a project id, or a group id that stands for all its projects in one cell.
@@ -155,7 +152,7 @@ const blocks = {
   links() {
     const { email, linkedin } = data.identity;
     const a = (href, label) => `<a href="${href}">${label}</a>`;
-    return [a(data.site.url, "Portfolio"), a(linkedin, "LinkedIn"), a(`mailto:${email}`, "Email"), a(cv.url, `CV (PDF, ${cv.language})`)].join(" · ");
+    return [a(data.site.url, "Portfolio"), a(linkedin, "LinkedIn"), a(`mailto:${email}`, "Email")].join(" · ");
   },
   glance() {
     const { years, since } = experienceYears();
