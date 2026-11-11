@@ -1,0 +1,17 @@
+{
+  "wordmark": { "font": "Boska" },
+  "text": "General Sans",
+  "fonts": ["Boska", "General Sans", "Courier Prime"],
+  "palette": {
+    "ink": "#0c0c0b",
+    "bone": "#ede4d0",
+    "red": "#d2231b",
+    "redLight": "#c41f17",
+    "dim": "#9a9283",
+    "dimLight": "#6b655a",
+    "pageDark": "#0d1117",
+    "pageLight": "#ffffff"
+  },
+  "icon": "none",
+  "voice": "noir, editorial, English"
+}
