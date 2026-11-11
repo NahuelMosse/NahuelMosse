@@ -294,10 +294,10 @@ def cta(f):
             + label(80, 69, "OPEN TO ROLES", BONE, 14, 4)
             + f'<g class="u">{d.path("Technical Project Manager", 58, 50, 150, INK)}</g>'
             + t.path("I lead teams that ship with AI under human review, and I still write code.", 20, 52, 190, BONE)
-            + label(52, 222, "REMOTE · UTC–3 · ENGLISH C2 · BUENOS AIRES", INK, 13, 3)
+            + label(52, 222, "UTC–3 · ENGLISH C2 · BUENOS AIRES", INK, 13, 3)
             + f'<g class="f" style="animation-delay:.8s"><rect x="{W - 300}" y="176" width="240" height="52" fill="{INK}"/>'
             + label(W - 180, 208, "START A CONVERSATION →", BONE, 13, 2, "middle") + "</g>")
-    svg("cta-tpm.svg", W, H, "Open to Technical Project Manager roles. I lead teams that ship with AI under human review, and I still write code. Remote, UTC-3, English C2.", body)
+    svg("cta-tpm.svg", W, H, "Open to Technical Project Manager roles. I lead teams that ship with AI under human review, and I still write code. UTC-3, English C2.", body)
 
 
 def process(f):
