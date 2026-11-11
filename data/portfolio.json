@@ -1,9 +1,9 @@
 {
   "source": {
-    "kind": "checkout",
-    "ref": "portfolio-present-d@1ec152d",
+    "kind": "deployed",
+    "ref": "https://nawi.dev/portfolio.json",
     "payloadVersion": "2.0.0",
-    "syncedAt": "2026-11-11T02:37:06.171Z"
+    "syncedAt": "2026-11-11T14:30:25.947Z"
   },
   "site": {
     "url": "https://nawi.dev"
@@ -16,7 +16,7 @@
     "role": "Technical Lead · Technical Project Manager",
     "base": "Buenos Aires",
     "knownFor": "designing, building and leading digital products",
-    "email": "nahuelgamail@gmail.com",
+    "email": "contact@nahuelmosse.com",
     "github": "https://github.com/NahuelMosse",
     "linkedin": "https://linkedin.com/in/nahuelmosse",
     "location": "Buenos Aires, Argentina"

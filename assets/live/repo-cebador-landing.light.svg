@@ -12,5 +12,5 @@
 <text x="24" y="88" fill="#6b655a" font-size="13">The website of a fictional canned</text><text x="24" y="107" fill="#6b655a" font-size="13">yerba mate soda brand, as a…</text>
 <circle cx="30" cy="138" r="6" fill="#c41f17"/><text x="44" y="142" fill="#0c0c0b" font-size="13">JavaScript</text>
 <g transform="translate(150 138)"><path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="#0c0c0b"/></g><text x="164" y="142" fill="#0c0c0b" font-size="13">1</text>
-<text x="284" y="142" text-anchor="end" fill="#6b655a" font-size="12">2026-10-26</text>
+<text x="284" y="142" text-anchor="end" fill="#6b655a" font-size="12">2026-11-11</text>
 <line x1="24" y1="166.5" x2="284" y2="166.5" stroke="#0c0c0b" stroke-opacity="0.16"/></svg>
