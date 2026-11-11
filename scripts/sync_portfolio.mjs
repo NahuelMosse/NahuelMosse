@@ -130,12 +130,17 @@ const blocks = {
     const card = (name) => `<a href="${href(name)}">${pic(`assets/live/repo-${name}`, `${name}: ${repos.repos[name]?.description ?? ""}`, "32%")}</a>`;
     return `<p align="center">\n${repos.featured.map(preview).join("\n")}\n<br>\n${repos.featured.map(card).join("\n")}\n</p>`;
   },
-  // The dev-kit tools, one row of three cards (drawn daily by scripts/live.mjs) linking to GitHub, and npm under them.
+  // The dev-kit tools, one row of three cards (drawn daily by scripts/live.mjs) linking to GitHub.
   tool_cards() {
     const owner = data.identity.github?.split("/").pop() ?? "NahuelMosse";
     const card = (p) => `<a href="https://github.com/${owner}/${p}">${pic(`assets/live/tool-${p}`, `${p}: ${repos.repos[p]?.description ?? ""}`, "32%")}</a>`;
-    const npm = repos.npm.map((p) => `<a href="https://www.npmjs.com/package/${p}"><code>${p}</code></a>`).join(" · ");
-    return `<p align="center">\n${repos.npm.map(card).join("\n")}\n</p>\n\n<p align="center">on npm: ${npm}</p>`;
+    return `<p align="center">\n${repos.npm.map(card).join("\n")}\n</p>`;
+  },
+  // npm: the all-time counter links to the maintainer's npm profile, and each package's counts to its npm page.
+  npm() {
+    const total = `<a href="https://www.npmjs.com/~nahuelmosse">${pic("assets/live/npm", "npm downloads of the dev-kit tools since publication and in the last 7 days", "100%")}</a>`;
+    const card = (p) => `<a href="https://www.npmjs.com/package/${p}">${pic(`assets/live/npm-${p}`, `${p} on npm`, "32%")}</a>`;
+    return `${total}\n\n<p align="center">\n${repos.npm.map(card).join("\n")}\n</p>`;
   },
 };
 

@@ -221,7 +221,14 @@ ${metaRow(T, r)}`);
 ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
 ${r ? metaRow(T, r) : hair(T, 24, 126.5, 284, 126.5)}`);
   }
-  const W = 1100, H = 400;
+  // Each package's counts as its own 350x110 image, so the README can link each one to its npm page.
+  for (const k of pkgs) emit(`npm-${k.p}`, 350, 110, `${k.p} v${k.version} on npm: ${fmt(k.total)} downloads since ${k.since}, ${fmt(lastWeek(k))} in the last 7 days`, (T) =>
+    `<g class="u"><text x="24" y="26" fill="${T.fg}" font-size="18">${esc(k.p)}</text>
+<text x="24" y="46" fill="${T.dim}" font-size="12">v${esc(k.version)} · since ${k.since}</text>
+<text x="24" y="84" fill="${T.fg}" font-size="30">${fmt(k.total)}</text>
+<text x="${String(fmt(k.total)).length * 18 + 38}" y="84" fill="${T.red}" font-size="14">+${fmt(lastWeek(k))} this week</text></g>
+${hair(T, 24, 101.5, 326, 101.5)}`);
+  const W = 1100, H = 272;
   const label = `npm downloads of the dev-kit tools since publication: ${fmt(total)} in total, ${fmt(week)} in the last 7 days. `
     + pkgs.map((k) => `${k.p} v${k.version}: ${fmt(k.total)}, ${fmt(lastWeek(k))} in the last 7 days`).join(". ");
   emit("npm", W, H, label, (T) => {
@@ -250,15 +257,10 @@ ${hair(T, sx0, sy1, sx1, sy1)}<path d="${area}" fill="url(#a)" class="f" style="
 <path d="${line}" pathLength="1" fill="none" stroke="${T.red}" stroke-width="2.5" stroke-linejoin="round" class="d"/>
 <circle cx="${pts.at(-1)[0].toFixed(1)}" cy="${pts.at(-1)[1].toFixed(1)}" r="5" fill="${T.red}" class="f" style="animation-delay:2s"/>
 <text x="${sx1}" y="${sy1 + 22}" text-anchor="end" fill="${T.dim}" font-size="11" letter-spacing="1">${fmt(buckets.at(-1) || 0)} ${weekly ? "THIS WEEK" : "LAST DAY"} · PEAK ${fmt(bmax)}</text>`;
-    const cols = pkgs.map((k, i) => `<g transform="translate(${24 + i * 360} 0)"><g class="u" style="animation-delay:${0.4 + i * 0.12}s">
-${i ? hair(T, -18, 290, -18, 372) : ""}<text x="0" y="306" fill="${T.fg}" font-size="18">${esc(k.p)}</text>
-<text x="0" y="326" fill="${T.dim}" font-size="12">v${esc(k.version)} · since ${k.since}</text>
-<text x="0" y="364" fill="${T.fg}" font-size="30">${fmt(k.total)}</text>
-<text x="${String(fmt(k.total)).length * 18 + 14}" y="364" fill="${T.red}" font-size="14">+${fmt(lastWeek(k))} this week</text></g></g>`).join("");
     return `<style>${keys}</style><defs>${clip}</defs>${title(T, "NPM · ALL-TIME DOWNLOADS · 3 PACKAGES")}
 <g clip-path="url(#win)">${counter}</g>
 <text x="24" y="244" fill="${T.fg}" font-size="16" letter-spacing="1" class="u" style="animation-delay:1.2s"><tspan fill="${T.red}">+${fmt(week)}</tspan> in the last 7 days</text>
-${spark}${hair(T, 24, 270, W - 24, 270)}${cols}`;
+${spark}`;
   });
 }
 

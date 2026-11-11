@@ -27,12 +27,15 @@
 <a href="https://github.com/NahuelMosse/migrations-safe"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/tool-migrations-safe.dark.svg"><img src="assets/live/tool-migrations-safe.light.svg" alt="migrations-safe: Tests database changes on a copy before they touch the real one." width="32%"></picture></a>
 </p>
 
-<p align="center">on npm: <a href="https://www.npmjs.com/package/motion-audit"><code>motion-audit</code></a> · <a href="https://www.npmjs.com/package/http-attack"><code>http-attack</code></a> · <a href="https://www.npmjs.com/package/migrations-safe"><code>migrations-safe</code></a></p>
-
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-npm.dark.svg"><img src="assets/static/header-npm.light.svg" alt="02 · npm" width="100%"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm.dark.svg"><img src="assets/live/npm.light.svg" alt="npm downloads of the dev-kit tools since publication, the last 7 days and each package's counts" width="100%"></picture>
+<a href="https://www.npmjs.com/~nahuelmosse"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm.dark.svg"><img src="assets/live/npm.light.svg" alt="npm downloads of the dev-kit tools since publication and in the last 7 days" width="100%"></picture></a>
 
+<p align="center">
+<a href="https://www.npmjs.com/package/motion-audit"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm-motion-audit.dark.svg"><img src="assets/live/npm-motion-audit.light.svg" alt="motion-audit on npm" width="32%"></picture></a>
+<a href="https://www.npmjs.com/package/http-attack"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm-http-attack.dark.svg"><img src="assets/live/npm-http-attack.light.svg" alt="http-attack on npm" width="32%"></picture></a>
+<a href="https://www.npmjs.com/package/migrations-safe"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/npm-migrations-safe.dark.svg"><img src="assets/live/npm-migrations-safe.light.svg" alt="migrations-safe on npm" width="32%"></picture></a>
+</p>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/static/header-contributions.dark.svg"><img src="assets/static/header-contributions.light.svg" alt="03 · Contributions" width="100%"></picture>
 
@@ -40,6 +43,6 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/heatmap.dark.svg"><img src="assets/live/heatmap.light.svg" alt="Contribution heatmap, last 12 months" width="100%"></picture>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Streak, active days and merged pull requests, with the last 120 days of contributions" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/streak.dark.svg"><img src="assets/live/streak.light.svg" alt="Streak, active days and merged pull requests" width="100%"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/live/building.dark.svg"><img src="assets/live/building.light.svg" alt="Currently building" width="100%"></picture>
