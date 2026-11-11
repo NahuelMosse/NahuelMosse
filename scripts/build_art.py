@@ -192,13 +192,16 @@ def banner(f, d, cv, portfolio):
 
 
 def card_image(portfolio, key):
-    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a page inverted into a dark duotone, its
-    white paper turned to ink, its lines to red and its text to bone."""
+    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a light page inverted into a dark
+    duotone (paper to ink, lines to red, text to bone), cropped below GitHub's dark top bar, which would invert to a
+    light strip."""
     W, H = 880, 336
     t = CARDS[key]
     if "scene" in t:
         return cover(Image.open(portfolio / "public" / "film" / t["scene"]).convert("RGB"), W, H, t["focus"], scale=1)
-    page = cover(Image.open(portfolio / "public" / "film" / "pieces" / t["page"]).convert("L"), W, H, (0.5, 0.0), scale=1)
+    page = Image.open(portfolio / "public" / "film" / "pieces" / t["page"]).convert("L")
+    page = page.crop((0, round(page.height * 0.12), page.width, page.height))
+    page = cover(page, W, H, (0.5, 0.0), scale=1)
     lut = []
     for c in range(3):
         a, b, e = int(INK[1 + 2 * c:3 + 2 * c], 16), int(RED[1 + 2 * c:3 + 2 * c], 16), int(BONE[1 + 2 * c:3 + 2 * c], 16)
