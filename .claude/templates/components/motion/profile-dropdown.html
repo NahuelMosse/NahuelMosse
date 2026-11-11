@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Menú de la cuenta</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./profile-dropdown.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__bar { display: flex; justify-content: flex-end; min-height: 440px; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Cuenta</h1><p class="text-soft">En la esquina de la barra superior. El menú crece desde su esquina; flechas, Inicio, Fin y Esc funcionan como en cualquier menú.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <section class="surface demo__bar" aria-label="Barra superior"><div id="account" data-motion="profile-dropdown"></div></section>
+  <p class="text-caption" id="log" role="status">Sin elección.</p>
+</main>
+<script type="module">
+  import { mount } from './profile-dropdown.js';
+  mount(document.getElementById('account'));
+  document.addEventListener('profile:select', (e) => { document.getElementById('log').textContent = `Elegiste: ${e.detail.id}`; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

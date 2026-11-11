@@ -1,0 +1,14 @@
+/* Text roll (Motion Primitives): each letter is a cell with two faces on a cylinder and an invisible copy that holds the width. */
+.mu-text-roll { display: inline-block; white-space: nowrap; }
+.mu-text-roll__cell { position: relative; display: inline-block; perspective: 10000px; transform-style: preserve-3d; }
+.mu-text-roll__face { position: absolute; left: 0; top: 0; display: inline-block; backface-visibility: hidden; }
+.mu-text-roll__face--out { transform-origin: 50% 25%; }
+.mu-text-roll__face--in { transform-origin: 50% 100%; transform: rotateX(90deg); }
+.mu-text-roll__size { visibility: hidden; }
+.mu-text-roll__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Reduced motion: the plain copy shows and the faces stay out of sight. */
+@media (prefers-reduced-motion: reduce) {
+  .mu-text-roll__face { display: none; }
+  .mu-text-roll__size { visibility: visible; }
+}

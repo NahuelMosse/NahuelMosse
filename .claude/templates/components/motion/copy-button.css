@@ -1,0 +1,21 @@
+/* Copy button (Animate UI): the icons share one cell and swap there; the button grows 5 % on hover and
+   shrinks 5 % pressed, on the set's release spring. */
+:root {
+  --copy-button-hover: 1.05;
+  --copy-button-press: 0.95;
+  --copy-button-icon: 16px;
+  --copy-button-ok: var(--success);
+}
+.cb.btn { gap: var(--space-2); }
+.cb__icons { display: inline-grid; place-items: center; width: var(--copy-button-icon); height: var(--copy-button-icon); flex: none; }
+.cb__icon { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+.cb__label { font-variant-numeric: tabular-nums; }
+.cb:not(.btn--primary)[data-state="copied"] .cb__icons { color: var(--copy-button-ok); }
+.cb:not(.btn--primary)[data-state="failed"] .cb__icons { color: var(--danger); }
+@media (hover: hover) and (pointer: fine) {
+  .cb.btn:hover { transform: scale(var(--copy-button-hover)); }
+}
+.cb.btn:active { transform: scale(var(--copy-button-press)); }
+@media (prefers-reduced-motion: reduce) {
+  .cb.btn:hover, .cb.btn:active { transform: none; }
+}

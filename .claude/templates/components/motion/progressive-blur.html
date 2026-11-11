@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desenfoque progresivo · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./progressive-blur.css">
+<style>
+  .scroller { position: relative; height: 260px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .list { margin: 0; padding: var(--space-3) var(--space-4) 140px; list-style: none; display: grid; gap: var(--space-2); }
+  .list li { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--border); font-size: var(--text-sm); }
+  .list span { color: var(--text-soft); font-variant-numeric: tabular-nums; }
+  .edge { position: sticky; bottom: 0; height: 90px; margin-top: -90px; pointer-events: none; }
+  .edge--top { top: 0; bottom: auto; margin: 0 0 -90px; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Desenfoque progresivo</h1>
+      <p class="mu-demo__note">El borde de una lista se desenfoca de a poco, sin un corte visible, y deja pasar los toques. Es estático: no depende del movimiento.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Facturas, desenfoque abajo</h2>
+    <div class="scroller" tabindex="0" role="region" aria-label="Facturas del mes">
+      <ul class="list">
+        <li>A-0004-00001284 · Estudio Quiroga <span>$ 482.300,00</span></li>
+        <li>A-0004-00001285 · Ferretería Del Sur <span>$ 91.250,00</span></li>
+        <li>A-0004-00001286 · Panadería La Espiga <span>$ 38.900,00</span></li>
+        <li>A-0004-00001287 · Taller Mendoza <span>$ 215.400,00</span></li>
+        <li>A-0004-00001288 · Clínica Norte <span>$ 1.204.000,00</span></li>
+        <li>A-0004-00001289 · Librería Austral <span>$ 64.700,00</span></li>
+        <li>A-0004-00001290 · Distribuidora Paz <span>$ 330.000,00</span></li>
+        <li>A-0004-00001291 · Estudio Quiroga <span>$ 98.000,00</span></li>
+      </ul>
+      <div class="edge" data-motion="progressive-blur" data-direction="bottom"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './progressive-blur.js';
+  themeSwitch();
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dock flotante · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ac-demo.css">
+<link rel="stylesheet" href="./floating-dock.css">
+<style>
+  .stage-dock { display: grid; place-items: end center; min-height: 300px; padding-bottom: var(--space-6); }
+  .stage-dock--phone { min-height: 340px; place-items: end start; }
+  .phone-frame { width: 320px; max-width: 100%; }
+  .phone-frame .ac-dock__bar { display: none; }
+  .phone-frame .ac-dock__mobile { display: block; }
+</style>
+</head>
+<body class="ui">
+<main class="ac-demo">
+  <header class="ac-demo__head">
+    <div>
+      <h1 class="ac-demo__title">Dock flotante</h1>
+      <p class="ac-demo__note">Acciones rápidas de Ledger. En escritorio, los íconos crecen hacia el puntero (o hacia el que tiene el foco); en pantallas angostas, un botón abre la columna de acciones.</p>
+    </div>
+    <div class="ac-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-ac-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-ac-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="ac-demo__section" aria-labelledby="s-dock">
+    <h2 class="ac-demo__label" id="s-dock">Escritorio · siete acciones</h2>
+    <div class="ac-demo__stage stage-dock" id="stage-dock">
+      <nav id="dock" data-motion="floating-dock" data-label="Acciones rápidas" aria-label="Acciones rápidas"></nav>
+    </div>
+  </section>
+
+  <section class="ac-demo__section" aria-labelledby="s-phone">
+    <h2 class="ac-demo__label" id="s-phone">Móvil · el menú se abre hacia arriba</h2>
+    <div class="ac-demo__stage stage-dock stage-dock--phone" id="stage-phone">
+      <div class="phone-frame"><nav id="phone" aria-label="Acciones rápidas (móvil)"></nav></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './ac-demo.js';
+  themeSwitch();
+  const svg = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const actions = [
+    ['Nueva factura', '#nueva-factura', '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15h6"/>'],
+    ['Nuevo cliente', '#nuevo-cliente', '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><path d="M19 8v6M16 11h6"/>'],
+    ['Registrar cobro', '#registrar-cobro', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'],
+    ['Enviar recordatorio', '#recordatorio', '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/>'],
+    ['Exportar', '#exportar', '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 20h14"/>'],
+    ['Conciliar', '#conciliar', '<path d="M5 8h13l-3-3M19 16H6l3 3"/>'],
+    ['Ajustes', '#ajustes', '<path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/>'],
+  ];
+  const fill = (host) => {
+    for (const [title, href, d] of actions) {
+      const a = document.createElement('a');
+      a.href = href;
+      a.dataset.title = title;
+      a.innerHTML = svg(d);
+      host.append(a);
+    }
+  };
+  fill(document.getElementById('dock'));
+  fill(document.getElementById('phone'));
+  const { mount } = await import('./floating-dock.js');
+  mount(document.getElementById('phone'), { label: 'Acciones rápidas' });
+</script>
+</body>
+</html>

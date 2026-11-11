@@ -1,0 +1,41 @@
+/* Magic card (Magic UI): a border and a light that follow the pointer. */
+@property --mu-lit { syntax: "<number>"; inherits: true; initial-value: 0; }
+:root {
+  --mu-magic-size: 200px;
+  --mu-magic-from: var(--accent);
+  --mu-magic-to: color-mix(in oklab, var(--accent) 45%, var(--info));
+  --mu-magic-edge: var(--border);
+  --mu-magic-bg: var(--surface-raised);
+  --mu-magic-spot: oklch(22% 0.02 265 / 0.07);
+  --mu-magic-opacity: 0.8;
+  --mu-magic-radius: var(--radius);
+  --mu-magic-glow-from: var(--accent);
+  --mu-magic-glow-to: var(--info);
+  --mu-magic-glow-angle: 90deg;
+  --mu-magic-glow-size: 420px;
+  --mu-magic-glow-blur: 60px;
+  --mu-magic-glow-opacity: 0.9;
+  --mu-magic-blend: multiply;
+}
+:root[data-theme="dark"], :root[data-register="showcase"] {
+  --mu-magic-spot: oklch(100% 0 0 / 0.12);
+  --mu-magic-blend: screen;
+}
+
+.mu-magic {
+  --mu-lit: 0; --mx: -200; --my: -200;
+  position: relative; isolation: isolate; overflow: hidden; border: 1px solid transparent; border-radius: var(--mu-magic-radius);
+  background:
+    linear-gradient(var(--mu-magic-bg) 0 0) padding-box,
+    radial-gradient(var(--mu-magic-size) circle at calc(var(--mx) * 1px) calc(var(--my) * 1px),
+      color-mix(in oklab, var(--mu-magic-from) calc(var(--mu-lit) * 100%), var(--mu-magic-edge)),
+      color-mix(in oklab, var(--mu-magic-to) calc(var(--mu-lit) * 100%), var(--mu-magic-edge)),
+      var(--mu-magic-edge) 100%) border-box;
+  transition: --mu-lit 300ms ease;
+}
+.mu-magic[data-lit] { --mu-lit: 1; }
+.mu-magic__fill { position: absolute; inset: 1px; z-index: 20; border-radius: inherit; background: var(--mu-magic-bg); }
+.mu-magic__spot { position: absolute; inset: 1px; z-index: 30; border-radius: inherit; pointer-events: none; opacity: calc(var(--mu-lit) * var(--mu-magic-opacity)); background: radial-gradient(var(--mu-magic-size) circle at calc(var(--mx) * 1px) calc(var(--my) * 1px), var(--mu-magic-spot), transparent 100%); }
+.mu-magic__orb { position: absolute; top: 0; left: 0; z-index: 30; width: var(--mu-magic-glow-size); height: var(--mu-magic-glow-size); border-radius: 9999px; pointer-events: none; opacity: 0; filter: blur(var(--mu-magic-glow-blur)); background: linear-gradient(var(--mu-magic-glow-angle), var(--mu-magic-glow-from), var(--mu-magic-glow-to)); mix-blend-mode: var(--mu-magic-blend); will-change: transform, opacity; transform: translate3d(-9999px, -9999px, 0); }
+.mu-magic__content { position: relative; z-index: 40; }
+@media (prefers-reduced-motion: reduce) { .mu-magic { transition-duration: 140ms; } }

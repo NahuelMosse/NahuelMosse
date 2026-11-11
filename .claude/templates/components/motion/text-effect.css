@@ -1,0 +1,9 @@
+/* Text effect (Motion Primitives): the pieces are inline-block so they can move and blur; the hidden state keeps the text
+   invisible until `play()` runs. */
+.mu-text-effect__piece { display: inline-block; white-space: pre; }
+.mu-text-effect__line { display: block; }
+.mu-text-effect__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mu-text-effect--hidden .mu-text-effect__piece, .mu-text-effect--hidden .mu-text-effect__line { opacity: 0; }
+
+/* Reduced motion: the script fades the pieces together, with no stagger, blur or travel. */
+@media (prefers-reduced-motion: reduce) { .mu-text-effect__piece, .mu-text-effect__line { filter: none; } }

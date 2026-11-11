@@ -1,0 +1,5 @@
+/* Number ticker (Magic UI): a figure that counts up to its value. */
+:root { --mu-ticker-tracking: 0.05em; }
+
+.mu-ticker { display: inline-block; letter-spacing: var(--mu-ticker-tracking); color: var(--text); font-variant-numeric: tabular-nums; }
+.mu-ticker__spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

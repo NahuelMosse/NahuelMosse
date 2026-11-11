@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Transition panel</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./transition-panel.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Transition panel</h1>
+      <p class="demo__lead">Los pasos del alta de una factura: cada paso entra por el lado hacia el que se avanza y el anterior sale al lado contrario, sin empujar al nuevo. La card acompaña la altura del paso.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-alta">
+    <h2 id="s-alta">Alta de factura</h2>
+    <p>Siguiente y Anterior; en el último paso el botón pasa a «Emitir factura».</p>
+    <div class="demo__stage">
+      <div class="tpanel" data-motion="transition-panel" id="alta" aria-label="Alta de factura">
+        <div class="tpanel__viewport" data-tp="viewport">
+          <section class="tpanel__step" data-tp="step" data-title="Cliente">
+            <h3 class="tpanel__title">Cliente</h3>
+            <p class="tpanel__text">Elegí a quién se factura. El CUIT y la condición frente al IVA definen el tipo de comprobante.</p>
+            <label class="demo-field" style="margin-top: var(--space-3)">Cliente
+              <select><option>Sánchez Hermanos S.A.</option><option>Distribuidora Del Sur S.R.L.</option><option>Estudio Herrera &amp; Asoc.</option></select>
+            </label>
+          </section>
+          <section class="tpanel__step" data-tp="step" data-title="Conceptos">
+            <h3 class="tpanel__title">Conceptos</h3>
+            <table class="demo-table">
+              <thead><tr><th>Detalle</th><th>Cant.</th><th>Importe</th></tr></thead>
+              <tbody>
+                <tr><td>Licencia mensual Ledger Pro</td><td>3</td><td>$ 210.000,00</td></tr>
+                <tr><td>Capacitación del equipo</td><td>1</td><td>$ 96.000,00</td></tr>
+                <tr><td>Implementación e importación</td><td>1</td><td>$ 176.000,00</td></tr>
+                <tr><td>Soporte prioritario</td><td>12</td><td>$ 54.000,00</td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="tpanel__step" data-tp="step" data-title="Impuestos">
+            <h3 class="tpanel__title">Impuestos</h3>
+            <p class="tpanel__text">IVA 21 % sobre el neto gravado. No hay percepciones de Ingresos Brutos para este cliente.</p>
+          </section>
+          <section class="tpanel__step" data-tp="step" data-title="Confirmar">
+            <h3 class="tpanel__title">Confirmar</h3>
+            <dl class="demo-dl" style="margin-top: var(--space-2)">
+              <dt>Cliente</dt><dd>Sánchez Hermanos S.A.</dd>
+              <dt>Neto</dt><dd>$ 536.000,00</dd>
+              <dt>IVA 21 %</dt><dd>$ 112.560,00</dd>
+              <dt>Total</dt><dd>$ 648.560,00</dd>
+            </dl>
+          </section>
+        </div>
+        <div class="tpanel__footer">
+          <button type="button" class="tpanel__btn" data-tp="prev">Anterior</button>
+          <button type="button" class="tpanel__btn" data-tp="next" data-last-label="Emitir factura">Siguiente</button>
+        </div>
+      </div>
+    </div>
+    <p class="demo__log" id="log" role="status"></p>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './transition-panel.js';
+import './mp-demo.js';
+
+const alta = document.getElementById('alta');
+mount(alta, { stepLabel: (i, n, title) => `Paso ${i} de ${n}: ${title}` });
+alta.addEventListener('transition-panel:done', () => { document.getElementById('log').textContent = 'Factura emitida (demo).'; });
+</script>
+</body>
+</html>

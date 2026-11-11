@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursor propio · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./cursor.css">
+<style>
+  .zone { display: grid; place-items: center; min-height: 220px; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); text-align: center; color: var(--text-soft); font-size: var(--text-sm); }
+  .tag { display: inline-flex; align-items: center; height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-full); background: var(--accent); color: var(--on-accent); font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; }
+  .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); opacity: .85; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Cursor propio</h1>
+      <p class="mu-demo__note">Dentro de la zona, el puntero se reemplaza por una etiqueta que dice qué pasa al hacer clic; afuera, el cursor del sistema sigue intacto. En pantallas táctiles no aparece y la zona se usa como siempre.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Etiqueta que acompaña</h2>
+    <div class="zone">
+      <span>Pasá el mouse por la tabla de facturas</span>
+      <div data-motion="cursor"><span class="tag">Abrir factura</span></div>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-b">
+    <h2 class="mu-demo__label" id="s-b">Punto con resorte</h2>
+    <div class="zone" id="spring">
+      <span>El punto llega con un poco de demora</span>
+      <div id="dot"><span class="dot"></span></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './cursor.js';
+  themeSwitch();
+  mount(document.getElementById('dot'), { springConfig: { stiffness: 220, damping: 22, mass: 0.6 } });
+</script>
+</body>
+</html>

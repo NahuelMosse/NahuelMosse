@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Animated background</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./animated-background.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Animated background</h1>
+      <p class="demo__lead">Un solo resalte que viaja entre los ítems: sigue al puntero (modo hover) o al último clic (modo click). Aparece en el lugar al primer ítem, se desvanece donde está al salir, y el teclado lo mueve igual.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-menu">
+    <h2 id="s-menu">Menú lateral · hover</h2>
+    <p>Resorte con bounce 0.2 y 0.3 s. Tab recorre el menú y el resalte lo acompaña.</p>
+    <div class="demo__stage">
+      <nav aria-label="Secciones de Ledger">
+        <div class="abg-menu" data-motion="animated-background" data-mode="hover" id="menu">
+          <a class="abg-menu__item" href="#facturas" data-id="facturas"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h9v11l-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1-1.5 1zM6 6h4M6 9h4"/></svg>Facturas<span class="abg-menu__count">128</span></a>
+          <a class="abg-menu__item" href="#clientes" data-id="clientes"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 13c.3-2.4 2.2-3.8 4.5-3.8s4.2 1.4 4.5 3.8M10.5 3.2a2.4 2.4 0 0 1 0 4.6M12 9.5c1.3.5 2.2 1.6 2.5 3.5"/></svg>Clientes<span class="abg-menu__count">42</span></a>
+          <a class="abg-menu__item" href="#cobranzas" data-id="cobranzas"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Cobranzas<span class="abg-menu__count">17</span></a>
+          <a class="abg-menu__item" href="#vencimientos" data-id="vencimientos"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10v8.5H3zM3 7.5h10M5.5 2.5v3M10.5 2.5v3"/></svg>Vencimientos<span class="abg-menu__count">9</span></a>
+          <a class="abg-menu__item" href="#reportes" data-id="reportes"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13.5h12M4.5 13.5V8M8 13.5V3.5M11.5 13.5V6"/></svg>Reportes</a>
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-tabs">
+    <h2 id="s-tabs">Pestañas · hover con valor inicial</h2>
+    <p>Empieza en «Facturas». Al salir con el puntero el resalte se va.</p>
+    <div class="demo__stage">
+      <div class="abg-tabs" data-motion="animated-background" data-mode="hover" data-default="Facturas" id="tabs">
+        <button type="button" class="abg-tab" data-id="Facturas">Facturas</button>
+        <button type="button" class="abg-tab" data-id="Clientes">Clientes</button>
+        <button type="button" class="abg-tab" data-id="Cobranzas">Cobranzas</button>
+        <button type="button" class="abg-tab" data-id="Reportes">Reportes</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-cards">
+    <h2 id="s-cards">Cards · hover, resorte lento</h2>
+    <p>Bounce 0.2 y 0.6 s: el resalte atraviesa la grilla.</p>
+    <div class="demo__stage">
+      <div class="abg-cards" data-motion="animated-background" data-mode="hover" data-bounce="0.2" data-duration="0.6" id="cards">
+        <div class="abg-card" data-id="card-0" tabindex="0"><h3 class="abg-card__title">Factura electrónica</h3><p class="abg-card__text">Emisión con CAE de ARCA.</p></div>
+        <div class="abg-card" data-id="card-1" tabindex="0"><h3 class="abg-card__title">Notas de crédito</h3><p class="abg-card__text">Anulá o ajustá un comprobante.</p></div>
+        <div class="abg-card" data-id="card-2" tabindex="0"><h3 class="abg-card__title">Cobranzas</h3><p class="abg-card__text">Aplicá pagos a facturas.</p></div>
+        <div class="abg-card" data-id="card-3" tabindex="0"><h3 class="abg-card__title">Cuenta corriente</h3><p class="abg-card__text">Saldo por cliente al día.</p></div>
+        <div class="abg-card" data-id="card-4" tabindex="0"><h3 class="abg-card__title">Libro IVA</h3><p class="abg-card__text">Ventas y compras del mes.</p></div>
+        <div class="abg-card" data-id="card-5" tabindex="0"><h3 class="abg-card__title">Recordatorios</h3><p class="abg-card__text">Avisos antes del vencimiento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-seg">
+    <h2 id="s-seg">Control segmentado · click</h2>
+    <p>Modo click con transición de 0.2 s «easeInOut» en lugar de resorte.</p>
+    <div class="demo__stage">
+      <div class="abg-segmented" role="group" aria-label="Período" data-motion="animated-background" data-mode="click" data-default="Mes" data-ease="easeInOut" data-duration="0.2" id="segmented">
+        <button type="button" class="abg-tab" data-id="Día" aria-label="Vista por día">Día</button>
+        <button type="button" class="abg-tab" data-id="Semana" aria-label="Vista por semana">Semana</button>
+        <button type="button" class="abg-tab" data-id="Mes" aria-label="Vista por mes">Mes</button>
+        <button type="button" class="abg-tab" data-id="Año" aria-label="Vista por año">Año</button>
+      </div>
+    </div>
+    <p class="demo__log" id="log" role="status"></p>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './animated-background.js';
+import './mp-demo.js';
+
+for (const id of ['menu', 'tabs', 'cards']) mount(document.getElementById(id));
+const seg = document.getElementById('segmented');
+mount(seg);
+seg.addEventListener('animated-background:change', (e) => { document.getElementById('log').textContent = `Período: ${e.detail.value}`; });
+for (const link of document.querySelectorAll('.abg-menu__item')) link.addEventListener('click', (e) => e.preventDefault());
+</script>
+</body>
+</html>

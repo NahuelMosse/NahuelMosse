@@ -1,0 +1,37 @@
+/* The cards of the Clientes view and the record each one opens into. The card, the dialog and the sheet bring their
+   own styles from motion/; this holds what is Ledger's: what a client card says and the record's layout. */
+:root {
+  --client-card-min: 15rem;
+  --client-card-pad: var(--space-4);
+}
+
+/* The state tool is navigation: its chosen item is neutral, the accent stays for the one primary action of the view. */
+#client-filter { --kokonut-toolbar-selected: var(--surface-inverse); --kokonut-toolbar-on-selected: var(--text-inverse); justify-self: start; }
+#client-filter .ktb__item[data-selected]::before, #client-filter .ktb__item[data-selected]:hover::before { box-shadow: none; }
+#client-filter .ktb__item[data-selected]:hover::before { background: var(--surface-inverse); }
+
+/* The cards wrap and the last row widens to the edge, so a count that does not fill the columns leaves no hole. */
+.client-cards { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.client-cards > * { flex: 1 1 var(--client-card-min); }
+.client-cards[data-motion="expandable-card"] { grid-template-columns: minmax(0, 1fr); --ac-xc-media-h: 128px; --ac-xc-media-h-open: 240px; }
+.client-card-root { min-width: 0; }
+.client-card { display: grid; align-content: start; gap: var(--space-1); width: 100%; padding: var(--client-card-pad); border: 0; background: none; color: var(--text); font: inherit; text-align: start; cursor: pointer; }
+.client-card:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--radius); }
+.client-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); }
+.client-card__name { font-size: var(--text-lg); font-weight: var(--weight-strong); letter-spacing: var(--tracking-title); }
+.client-card__meta { color: var(--text-soft); font-size: var(--text-sm); }
+.client-card__balance { margin-top: var(--space-3); font-size: var(--text-xl); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+.client-card__balance small { margin-left: var(--space-2); color: var(--text-soft); font-size: var(--text-xs); font-weight: var(--weight-regular, 400); }
+
+.client-dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: var(--space-3) var(--space-5); margin: 0; font-size: var(--text-md); }
+.client-dl dt { color: var(--text-faint); }
+.client-dl dd { margin: 0; color: var(--text); font-variant-numeric: tabular-nums; }
+.client-cuit, .client-invoices__number { display: inline-flex; align-items: center; gap: var(--space-2); }
+/* At 40 px the faces overlap by 6 px, so what each one shows (its two initials, centered) is never under the next. */
+.client-team { display: inline-flex; padding-top: var(--space-5); --ac-tip-size: 40px; --ac-tip-overlap: -6px; --ac-tip-rise: 56px; justify-content: flex-start; }
+.client-team .ac-tip__face { font-size: var(--text-sm); letter-spacing: 0.02em; box-shadow: inset 0 0 0 1px oklch(var(--avatar-fg-l) var(--avatar-fg-c) var(--h, 265) / 0.18); }
+.client-invoices { width: 100%; border-collapse: collapse; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+.client-invoices th { padding: var(--space-2) 0; border-bottom: 1px solid var(--border); color: var(--text-faint); font-weight: var(--weight-medium); text-align: left; }
+.client-invoices td { padding: var(--space-2) 0; border-bottom: 1px solid var(--border-subtle); color: var(--text); }
+.client-invoices :is(th, td):last-child { text-align: right; }
+.client-empty { margin: 0; color: var(--text-soft); }

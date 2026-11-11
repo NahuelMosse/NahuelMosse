@@ -1,0 +1,4 @@
+/* Progressive blur (Motion Primitives): the layers are stacked over the parent's box, each blurring what is behind it through
+   a band of its own mask. The host is only a positioning box; it never captures the pointer. */
+.mu-progressive-blur { position: relative; }
+.mu-progressive-blur__layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }

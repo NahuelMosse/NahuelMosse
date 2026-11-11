@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cifra con desenfoque de velocidad · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./speed-counter.css">
+<style>
+  .figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); }
+  .figure-card { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .figure-card .big { font-size: var(--text-2xl); font-weight: var(--weight-strong); line-height: 1.2; }
+  .figure-card small { color: var(--text-soft); font-size: var(--text-sm); }
+  .spacer { height: 70vh; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Cifra con desenfoque de velocidad</h1>
+      <p class="mu-demo__note">La cifra cuenta una vez, al entrar en pantalla. Mientras corre se desenfoca a lo largo de un eje, en proporción a la velocidad con que cambia el número: se mancha en el medio de la carrera y se afila al llegar. Con movimiento reducido aparece con un fundido y nunca se desenfoca.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-kpi">
+    <h2 class="mu-demo__label" id="s-kpi">Cifras de Inicio</h2>
+    <div class="figures">
+      <div class="figure-card"><small>Facturado del mes · eje vertical</small><span class="big"><span id="billed" data-motion="speed-counter" data-value="5000000" data-currency="ARS"></span></span></div>
+      <div class="figure-card"><small>Facturas emitidas · eje horizontal</small><span class="big"><span id="count" data-motion="speed-counter" data-value="1284" data-axis="x"></span></span></div>
+      <div class="figure-card"><small>Cobranza · un decimal, desenfoque corto</small><span class="big"><span id="rate" data-motion="speed-counter" data-value="68.4" data-decimal-places="1" data-max-blur="3"></span>&nbsp;%</span></div>
+    </div>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="bump">Entró un cobro de $ 1.250.000</button>
+      <button type="button" class="btn-demo" id="replay">Contar de nuevo</button>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-below">
+    <h2 class="mu-demo__label" id="s-below">Más abajo · cuenta cuando llegás</h2>
+    <div class="spacer"></div>
+    <div class="figure-card"><small>Pagos conciliados</small><span class="big"><span id="below" data-motion="speed-counter" data-value="9120"></span></span></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const { mount } = await import('./speed-counter.js');
+  const billed = mount(document.getElementById('billed'), {});
+  const count = mount(document.getElementById('count'), {});
+  let total = 5000000;
+  document.getElementById('bump').addEventListener('click', () => { total += 1250000; billed.update(total); });
+  document.getElementById('replay').addEventListener('click', () => { billed.replay(); count.replay(); });
+</script>
+</body>
+</html>

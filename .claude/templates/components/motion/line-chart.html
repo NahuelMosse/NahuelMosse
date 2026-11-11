@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Ingresos por período</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mp-demo.css">
+<link rel="stylesheet" href="./arc-demo.css">
+<link rel="stylesheet" href="./arc.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./slot-text.css">
+<link rel="stylesheet" href="./line-chart.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Ingresos por período</h1>
+      <p class="demo__lead">Al cambiar de rango la línea se transforma en lugar de redibujarse, y la escala sube o baja con ella. El período anterior va en trazo discontinuo. Arrastrá o usá las flechas para leer cada día.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-ingresos">
+    <h2 id="s-ingresos">Ingresos cobrados</h2>
+    <p>Inicio, Fin, Re Pág y Av Pág saltan por el rango; Escape suelta el cursor.</p>
+    <div class="demo__stage" style="padding: var(--space-5)">
+      <section class="arc-card" id="card" style="width: min(640px, 100%)">
+        <div class="arc-card__head">
+          <h3 class="arc-card__title">Ingresos cobrados</h3>
+          <div class="arc-seg" role="group" aria-label="Rango" id="range">
+            <button type="button" data-v="7" aria-pressed="false">7 días</button>
+            <button type="button" data-v="30" aria-pressed="true">30 días</button>
+            <button type="button" data-v="90" aria-pressed="false">90 días</button>
+          </div>
+        </div>
+        <div class="arc-big-label" id="big-label">Total cobrado</div>
+        <div class="arc-big" id="big">—</div>
+        <div class="arc-delta" id="delta" style="margin-bottom: var(--space-4)"></div>
+        <div id="chart"></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './line-chart.js';
+import { mount as mountSlot } from './slot-text.js';
+import './mp-demo.js';
+
+const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+const compact = new Intl.NumberFormat('es-AR', { notation: 'compact', maximumFractionDigits: 1 });
+const pct = new Intl.NumberFormat('es-AR', { style: 'percent', maximumFractionDigits: 1, signDisplay: 'always' });
+const long = new Intl.DateTimeFormat('es-AR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'America/Argentina/Buenos_Aires' });
+const short = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', timeZone: 'America/Argentina/Buenos_Aires' });
+// A deterministic series: the same range always draws the same line.
+const wave = (n, seed, scale) => Array.from({ length: n }, (_, i) => Math.round(scale * (1 + 0.28 * Math.sin((i + seed) / 2.3) + 0.18 * Math.sin((i + seed) / 5.1) + (((i * 7919 + seed * 104729) % 97) / 97 - 0.5) * 0.3 + (n >= 30 && i === Math.floor(n * 0.62) ? 1.1 : 0))));
+const makeRange = (days) => {
+  const current = wave(days, days, 640000 - days * 1500);
+  const previous = wave(days, days + 17, 560000 - days * 1200);
+  const end = new Date('2026-10-14T12:00:00-03:00');
+  const every = days <= 7 ? 1 : days <= 30 ? 7 : 15;
+  return Array.from({ length: days }, (_, i) => {
+    const d = new Date(end.getTime() - (days - 1 - i) * 86400000);
+    return { key: d.toISOString().slice(0, 10), label: long.format(d), axisLabel: (days - 1 - i) % every === 0 ? short.format(d) : undefined, values: { current: current[i], previous: previous[i] } };
+  });
+};
+const ranges = { 7: makeRange(7), 30: makeRange(30), 90: makeRange(90) };
+const total = (data, key) => data.reduce((s, d) => s + d.values[key], 0);
+let days = 30;
+let loadingTimer = 0;
+const LOAD_MS = 520;
+const big = document.getElementById('big');
+const bigLabel = document.getElementById('big-label');
+const delta = document.getElementById('delta');
+// The headline is a slot: its digits roll to the new total or to the day under the pointer, and the label above it fades in.
+const slot = mountSlot(big, { value: total(ranges[30], 'current'), format: (v) => money.format(Math.round(v)), duration: 0.45, stagger: 0.03 });
+const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const setLabel = (text) => {
+  if (bigLabel.textContent === text) return;
+  bigLabel.textContent = text;
+  if (!reduce()) bigLabel.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+};
+const headline = (index, datum) => {
+  const data = ranges[days];
+  if (datum) { setLabel(datum.label); slot.set(datum.values.current); delta.textContent = `Período anterior: ${money.format(datum.values.previous)}`; delta.removeAttribute('data-tone'); return; }
+  const now = total(data, 'current');
+  const before = total(data, 'previous');
+  const change = (now - before) / before;
+  setLabel('Total cobrado');
+  slot.set(now);
+  delta.textContent = `${pct.format(change)} frente a los ${days} días anteriores`;
+  delta.dataset.tone = change < 0 ? 'danger' : '';
+};
+const chart = mount(document.getElementById('chart'), {
+  data: ranges[30], label: 'Ingresos cobrados', height: 220, categoryLabel: 'Fecha',
+  series: [{ key: 'current', label: 'Este período' }, { key: 'previous', label: 'Período anterior', dashed: true, area: false }],
+  formatValue: (v) => money.format(v), formatTick: (v) => `$ ${compact.format(v)}`,
+  onActiveChange: headline,
+});
+headline(null, null);
+document.getElementById('range').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  for (const other of b.parentElement.children) other.setAttribute('aria-pressed', String(other === b));
+  days = Number(b.dataset.v);
+  // The range loads first: the current lines stay on screen, dimmed, and the new range draws when it arrives.
+  clearTimeout(loadingTimer);
+  chart.setLoading(true);
+  loadingTimer = setTimeout(() => { chart.setLoading(false); chart.update({ data: ranges[days] }); headline(null, null); }, reduce() ? 0 : LOAD_MS);
+});
+window.chart = chart;
+</script>
+</body>
+</html>

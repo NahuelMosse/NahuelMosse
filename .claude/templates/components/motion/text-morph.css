@@ -1,0 +1,18 @@
+/* Text morph (Arc): the frame carries the animated width. Its mask reveals new letters through a soft trailing edge as it
+   grows and fades leaving ones as it shrinks. The padding and its matching negative margins give the mask room for blur
+   and descenders without changing layout; the edge sits entirely in that room, so resting text is never dimmed. The track
+   starts at the frame's leading edge, even in centered text, so leaving letters never jump. */
+:root { --text-morph-room: .5em; --text-morph-lead: .2em; }
+
+.ar-text-morph { color: inherit; }
+.ar-text-morph__frame {
+  position: relative; display: inline-block; box-sizing: content-box;
+  padding: var(--text-morph-room) var(--text-morph-room) var(--text-morph-room) var(--text-morph-lead);
+  margin: calc(var(--text-morph-room) * -1) calc(var(--text-morph-room) * -1) calc(var(--text-morph-room) * -1) calc(var(--text-morph-lead) * -1);
+  text-align: start; white-space: nowrap; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - var(--text-morph-room)), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - var(--text-morph-room)), transparent);
+}
+/* The track sizes to the letters in flow. Leaving letters are taken out of flow and positioned against it. */
+.ar-text-morph__track { position: relative; display: inline-block; white-space: nowrap; pointer-events: auto; }
+.ar-text-morph__glyph { display: inline-block; white-space: pre; transform-origin: 50% 60%; }

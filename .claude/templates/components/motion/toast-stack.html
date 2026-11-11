@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pila de avisos · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./toast-stack.css">
+<style>
+  .stage { position: relative; min-height: 440px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-sunken); }
+  .stage p { margin: var(--space-5); color: var(--text-soft); font-size: var(--text-sm); max-width: 44ch; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Pila de avisos</h1>
+      <p class="mu-demo__note">Los avisos nuevos suben desde abajo y los viejos se esconden detrás. Pasá el mouse o enfocá la pila con Alt+T para abrirla en lista. Repetir el id actualiza el aviso en el lugar: «Deshacer» se pliega y queda el resultado. Pausan con la pila abierta o la pestaña oculta; deslizá a la derecha para descartar.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-actions">
+    <h2 class="mu-demo__label" id="s-actions">Acciones</h2>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="send">Enviar factura</button>
+      <button type="button" class="btn-demo" id="sync">Sincronizar con ARCA</button>
+      <button type="button" class="btn-demo" id="late">Cobro vencido</button>
+      <button type="button" class="btn-demo" id="fail">Falló el envío</button>
+      <button type="button" class="btn-demo" id="clear">Descartar todos</button>
+    </div>
+    <div class="stage" id="stage"><p>Ledger · Facturas. Los avisos de esta pantalla aparecen abajo a la derecha, dentro de este recuadro.</p></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './toast-stack.js';
+  themeSwitch();
+  const stack = mount(document.getElementById('stage'), {
+    label: 'Notificaciones', contained: true, duration: 6000,
+    labels: { dismiss: 'Descartar aviso', types: { success: 'Éxito', info: 'Información', warning: 'Atención', error: 'Error', loading: 'En curso' } },
+  });
+  let n = 1283;
+  document.getElementById('send').addEventListener('click', () => {
+    n += 1;
+    const id = `envio-${n}`;
+    stack.toast({
+      id, type: 'success', title: 'Factura enviada', description: `A-0004-0000${n}`,
+      action: { label: 'Deshacer', onClick: () => stack.update(id, { type: 'info', title: 'Envío cancelado', description: 'Volvió a borrador.', action: undefined, duration: 4000 }) },
+    });
+  });
+  document.getElementById('sync').addEventListener('click', () => {
+    const id = 'sync';
+    stack.toast({ id, type: 'loading', title: 'Sincronizando con ARCA', description: 'Consultando los comprobantes del mes.' });
+    setTimeout(() => stack.update(id, { type: 'success', title: 'Sincronización lista', description: '14 comprobantes actualizados.' }), 2200);
+  });
+  document.getElementById('late').addEventListener('click', () => stack.toast({ type: 'warning', title: 'Cobro vencido', description: 'Taller Morán · 15 días de atraso.' }));
+  document.getElementById('fail').addEventListener('click', () => stack.toast({ type: 'error', title: 'No se pudo enviar', description: 'Revisá el mail del cliente.' }));
+  document.getElementById('clear').addEventListener('click', () => stack.dismiss());
+</script>
+</body>
+</html>

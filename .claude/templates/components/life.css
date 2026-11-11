@@ -1,0 +1,328 @@
+/* Life: what each thing does on the way to being used. How much it does depends on how many times a day it is
+   used: a palette or a tooltip (a hundred times) gets nothing; a hover, a row, the navigation, only feedback
+   of 200 ms or less, without a bounce and once per hover; a dialog, a drawer, a toast, their standard motion
+   plus one detail; what is rare or the first time —the four signature moments— is where it is expressive.
+   The accent still marks value and the selection of data: the liveliness is movement, never a new color.
+   Everything moves with transform, opacity, filter and clip-path. What follows the pointer is a real element
+   the JS writes a transform to. Light goes under the text, so contrast is measured on the final state, and a
+   decorative layer is `aria-hidden` and never takes the pointer. Everything that repeats pauses off screen
+   (`data-offscreen`) and with the tab hidden. Each effect has its reduced-motion version at the bottom, and the
+   celebrations also answer to `data-celebrate="off"`. Colors and durations come from tokens.css. */
+
+/* ── Button: a ripple from where it was pressed, a shimmer once when the page arrives ── */
+.btn { isolation: isolate; }
+.ripples { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.ripple { position: absolute; border-radius: 50%; background: var(--ripple-neutral); transform: scale(0); animation: ripple var(--motion-ripple) forwards; }
+.btn--primary .ripple, .selection-bar .btn .ripple { background: var(--ripple-on-accent); }
+@keyframes ripple { to { transform: scale(2); opacity: 0; } }
+.btn--primary[data-shimmer]::after { animation: shimmer-once var(--ms-700) var(--ease-in-out) both; }
+/* A light under the label follows the pointer (life.js): it fades in with the hover and out when the pointer leaves. */
+.btn-light { position: absolute; top: 0; left: 0; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(closest-side, var(--btn-light), transparent); opacity: 0; transition: opacity var(--duration-normal) var(--ease-out); }
+.btn--primary .btn-light, .selection-bar .btn .btn-light { background: radial-gradient(closest-side, var(--btn-light-on-accent), transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover:not(:disabled, [aria-disabled="true"]) .btn-light { opacity: 1; }
+  /* Every button that is not flat rises a pixel under the pointer and its shadow grows; pressed, it comes down and
+     shrinks. The flat one answers with its fill only. */
+}
+/* The ring of the focus arrives as a bloom: wider and faint, then it settles at its 3 px. */
+:is(.input, .select, .textarea):focus-visible, .tags:has(.tags__input:focus-visible) { animation: focus-bloom var(--duration-slow) var(--ease-out); }
+@keyframes focus-bloom { from { box-shadow: 0 0 0 7px transparent; } }
+/* The button's outline closes in on it as focus arrives, so the jump of focus reads as a move. */
+.btn:focus-visible { animation: focus-in var(--duration-normal) var(--ease-out); }
+@keyframes focus-in { from { outline-offset: 6px; outline-color: transparent; } }
+
+/* ── Icons: an icon has one motion, the one of what it means, and makes it wherever it is: in a button, a menu, the
+   navigation or a field. Inside a control it answers the hover (after the 100 ms of intent) and the keyboard focus,
+   once each time: an arrow goes where it leads, a chevron where it drops, a «+» or an «×» turns, «refresh» spins, the
+   alarms (a bin, a danger, a warning, an overdue clock) shake, «send» takes off, a pencil writes, the magnifier rocks,
+   sliders and «swap» slide, a sheet (a copy, a file, a note) lifts, the rest pop. An icon drawn by parts (core.js)
+   moves its parts instead: the lid of the bin, the two sheets of a copy, the head of the people, the knobs of the
+   sliders, the squares of the grid, the paper of a receipt. Out of a control an icon arrives with the scroll, drawn
+   from a smaller size. The motion is translate, rotate and scale, so a press (transform) composes with it. ── */
+.icon { --glyph: glyph-pop; }
+.icon:is([data-icon="arrow-right"], :has(> use[href="#i-arrow-right"]), [data-icon="chevron-right"], :has(> use[href="#i-chevron-right"]), [data-icon="logout"], :has(> use[href="#i-logout"])) { --glyph: glyph-ahead; }
+.icon:is([data-icon="chevron-left"], :has(> use[href="#i-chevron-left"]), [data-icon="back"], :has(> use[href="#i-back"])) { --glyph: glyph-back; }
+.icon:is([data-icon="chevron"], :has(> use[href="#i-chevron"]), [data-icon="download"], :has(> use[href="#i-download"]), [data-icon="arrow-down"], :has(> use[href="#i-arrow-down"])) { --glyph: glyph-down; }
+.icon:is([data-icon="chevron-up"], :has(> use[href="#i-chevron-up"]), [data-icon="arrow-up"], :has(> use[href="#i-arrow-up"])) { --glyph: glyph-up; }
+.icon:is([data-icon="plus"], :has(> use[href="#i-plus"]), [data-icon="x"], :has(> use[href="#i-x"]), [data-icon="void"], :has(> use[href="#i-void"])) { --glyph: glyph-turn; }
+.icon:is([data-icon="refresh"], :has(> use[href="#i-refresh"]), [data-icon="contrast"], :has(> use[href="#i-contrast"])) { --glyph: glyph-spin; }
+.icon:is([data-icon="trash"], :has(> use[href="#i-trash"]), [data-icon="alert"], :has(> use[href="#i-alert"]), [data-icon="warning"], :has(> use[href="#i-warning"]), [data-icon="clock"], :has(> use[href="#i-clock"]), [data-icon="phone"], :has(> use[href="#i-phone"])) { --glyph: glyph-shake; }
+.icon:is([data-icon="send"], :has(> use[href="#i-send"]), [data-icon="open"], :has(> use[href="#i-open"])) { --glyph: glyph-fly; }
+.icon:is([data-icon="edit"], :has(> use[href="#i-edit"])) { --glyph: glyph-tilt; }
+.icon:is([data-icon="search"], :has(> use[href="#i-search"])) { --glyph: wiggle; transform-origin: 70% 70%; }
+.icon:is([data-icon="sliders"], :has(> use[href="#i-sliders"]), [data-icon="swap"], :has(> use[href="#i-swap"]), [data-icon="grip"], :has(> use[href="#i-grip"]), [data-icon="menu"], :has(> use[href="#i-menu"]), [data-icon="more"], :has(> use[href="#i-more"])) { --glyph: glyph-slide; }
+.icon:is([data-icon="copy"], :has(> use[href="#i-copy"]), [data-icon="duplicate"], :has(> use[href="#i-duplicate"]), [data-icon="archive"], :has(> use[href="#i-archive"]), [data-icon="note"], :has(> use[href="#i-note"]), [data-icon="folder"], :has(> use[href="#i-folder"]), [data-icon="receipt"], :has(> use[href="#i-receipt"]), [data-icon="calendar"], :has(> use[href="#i-calendar"]), [data-icon="mail"], :has(> use[href="#i-mail"])) { --glyph: glyph-lift; }
+svg.icon:is([data-icon="trash"], [data-icon="copy"], [data-icon="users"], [data-icon="sliders"], [data-icon="grid"], [data-icon="receipt"]) { --glyph: none; }
+[data-icon] [data-part] { transform-box: fill-box; transform-origin: center; }
+[data-icon="trash"] [data-part="lid"] { --part: part-lid; transform-origin: 0% 100%; }
+[data-icon="copy"] [data-part="front"] { --part: part-front; }
+[data-icon="copy"] [data-part="back"] { --part: part-back; }
+[data-icon="users"] [data-part="head"] { --part: part-nod; }
+[data-icon="users"] [data-part="side"] { --part: part-nod; --q: 1.5; }
+[data-icon="sliders"] [data-part="k1"] { --part: part-left; }
+[data-icon="sliders"] [data-part="k2"] { --part: part-right; }
+[data-icon="grid"] [data-part] { --part: quad; }
+[data-icon="grid"] [data-part="q2"] { --q: 1; }
+[data-icon="grid"] [data-part="q3"] { --q: 2; }
+[data-icon="grid"] [data-part="q4"] { --q: 3; }
+[data-icon="receipt"] [data-part="paper"] { --part: paper-lift; }
+[data-icon="receipt"] [data-part="lines"] { --part: lines-squeeze; }
+@media (hover: hover) and (pointer: fine) {
+  :where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):hover:not(:disabled, [aria-disabled="true"]) .icon:not([data-motion]) { animation: var(--glyph) var(--motion-icon) var(--icon-intent) both; }
+  :where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):hover:not(:disabled, [aria-disabled="true"]) .icon:not([data-motion]) [data-part] { animation: var(--part, none) var(--motion-icon) calc(var(--icon-intent) + var(--q, 0) * var(--ms-40)) both; }
+}
+:where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):focus-visible .icon:not([data-motion]) { animation: var(--glyph) var(--motion-icon) both; }
+:where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):focus-visible .icon:not([data-motion]) [data-part] { animation: var(--part, none) var(--motion-icon) calc(var(--q, 0) * var(--ms-40)) both; }
+@keyframes glyph-pop { 50% { scale: 1.15; } }
+@keyframes glyph-ahead { 50% { translate: 3px 0; } }
+@keyframes glyph-back { 50% { translate: -3px 0; } }
+@keyframes glyph-down { 50% { translate: 0 2px; } }
+@keyframes glyph-up { 50% { translate: 0 -2px; } }
+@keyframes glyph-turn { to { rotate: 90deg; } }
+@keyframes glyph-spin { to { rotate: 1turn; } }
+@keyframes glyph-shake { 20% { rotate: -12deg; } 40% { rotate: 10deg; } 60% { rotate: -6deg; } 80% { rotate: 3deg; } }
+@keyframes glyph-fly { 45% { translate: 3px -3px; opacity: 0; } 46% { translate: -3px 3px; opacity: 0; } }
+@keyframes glyph-tilt { 30% { rotate: -14deg; } 60% { rotate: 6deg; } }
+@keyframes glyph-slide { 30% { translate: -1.5px 0; } 70% { translate: 1.5px 0; } }
+@keyframes glyph-lift { 50% { translate: 0 -2px; scale: 1.06; } }
+@keyframes glyph-dim { 50% { opacity: 0.45; } }
+@keyframes part-lid { 50% { translate: 0 -1.5px; rotate: -12deg; } }
+@keyframes part-front { 50% { translate: 1.5px 1.5px; } }
+@keyframes part-back { 50% { translate: -1px -1px; } }
+@keyframes part-nod { 50% { translate: 0 -1.5px; } }
+@keyframes part-left { 50% { translate: -3px 0; } }
+@keyframes part-right { 50% { translate: 3px 0; } }
+@keyframes quad { 50% { scale: 1 0.6; } }
+@keyframes paper-lift { 50% { translate: 0 -1.5px; } }
+@keyframes lines-squeeze { 50% { scale: 0.6 1; } }
+@supports (animation-timeline: view()) {
+  :where(.icon):not(:where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])) .icon, .spinner, [data-motion])) { animation: glyph-arrive linear both; animation-timeline: view(); animation-range: entry 10% entry 90%; }
+}
+@keyframes glyph-arrive { from { opacity: 0; scale: 0.6; } }
+
+/* ── The brand: a shine and a turn of light inside the square, once a session and when it is hovered ── */
+.brand__mark { overflow: hidden; }
+.brand__fx { position: absolute; inset: 0; z-index: 1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.brand__shine { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, var(--shine-band) 50%, transparent 65%); transform: translateX(-120%) skewX(-15deg); }
+.brand__spin { position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent 0 60%, var(--spin-band) 80%, transparent); opacity: 0; }
+.brand__mark[data-shine] .brand__shine { animation: shine var(--motion-shine) both; }
+.brand__mark[data-shine] .brand__spin { animation: spin-once var(--motion-shine) both; }
+@keyframes shine { to { transform: translateX(120%) skewX(-15deg); } }
+@keyframes spin-once { from { opacity: 1; rotate: 0turn; } 85% { opacity: 1; } to { opacity: 0; rotate: 1turn; } }
+/* Under the pointer the light crosses it again, after the 100 ms of intent a hover has to last. */
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover .brand__shine { animation: shine var(--motion-shine) var(--icon-intent) both; }
+  .brand:hover .brand__spin { animation: spin-once var(--motion-shine) var(--icon-intent) both; }
+}
+
+/* ── Notice: its icon pops a beat after the notice itself has risen ── */
+.notice__icon { animation: pop-in var(--motion-pop) var(--ms-120) both; }
+
+@media (hover: hover) and (pointer: fine) {
+  .topbar [data-palette]:hover kbd.key { animation: key-tap var(--duration-instant) ease; }
+}
+@keyframes key-tap { 50% { transform: translateY(1px); } }
+
+
+/* ── The KPIs: one pill slides between the tiles; the last point of a line settles and pulses ── */
+.kpis { position: relative; isolation: isolate; }
+.kpi { position: relative; z-index: 1; }
+.kpis { --animated-background-fill: var(--kpi-hl); --animated-background-radius: var(--radius-item); }
+.kpi__foot { position: relative; }
+.spark__end, .spark__ring { position: absolute; left: var(--_x, 0px); top: var(--_y, 0px); width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; pointer-events: none; color: var(--text-faint); }
+.spark[data-tone="success"] ~ :is(.spark__end, .spark__ring) { color: color-mix(in oklab, var(--success) 85%, var(--text-faint)); }
+.spark[data-tone="danger"] ~ :is(.spark__end, .spark__ring) { color: color-mix(in oklab, var(--danger) 85%, var(--text-faint)); }
+.spark__end { background: currentColor; opacity: 0; transition: opacity var(--ms-160) ease; }
+.spark__end[data-on] { opacity: 1; }
+.spark__ring { border: 1px solid currentColor; opacity: 0; }
+.spark__ring[data-on] { animation: pulse-ring var(--motion-pulse-ring) both; }
+.spark__ring + .spark__ring[data-on] { animation-delay: var(--ms-700); }
+@keyframes pulse-ring { from { transform: scale(1); opacity: 0.45; } to { transform: scale(2.8); opacity: 0; } }
+/* A figure the user changed flashes the tone of what it did, behind its digits. */
+[data-sliding] { position: relative; isolation: isolate; }
+.flash { position: absolute; inset: -1px -6px; z-index: -1; border-radius: var(--radius-item); background: var(--success-soft); opacity: 0; pointer-events: none; }
+.flash[data-tone="danger"] { background: var(--danger-soft); }
+.flash[data-run] { animation: flash var(--motion-flash); }
+@keyframes flash { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+.kpi__ok { flex: none; align-self: center; margin-left: var(--space-2); color: var(--success); }
+.kpi__ok path { stroke-dasharray: 1; stroke-dashoffset: 0; animation: draw-check var(--motion-check-draw) both; }
+@keyframes draw-check { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* ── Toast: the check draws itself, and the label of a promise shimmers while it is pending ── */
+.toast[data-tone="success"] .toast__icon { animation: pop-in var(--motion-pop) both; }
+.toast[data-tone="success"] .toast__icon path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-check var(--motion-check-draw) var(--duration-instant) forwards; }
+@keyframes pop-in { from { transform: scale(0.6); } }
+.toast[data-tone="loading"] .toast__icon { color: var(--text-soft); background: var(--surface-hover); }
+.toast__icon[data-icon="party-popper"] { color: var(--text); background: color-mix(in oklab, var(--accent) 14%, transparent); animation: pop-group var(--ms-600) var(--ease-out) both; }
+.toast__icon[data-icon="party-popper"] [data-part="bit"] { animation: bits-in var(--ms-600) var(--ease-out) both; }
+.toast__icon[data-icon="send"] { color: var(--text); background: color-mix(in oklab, var(--info) 16%, transparent); animation: send-in var(--motion-send) both; }
+@keyframes pop-group { 0% { transform: scale(1); } 30% { transform: scale(0.7); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes bits-in { from { translate: -4px 4px; opacity: 0; } }
+@keyframes send-in { 0% { translate: -10px 10px; opacity: 0; } 60% { opacity: 1; } 100% { translate: 0 0; opacity: 1; } }
+.shimmer { position: relative; display: inline-block; overflow: hidden; vertical-align: top; }
+.shimmer__base { color: var(--text-faint); }
+.shimmer__band { position: absolute; inset: 0; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent 35%, var(--text) 50%, transparent 65%); mask-image: linear-gradient(90deg, transparent 35%, var(--text) 50%, transparent 65%); animation: shimmer-window var(--motion-text-shimmer) infinite; }
+.shimmer__copy { display: block; color: var(--text); animation: shimmer-counter var(--motion-text-shimmer) infinite; }
+@keyframes shimmer-window { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes shimmer-counter { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+/* ── Table: a row arrives and glows once; a status change sweeps across it ── */
+.table td { position: relative; }
+.table tbody tr[data-entering] > td { animation: row-reveal var(--motion-row-in) both; }
+@keyframes row-reveal { from { opacity: 0; clip-path: inset(0 0 100% 0); } }
+.table tbody tr[data-arriving] > td { isolation: isolate; }
+.table tbody tr[data-arriving] > td::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--arrival); opacity: 0; pointer-events: none; animation: arrival var(--motion-arrival) both; }
+@keyframes arrival { 0% { opacity: 0; } 8% { opacity: 1; } 45% { opacity: 1; } 100% { opacity: 0; } }
+.sweep { position: absolute; left: 0; right: 0; z-index: 2; overflow: hidden; pointer-events: none; --_tone: var(--success-soft); }
+.sweep[data-tone="danger"] { --_tone: var(--danger-soft); }
+.sweep[data-tone="info"] { --_tone: var(--info-soft); }
+.sweep[data-tone="neutral"] { --_tone: var(--hl-bg); }
+.sweep__band { position: absolute; top: 0; bottom: 0; left: 0; width: 55%; background: linear-gradient(90deg, transparent, var(--_tone), transparent); opacity: 0.5; transform: translateX(-100%) skewX(-15deg); animation: sweep var(--motion-sweep) var(--_delay, 0ms) both; }
+@keyframes sweep { to { transform: translateX(220%) skewX(-15deg); } }
+
+/* ── Badge: an overdue dot pings twice the first time it is seen; a record carries a shine ── */
+.badge { position: relative; }
+.badge[data-ping]::after { content: ""; position: absolute; left: 7px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--_tone); pointer-events: none; animation: ping var(--motion-ping) 2 both; }
+@keyframes ping { from { transform: scale(1); opacity: 0.6; } to { transform: scale(2.4); opacity: 0; } }
+.badge[data-shine] { overflow: hidden; }
+.badge[data-shine]::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 35%, var(--shine-band) 50%, transparent 65%); transform: translateX(-120%) skewX(-15deg); animation: shine var(--motion-shine) var(--ms-300) both; }
+
+/* ── Checkbox and radio: a ring leaves the box when it is checked ── */
+.checkbox__box, .radio__dot { position: relative; }
+.checkbox__box::after, .radio__dot::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; border: 1.5px solid var(--accent); opacity: 0; pointer-events: none; }
+.checkbox__box[data-pop]::after { animation: click-ring var(--motion-click-ring) var(--pop-delay, 0ms) both; }
+.radio__dot[data-pop]::before { animation: click-ring-radio var(--motion-click-ring) both; }
+@keyframes click-ring { from { transform: scale(0.6); opacity: 0.5; } to { transform: scale(1.9); opacity: 0; } }
+@keyframes click-ring-radio { from { transform: scale(0.6); opacity: 0.5; } to { transform: scale(1.7); opacity: 0; } }
+
+/* ── Slider: a bubble with the value rides the thumb while it is held, and leans with the pointer ── */
+.slider__bubble { position: absolute; bottom: 100%; left: 50%; margin-bottom: 6px; padding: 2px 6px; border-radius: var(--radius-item); background: var(--surface-inverse); color: var(--text-inverse); font-size: var(--text-xs); font-weight: var(--weight-medium); white-space: nowrap; pointer-events: none; translate: -50% 0; opacity: 0; transform: scale(0.8) translateY(4px); transform-origin: 50% 100%; transition: opacity var(--ms-100) ease, transform var(--ms-100) var(--ease-out); }
+.slider[data-dragging] .slider__bubble { opacity: 1; transform: none; transition: opacity var(--ms-100) ease, transform var(--motion-pop); }
+
+/* ── Accordion: what is inside is revealed from its top edge as the panel opens, and closes the other way ── */
+.accordion__body { clip-path: inset(0 0 100% 0); opacity: 0; translate: 0 8px; transition: clip-path var(--motion-reveal-out), opacity var(--motion-reveal-out), translate var(--motion-reveal-out); }
+.accordion__panel[data-open] .accordion__body { clip-path: inset(0); opacity: 1; translate: none; transition: clip-path var(--motion-reveal-in), opacity var(--motion-reveal-in), translate var(--motion-reveal-in); }
+
+/* ── Segmented control and tabs: the labels under the pill are the selected ones, clipped to it ── */
+.segmented__labels, .tabs__labels { position: absolute; inset: 0; z-index: 2; pointer-events: none; transition: clip-path var(--motion-pill); }
+.segmented__labels { display: flex; padding: 3px; gap: 2px; }
+.tabs__labels { display: flex; gap: var(--space-4); }
+.segmented__labels > *, .tabs__labels > * { color: var(--text); }
+.segmented__ghost { display: inline-flex; align-items: center; height: var(--_option); padding: 0 var(--space-3); font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; }
+.tabs__ghost { display: inline-flex; align-items: center; height: 38px; padding: 0 2px; font-weight: var(--weight-medium); white-space: nowrap; }
+
+/* ── Inputs: the magnifier of a field rocks, its one motion, when the pointer focuses the field ── */
+.search > .icon[data-wiggle], .field__control > .icon[data-wiggle] { animation: wiggle var(--motion-icon); transform-origin: 70% 70%; }
+@keyframes wiggle { 0% { rotate: 0deg; } 20% { rotate: 10deg; } 40% { rotate: -6deg; } 60% { rotate: 3deg; } 80% { rotate: -1deg; } 100% { rotate: 0deg; } }
+.field[data-redo] .field__icon--valid path { stroke-dashoffset: 1; }
+.field__icon--valid path { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset var(--motion-check-draw); }
+
+/* ── Combobox: the «+» of «Crear …» turns when it is the lit option ── */
+.combobox__option .icon { transition: rotate var(--ms-320) var(--ease-out); }
+.combobox__option--create[data-active] .icon { rotate: 90deg; }
+
+/* ── Breadcrumb: the last step slides in ── */
+.breadcrumb [aria-current="page"] { animation: crumb-enter var(--ms-160) var(--ease-out); }
+@keyframes crumb-enter { from { opacity: 0; transform: translateX(-6px); } }
+
+/* ── Palette: Enter lights the row for an instant before it runs ── */
+.palette__item::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--surface-active); opacity: 0; pointer-events: none; }
+.palette__item[data-flash]::after { animation: flash-row var(--ms-180) var(--ease-out); }
+@keyframes flash-row { 50% { opacity: 1; } }
+
+/* ── Progress: a band of light crosses the bar while it is under 100 % and on screen; done, it turns success ── */
+.progress__bar { position: relative; overflow: hidden; }
+.progress[data-shine] .progress__bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--shine-band), transparent); transform: translateX(-100%); animation: progress-shine calc(var(--ms-1200) + var(--ms-600)) var(--ease-shine) infinite; }
+@keyframes progress-shine { 0% { transform: translateX(-100%); } 66% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
+.progress[data-complete] .progress__bar { background: var(--success); transition: transform var(--motion-data), background-color var(--ms-200) ease; }
+.progress[data-complete] { animation: pop-y var(--motion-pop); }
+@keyframes pop-y { from { transform: scaleY(1.6); } }
+
+/* ── Empty (the first time): the mark draws, the title arrives by word, a dotted ground answers the pointer,
+   and the action pulses three times ── */
+.empty[data-first-run] { position: relative; isolation: isolate; }
+.empty[data-first-run]::before, .empty[data-first-run]::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; background-size: 16px 16px; -webkit-mask-image: radial-gradient(closest-side, var(--text) 30%, transparent); mask-image: radial-gradient(closest-side, var(--text) 30%, transparent); }
+.empty[data-first-run]::before { width: auto; height: auto; translate: none; background-image: radial-gradient(circle, var(--border-strong) 0.75px, transparent 1px); }
+.empty[data-first-run]::after { background-image: radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent) 0.75px, transparent 1px); clip-path: circle(72px at var(--mx, 50%) var(--my, 50%)); opacity: 0; transition: opacity var(--ms-200) ease; }
+.empty[data-first-run][data-pointer]::after { opacity: 1; }
+.empty[data-first-run] .empty__mark path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.empty[data-first-run][data-live] .empty__mark { animation: mark-in var(--motion-pop) both; }
+.empty[data-first-run][data-live] .empty__mark path { animation: draw-check var(--ms-700) var(--ease-in-out) var(--ms-120) forwards; }
+@keyframes mark-in { from { transform: scale(0.8); } }
+.empty__title[data-split] .word { display: inline-block; opacity: 0; filter: blur(var(--reveal-blur)); transform: translateY(var(--reveal-y)); }
+.empty[data-live] .empty__title .word { animation: word-in var(--ms-280) var(--ease-out) calc(var(--i, 0) * var(--stagger-word)) forwards; }
+@keyframes word-in { to { opacity: 1; filter: blur(0); transform: none; } }
+.empty[data-first-run] .empty__body { opacity: 0; }
+.empty[data-live] .empty__body { animation: appear var(--ms-200) var(--ease-out) var(--ms-200) forwards; }
+@keyframes appear { to { opacity: 1; } }
+.empty[data-first-run][data-live] .btn::before { content: ""; position: absolute; inset: -2px; border-radius: inherit; border: 2px solid color-mix(in oklab, var(--accent) 40%, transparent); opacity: 0; pointer-events: none; animation: cta-ring var(--motion-cta-ring) var(--ms-1200) 3 both; }
+.empty[data-first-run] .btn:is(:hover, :focus)::before { animation: none; }
+@keyframes cta-ring { from { transform: scale(1); opacity: 0.6; } to { transform: scale(1.18); opacity: 0; } }
+
+/* ── The chart: the area is revealed from the left in step with the line; the current point sends out two rings ── */
+.chart__ring { fill: none; stroke: var(--accent); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; opacity: 0; }
+.chart[data-ping] .chart__ring { animation: pulse-ring var(--motion-pulse-ring) both; }
+.chart[data-ping] .chart__ring + .chart__ring { animation-delay: var(--ms-700); }
+
+/* ── Loops pause when they are off screen or the tab is hidden ── */
+[data-offscreen], [data-offscreen]::before, [data-offscreen]::after, [data-offscreen] :is(.progress__bar, .spinner, .shimmer__band, .shimmer__copy) { animation-play-state: paused !important; }
+:root[data-tab-hidden] *, :root[data-tab-hidden] *::before, :root[data-tab-hidden] *::after { animation-play-state: paused !important; }
+
+/* ── The theme changes with a circle that opens from the control (the View Transition is animated by the JS) ── */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* ── The signature moments: a fixed layer for the confetti and the sparks, a lap of light around a card ── */
+.confetti-layer { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; overflow: hidden; background: none; pointer-events: none; }
+.confetti { position: absolute; left: 0; top: 0; width: 6px; height: 10px; border-radius: 1px; background: var(--_c); will-change: transform, opacity; }
+.confetti--dot { height: 6px; border-radius: 50%; }
+.particle { position: absolute; left: 0; top: 0; width: var(--particle-size); height: var(--particle-size); margin: calc(var(--particle-size) / -2) 0 0 calc(var(--particle-size) / -2); border-radius: 50%; background: var(--success); will-change: transform, opacity; }
+.lap { --_from: var(--success); --_to: color-mix(in oklab, var(--success), var(--text-inverse) 45%); position: absolute; inset: 0; z-index: 2; overflow: hidden; border-radius: inherit; padding: 2px; pointer-events: none; -webkit-mask: linear-gradient(var(--text) 0 0) content-box, linear-gradient(var(--text) 0 0); -webkit-mask-composite: xor; mask: linear-gradient(var(--text) 0 0) content-box exclude, linear-gradient(var(--text) 0 0); }
+.lap[data-tone="accent"] { --_from: var(--beam-from); --_to: var(--beam-to); }
+.lap__sweep { position: absolute; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(from 0deg, transparent 0 70%, var(--_from) 86%, var(--_to) 95%, transparent 100%); animation: lap-turn var(--motion-beam-lap) both; }
+@keyframes lap-turn { to { rotate: 1turn; } }
+
+/* Whoever turned the celebrations off keeps the words (the toast) and loses the rest. */
+:root[data-celebrate="off"] :is(.confetti-layer, .lap, .particle, .spark__ring, .chart__ring, .badge[data-ping]::after, .badge[data-shine]::after, .empty[data-live] .btn::before) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ripples, .brand__fx, .spark__ring, .chart__ring, .shimmer__band, .sweep, .lap, .confetti-layer { display: none; }
+  .btn .icon[data-icon="plus"], .btn:hover .icon[data-icon="plus"] { rotate: none; }
+  .icon:not(.toast__icon), .icon [data-part] { animation: none !important; }
+  @media (hover: hover) and (pointer: fine) {
+    :where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):hover:not(:disabled, [aria-disabled="true"]) .icon:not(.toast__icon, [data-motion]) { animation: glyph-dim var(--motion-icon) var(--icon-intent) both !important; }
+  }
+  :where(button, a[href], summary, label, [role="button"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="tab"], [tabindex]:not([tabindex="-1"])):focus-visible .icon:not(.toast__icon, [data-motion]) { animation: glyph-dim var(--motion-icon) both !important; }
+  .btn:focus-visible, :is(.input, .select, .textarea):focus-visible, .tags:has(.tags__input:focus-visible) { animation: none; }
+  .btn--primary[data-shimmer]::after { animation: none; display: none; }
+  .topbar [data-palette]:hover kbd.key { animation: none; }
+  .flash[data-run] { animation-duration: var(--ms-140); }
+  .toast[data-tone="success"] .toast__icon, .toast__icon[data-icon="party-popper"], .toast__icon[data-icon="send"] { animation: fade-from var(--motion-fade-reduced) both; }
+  .toast[data-tone="success"] .toast__icon path { stroke-dasharray: none; stroke-dashoffset: 0; animation: none; }
+  .toast__icon[data-icon="party-popper"] [data-part="bit"] { animation: none; }
+  .shimmer__base { color: var(--text-soft); }
+  .table tbody tr[data-entering] > td { animation: fade-from var(--motion-fade-reduced) both; }
+  .badge[data-ping]::after, .badge[data-shine]::after { display: none; }
+  .checkbox__box[data-pop]::after, .radio__dot[data-pop]::before { animation: none; }
+  .slider__bubble { transform: none; transition: opacity var(--ms-100) ease; }
+  .accordion__body, .accordion__panel[data-open] .accordion__body { clip-path: none; translate: none; transition: opacity var(--motion-fade-reduced); }
+  .segmented__labels, .tabs__labels { transition: none; }
+  .search > .icon[data-wiggle], .field__control > .icon[data-wiggle] { animation: none; }
+  .field__icon--valid path { transition: opacity var(--motion-fade-reduced); stroke-dashoffset: 0 !important; }
+  .combobox__option--create[data-active] .icon { rotate: none; }
+  .breadcrumb [aria-current="page"] { animation: fade-from var(--motion-fade-reduced); }
+  .palette__item[data-flash]::after { animation: flash-row var(--ms-140) ease-out; }
+  .progress[data-shine] .progress__bar::after { display: none; }
+  .progress[data-complete] { animation: none; }
+  .progress[data-complete] .progress__bar { transition: background-color var(--motion-fade-reduced); }
+  .empty[data-first-run]::after { display: none; }
+  .empty[data-first-run] .empty__mark path { stroke-dashoffset: 0; animation: none; }
+  .empty[data-first-run][data-live] .empty__mark { animation: none; }
+  .empty__title[data-split] .word, .empty[data-first-run] .empty__body { opacity: 1; filter: none; transform: none; animation: none; }
+  .empty[data-live] .empty__title { animation: fade-from var(--motion-fade-reduced); }
+  .empty[data-first-run][data-live] .btn::before { display: none; }
+  .spark__end { transition: opacity var(--motion-fade-reduced); }
+  .kpi__ok path { animation: none; stroke-dashoffset: 0; }
+  .notice__icon { animation: none; }
+  .brand:hover .brand__shine, .brand:hover .brand__spin { animation: none; }
+}
+@keyframes fade-from { from { opacity: 0; } }

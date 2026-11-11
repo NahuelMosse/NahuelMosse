@@ -1,0 +1,5 @@
+Upstream: npm package `motion-ai` 14.2.0 (https://github.com/motiondivision/ai-kit), author Matt Perry.
+License: MIT, declared in the package's `package.json` (`"license": "MIT"`).
+Source: `content/skills/motion/` of the package, copied as is.
+Part of the `web` profile: `kit.mjs profile on web` copies it and adds the hosted `motion` MCP server to `.mcp.json`.
+Not included: the paid `motion-plus` server and the `motion-reviewer` agent.

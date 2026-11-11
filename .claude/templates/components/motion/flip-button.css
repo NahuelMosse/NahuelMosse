@@ -1,0 +1,21 @@
+/* Flip button (Animate UI): the outer button is bare; each face is a button surface of the set, and the
+   turn is written by flip-button.js. The faces' own transform transition is off: the spring drives it. */
+:root {
+  --flip-button-spring: 280 20 1;
+  --flip-button-perspective: 1000px;
+  --flip-button-press: 0.95;
+  --flip-button-fade: 140ms;
+}
+.flip-btn { display: inline-grid; place-items: center; perspective: var(--flip-button-perspective); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; border-radius: var(--radius-control); transition: transform var(--motion-release); }
+.flip-btn:active { transform: scale(var(--flip-button-press)); }
+.flip-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.flip-btn__face { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+.flip-btn__face.btn { transition: background-color var(--motion-hover), border-color var(--motion-hover), color var(--motion-hover), box-shadow var(--motion-hover); }
+.flip-btn__face.btn:active { transform: none; }
+.flip-btn[data-flipped="false"] .flip-btn__face[data-face="back"] { pointer-events: none; }
+.flip-btn:disabled { cursor: not-allowed; }
+.flip-btn:disabled .flip-btn__face { --_bg: var(--surface-hover); --_fg: var(--text-faint); --_bd: transparent; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .flip-btn__face, .flip-btn__face.btn { transition: opacity var(--flip-button-fade) var(--ease-out), background-color var(--motion-hover), color var(--motion-hover); }
+  .flip-btn:active { transform: none; }
+}

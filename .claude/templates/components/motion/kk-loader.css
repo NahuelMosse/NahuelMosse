@@ -1,0 +1,47 @@
+/* Loader: rings are conic gradients in the text colour, masked to a hairline each; the stage breathes. */
+:root {
+  --kk-loader-sm: 5rem;
+  --kk-loader-md: 8rem;
+  --kk-loader-lg: 10rem;
+  --kk-loader-ink: var(--text);
+}
+
+.kl { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 32px; font-family: var(--font); color: var(--kk-loader-ink); --size: var(--kk-loader-md); --gap: 12px; --max: 14rem; --t-size: var(--text-lg); --t-weight: var(--weight-medium); --s-size: var(--text-md); }
+.kl *, .kl *::before, .kl *::after { box-sizing: border-box; }
+.kl[data-size="sm"] { --size: var(--kk-loader-sm); --gap: 8px; --max: 12rem; --t-size: var(--text-md); --s-size: var(--text-xs); }
+.kl[data-size="lg"] { --size: var(--kk-loader-lg); --gap: 16px; --max: 16rem; --t-size: 1.125rem; --t-weight: var(--weight-strong); --s-size: var(--text-lg); }
+
+.kl__stage { position: relative; width: var(--size); height: var(--size); animation: kl-breathe 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.kl__ring { position: absolute; inset: 0; display: block; border-radius: 50%; }
+.kl__ring--outer { background: conic-gradient(from 0deg, transparent 0deg, currentColor 90deg, transparent 180deg); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 35%, black 37%, black 39%, transparent 41%); mask: radial-gradient(circle at 50% 50%, transparent 35%, black 37%, black 39%, transparent 41%); opacity: 0.8; animation: kl-cw 3s linear infinite; }
+.kl__ring--main { background: conic-gradient(from 0deg, transparent 0deg, currentColor 120deg, color-mix(in srgb, currentColor 50%, transparent) 240deg, transparent 360deg); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 42%, black 44%, black 48%, transparent 50%); mask: radial-gradient(circle at 50% 50%, transparent 42%, black 44%, black 48%, transparent 50%); opacity: 0.9; animation: kl-cw 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.kl__ring--back { background: conic-gradient(from 180deg, transparent 0deg, color-mix(in srgb, currentColor 60%, transparent) 45deg, transparent 90deg); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 52%, black 54%, black 56%, transparent 58%); mask: radial-gradient(circle at 50% 50%, transparent 52%, black 54%, black 56%, transparent 58%); opacity: 0.35; animation: kl-ccw 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.kl__ring--dots { background: conic-gradient(from 270deg, transparent 0deg, color-mix(in srgb, currentColor 40%, transparent) 20deg, transparent 40deg); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 61%, black 62%, black 63%, transparent 64%); mask: radial-gradient(circle at 50% 50%, transparent 61%, black 62%, black 63%, transparent 64%); opacity: 0.5; animation: kl-cw 3.5s linear infinite; }
+@keyframes kl-cw { to { transform: rotate(360deg); } }
+@keyframes kl-ccw { to { transform: rotate(-360deg); } }
+@keyframes kl-breathe { 50% { transform: scale(1.02); } }
+
+.kl__text { display: flex; flex-direction: column; gap: var(--gap); max-width: var(--max); text-align: center; animation: kl-rise 1s 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+.kl__title { margin: 0; font-size: var(--t-size); font-weight: var(--t-weight); line-height: 1.15; letter-spacing: -0.02em; color: var(--text); animation: kl-rise 0.8s 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+.kl__sub { margin: 0; font-size: var(--s-size); line-height: 1.45; letter-spacing: -0.01em; color: var(--text-soft); animation: kl-rise 0.8s 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards; --from: 8px; }
+.kl__title-in { display: inline-block; animation: kl-breathe-a 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.kl__sub-in { display: inline-block; animation: kl-breathe-b 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes kl-rise { from { opacity: 0; transform: translateY(var(--from, 12px)); } }
+@keyframes kl-breathe-a { 50% { opacity: 0.86; } }
+@keyframes kl-breathe-b { 50% { opacity: 0.85; } }
+
+/* Off screen or with the tab hidden nothing runs. */
+.kl[data-offscreen] *, :root[data-tab-hidden] .kl * { animation-play-state: paused; }
+
+/* Reduced motion: no turning or travel; the rings fade slowly in and out so it still reads as working. */
+@media (prefers-reduced-motion: reduce) {
+  .kl__stage { animation: none; }
+  .kl__ring { animation: kl-pulse 1.6s ease-in-out infinite; }
+  .kl__ring--main { animation-delay: -0.4s; }
+  .kl__ring--back { animation-delay: -0.8s; }
+  .kl__ring--dots { animation-delay: -1.2s; }
+  .kl__text, .kl__title, .kl__sub { animation: kl-fade 150ms ease-out backwards; }
+  .kl__title-in, .kl__sub-in { animation: none; }
+}
+@keyframes kl-pulse { 50% { opacity: 0.25; } }
+@keyframes kl-fade { from { opacity: 0; } }

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de cobros por día · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./activity-heatmap.css">
+<style>
+  .card { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .range { display: inline-flex; padding: 2px; border-radius: var(--radius-control); background: var(--segmented-track); }
+  .range button { height: 28px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-item); background: none; color: var(--text-soft); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+  .range button[aria-pressed="true"] { background: var(--segmented-thumb); color: var(--text); box-shadow: var(--shadow-control); }
+  .picked { position: relative; margin: var(--space-4) 0 0; min-height: 1.5em; color: var(--text-soft); font-size: var(--text-sm); line-height: 1.5; }
+  .picked__line { display: block; }
+  .narrow { max-width: 380px; }
+  .card--wide { max-width: 40rem; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Mapa de cobros por día</h1>
+      <p class="mu-demo__note">Un cuadrado por día, semanas en columnas y cuatro tonos del acento según lo ocupado que estuvo el día. Los cuadrados aparecen en diagonal al entrar en vista; un rango nuevo cambia primero el texto y después recolorea la grilla en un barrido. Un solo globo se desliza entre días al pasar el mouse o con las flechas; Enter elige un día y su detalle queda debajo de la grilla. La leyenda resalta un nivel al pasar o enfocar y lo fija al pulsar.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-year">
+    <h2 class="mu-demo__label" id="s-year">Cobros registrados</h2>
+    <div class="card card--wide"><div id="heat"></div><p class="picked" id="picked" aria-live="polite"></p></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-narrow">
+    <h2 class="mu-demo__label" id="s-narrow">En una tarjeta angosta</h2>
+    <div class="card narrow"><div id="heat-narrow"></div></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './activity-heatmap.js';
+  import { swapper } from './arc-shared.js';
+  themeSwitch();
+  const rand = (seed) => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const year = (y, seed) => {
+    const r = rand(seed);
+    const out = [];
+    for (let t = Date.UTC(y, 0, 1); t < Date.UTC(y + 1, 0, 1); t += 86400000) {
+      const d = new Date(t);
+      const weekend = d.getUTCDay() === 0 || d.getUTCDay() === 6;
+      const month = d.getUTCMonth();
+      const busy = month === 2 || month === 8 ? 1.6 : 1;
+      out.push({ date: d.toISOString().slice(0, 10), count: weekend ? (r() < 0.12 ? 1 : 0) : Math.floor(r() ** 1.6 * 9 * busy) });
+    }
+    return out;
+  };
+  const y2025 = year(2025, 7);
+  const y2024 = year(2024, 21);
+  const labels = {
+    in: 'en', less: 'Menos', more: 'Más',
+    cell: (n, u, date) => `${n ? n : 'Sin'} ${u}, ${date}`,
+    none: (u) => `Sin ${u.other}`,
+    legendHelp: (u, ranges) => `Los cuadrados más oscuros son más ${u.other}. Niveles: ${ranges.join(', ')}.`,
+    ranges: (b, u) => ({
+      long: [`sin ${u.other}`, b[0] === 1 ? `1 ${u.one}` : `1 a ${b[0]} ${u.other}`, `${b[0] + 1} a ${b[1]} ${u.other}`, `${b[1] + 1} a ${b[2]} ${u.other}`, `${b[2] + 1} o más ${u.other}`],
+      short: [`sin ${u.other}`, b[0] === 1 ? `1 ${u.one}` : `1–${b[0]} ${u.other}`, `${b[0] + 1}–${b[1]} ${u.other}`, `${b[1] + 1}–${b[2]} ${u.other}`, `${b[2] + 1}+ ${u.other}`],
+    }),
+    days: (n) => `${n} ${n === 1 ? 'día' : 'días'}`,
+    caption: (dayCount, range) => `${dayCount} con ${range}`,
+    highlight: (range) => `Resaltar los días con ${range}`,
+    levels: 'Resaltar días por nivel',
+  };
+  const common = { label: 'Cobros por día', unit: { one: 'cobro', other: 'cobros' }, locale: 'es-AR', labels };
+
+  // The line under the grid describes the chosen day and rises into place whenever the day or the range changes.
+  const dayName = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const clients = ['Facturas A', 'Facturas B', 'Notas de crédito'];
+  const plural = (n, one, other) => `${n} ${n === 1 ? one : other}`;
+  const detailOf = (date, days) => {
+    const day = days.find((d) => d.date === date);
+    if (!day) return 'Elegí un día con Enter o un clic.';
+    const when = dayName.format(new Date(`${date}T00:00:00Z`));
+    if (!day.count) return `${when}: sin cobros.`;
+    const settled = Math.ceil(day.count * 0.6);
+    const open = day.count - settled;
+    const parts = [plural(settled, 'cobro conciliado', 'cobros conciliados'), ...(open ? [plural(open, 'pendiente', 'pendientes')] : [])];
+    return `${when}: ${parts.join(' y ')}, sobre todo de ${clients[Number(date.slice(-2)) % clients.length]}.`;
+  };
+  const picked = swapper(document.getElementById('picked'), { className: 'picked__line' });
+  let range = { days: y2025, period: '2025' };
+  let selected = '2025-03-14';
+  picked.set(detailOf(selected, range.days), 1, { instant: true });
+
+  const bar = document.createElement('div');
+  bar.className = 'range';
+  const ranges = { '2025': { days: y2025, period: '2025' }, '2024': { days: y2024, period: '2024' }, 'sem': { days: y2025.slice(-182), period: 'el último semestre' } };
+  const heat = mount(document.getElementById('heat'), { ...common, ...range, selectedDate: selected, actions: bar, onSelectDate: (date) => { selected = date; picked.set(detailOf(date, range.days)); heat.select(date); } });
+
+  // The text changes first; the grid recolors once the new range has "arrived".
+  const LOAD_MS = 300;
+  let loadTimer = 0;
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const [key, text] of [['2025', '2025'], ['2024', '2024'], ['sem', 'Último semestre']]) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = text;
+    b.setAttribute('aria-pressed', String(key === '2025'));
+    b.addEventListener('click', () => {
+      for (const o of bar.children) o.setAttribute('aria-pressed', String(o === b));
+      clearTimeout(loadTimer);
+      loadTimer = setTimeout(() => {
+        range = ranges[key];
+        const sameDay = selected ? `${range.period.length === 4 ? range.period : selected.slice(0, 4)}${selected.slice(4)}` : null;
+        selected = sameDay && range.days.some((d) => d.date === sameDay) ? sameDay : null;
+        heat.update({ ...range, selectedDate: selected });
+        picked.set(detailOf(selected, range.days));
+      }, reduce() ? 0 : LOAD_MS);
+    });
+    bar.append(b);
+  }
+  mount(document.getElementById('heat-narrow'), { ...common, days: y2025.slice(-120), period: 'los últimos 4 meses' });
+</script>
+</body>
+</html>

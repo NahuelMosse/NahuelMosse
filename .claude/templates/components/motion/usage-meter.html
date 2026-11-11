@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medidor de uso · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./usage-meter.css">
+<style>
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 40rem), 40rem)); justify-content: start; gap: var(--space-5); align-items: start; }
+  .plan { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .spacer { height: 30vh; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Medidor de uso</h1>
+      <p class="mu-demo__note">Un medidor segmentado de una cuota. Cada categoría arranca donde termina la anterior y frena dos píxeles antes de la siguiente. Los números giran por columna, el estado avisa cerca del límite y, al pasarlo, la barra se tacha. Pasá el mouse o enfocá la leyenda con el teclado para ver una categoría; una pulsación la fija.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-plan">
+    <h2 class="mu-demo__label" id="s-plan">Plan Pro · Configuración</h2>
+    <div class="plans">
+      <div class="plan"><div id="invoices"></div></div>
+      <div class="plan"><div id="seats"></div></div>
+      <div class="plan"><div id="storage"></div></div>
+    </div>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="more">Emitir 99 facturas más</button>
+      <button type="button" class="btn-demo" id="shift">Pasar 30 facturas de tipo A a tipo B</button>
+      <button type="button" class="btn-demo" id="raise">Ampliar el plan a 800 facturas</button>
+      <button type="button" class="btn-demo" id="reset">Volver a empezar</button>
+    </div>
+  </section>
+  <div class="spacer"></div>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './usage-meter.js';
+  themeSwitch();
+  const labels = {
+    free: 'Disponibles', over: 'Excedidas', almostFull: 'Casi completo',
+    freeBadge: (t) => `${t} disponibles`, overBadge: (t) => `${t} de más`,
+    used: (u, limit) => `${u ? `${u} ` : ''}de ${limit} usadas`, srUsed: (t, limit) => `${t} de ${limit} usadas`,
+    inCategory: (u, label, share) => `${u ? `${u} ` : ''}en ${label} · ${share}% del plan`,
+    freeCaption: (u) => `${u ? `${u} ` : ''}disponibles`, overCaption: (u) => `${u ? `${u} ` : ''}por encima del límite`,
+    summary: (label, total, limit, parts, status, over, free) => `${label}: ${total} de ${limit} usadas. ${parts}. ${status === 'over' ? `Superaste el límite por ${over}.` : `Quedan ${free}${status === 'near' ? ', casi completo' : ''}.`}`,
+    announce: (status, over, free) => (status === 'over' ? `Superaste el límite del plan por ${over}.` : status === 'near' ? `Casi completo. Quedan ${free}.` : `Dentro del límite. Quedan ${free}.`),
+    byCategory: (label) => `${label} por categoría`,
+  };
+  const initial = [
+    { id: 'a', label: 'Facturas A', value: 212 },
+    { id: 'b', label: 'Facturas B', value: 98 },
+    { id: 'c', label: 'Facturas C', value: 61 },
+    { id: 'nc', label: 'Notas de crédito', value: 24 },
+  ];
+  const invoices = mount(document.getElementById('invoices'), { label: 'Facturas emitidas este mes', unit: 'facturas', decimals: 0, limit: 500, segments: initial, labels });
+  mount(document.getElementById('seats'), { label: 'Usuarios del equipo', unit: 'usuarios', decimals: 0, limit: 6, labels, segments: [{ id: 'adm', label: 'Administración', value: 1 }, { id: 'con', label: 'Contabilidad', value: 2 }, { id: 'lec', label: 'Solo lectura', value: 2 }] });
+  mount(document.getElementById('storage'), { label: 'Comprobantes guardados', unit: 'GB', decimals: 1, limit: 10, labels, segments: [{ id: 'pdf', label: 'PDF', value: 5.2 }, { id: 'xml', label: 'XML', value: 1.9 }, { id: 'adj', label: 'Adjuntos', value: 2.3 }] });
+  let segs = initial.map((s) => ({ ...s }));
+  const apply = (limit) => invoices.update({ segments: segs.map((s) => ({ ...s })), ...(limit ? { limit } : {}) });
+  document.getElementById('more').addEventListener('click', () => { segs[0].value += 99; apply(); });
+  document.getElementById('shift').addEventListener('click', () => { const m = Math.min(30, segs[0].value); segs[0].value -= m; segs[1].value += m; apply(); });
+  document.getElementById('raise').addEventListener('click', () => apply(800));
+  document.getElementById('reset').addEventListener('click', () => { segs = initial.map((s) => ({ ...s })); apply(500); });
+</script>
+</body>
+</html>

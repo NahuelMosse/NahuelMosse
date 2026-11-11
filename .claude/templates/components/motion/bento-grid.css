@@ -1,0 +1,66 @@
+/* Bento grid (Magic UI): cards with a live background and text that makes room for a link. */
+:root {
+  --mu-bento-row: 22rem;
+  --mu-bento-gap: var(--space-4);
+  --mu-bento-radius: var(--radius);
+  --mu-bento-bg: var(--surface-raised);
+  --mu-bento-shadow: 0 0 0 1px oklch(0% 0 0 / 0.03), 0 2px 4px oklch(0% 0 0 / 0.05), 0 12px 24px oklch(0% 0 0 / 0.05);
+  --mu-bento-shadow-hover: 0 0 0 1px oklch(0% 0 0 / 0.06), 0 4px 8px oklch(0% 0 0 / 0.06), 0 16px 32px oklch(0% 0 0 / 0.08);
+  --mu-bento-border: transparent;
+  --mu-bento-border-hover: transparent;
+  --mu-bento-veil: oklch(0% 0 0 / 0.03);
+  --mu-bento-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --mu-bento-time: 300ms;
+  --mu-bento-rise: 40px;
+  --mu-bento-wide: 52rem;
+}
+:root[data-theme="dark"], :root[data-register="showcase"] {
+  --mu-bento-shadow: 0 -20px 80px -20px oklch(100% 0 0 / 0.12) inset;
+  --mu-bento-shadow-hover: 0 -20px 80px -20px oklch(100% 0 0 / 0.16) inset, 0 12px 32px oklch(0% 0 0 / 0.4);
+  --mu-bento-border: oklch(100% 0 0 / 0.1);
+  --mu-bento-border-hover: oklch(100% 0 0 / 0.18);
+  --mu-bento-veil: oklch(30% 0.01 265 / 0.1);
+}
+
+.mu-bento { container: mu-bento / inline-size; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: var(--mu-bento-row); gap: var(--mu-bento-gap); width: 100%; }
+.mu-bento__card { position: relative; grid-column: span 3; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; overflow: hidden; border: 1px solid var(--mu-bento-border); border-radius: var(--mu-bento-radius); background: var(--mu-bento-bg); box-shadow: var(--mu-bento-shadow); transform: translateZ(0); transition: box-shadow var(--mu-bento-time) var(--mu-bento-ease), border-color var(--mu-bento-time) var(--mu-bento-ease); }
+.mu-bento__bg { min-height: 0; }
+.mu-bento__content { padding: var(--space-4); }
+.mu-bento__text { position: relative; z-index: 10; display: flex; flex-direction: column; gap: var(--space-1); pointer-events: none; transition: transform var(--mu-bento-time) var(--mu-bento-ease); }
+.mu-bento__icon { display: block; width: 48px; height: 48px; color: var(--text-soft); transform-origin: left; transition: transform var(--mu-bento-time) var(--mu-bento-ease); }
+.mu-bento__icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+.mu-bento__name { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-strong); line-height: 1.4; color: var(--text); }
+.mu-bento__description { max-width: 32rem; margin: 0; color: var(--text-soft); }
+.mu-bento__cta { display: flex; align-items: center; width: 100%; padding-top: var(--space-2); pointer-events: none; }
+.mu-bento__link { display: inline-flex; align-items: center; height: var(--control-md); border-radius: var(--radius-item); color: var(--accent-text); font-size: var(--text-md); font-weight: var(--weight-medium); text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 4px; pointer-events: auto; transition: text-decoration-color var(--motion-hover), transform var(--motion-release); }
+.mu-bento__link:hover { text-decoration-color: currentColor; }
+.mu-bento__link:active { transform: scale(var(--press-scale)); transition: text-decoration-color var(--motion-hover), transform var(--motion-press); }
+.mu-bento__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mu-bento__arrow { width: 16px; height: 16px; margin-inline-start: var(--space-2); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--motion-release); }
+.mu-bento__link:is(:hover, :focus-visible) .mu-bento__arrow { transform: translateX(3px); }
+.mu-bento__veil { position: absolute; inset: 0; pointer-events: none; transition: background-color var(--mu-bento-time) var(--mu-bento-ease); }
+
+/* Hovering, at any width: the link waits under the card and slides up as the text makes room for it. */
+@media (hover: hover) {
+  .mu-bento__cta { position: absolute; bottom: 0; left: 0; padding: var(--space-4); transform: translateY(var(--mu-bento-rise)); opacity: 0; transition: transform var(--mu-bento-time) var(--mu-bento-ease), opacity var(--mu-bento-time) var(--mu-bento-ease); }
+  .mu-bento__card:is(:hover, :focus-within) .mu-bento__cta { transform: translateY(0); opacity: 1; }
+  .mu-bento__card:is(:hover, :focus-within) .mu-bento__text { transform: translateY(calc(var(--mu-bento-rise) * -1)); }
+  .mu-bento__card:is(:hover, :focus-within) .mu-bento__icon { transform: scale(0.75); }
+  .mu-bento__card:is(:hover, :focus-within) .mu-bento__veil { background: var(--mu-bento-veil); }
+  .mu-bento__card:is(:hover, :focus-within) { border-color: var(--mu-bento-border-hover); box-shadow: var(--mu-bento-shadow-hover); }
+  @container mu-bento (min-width: 52rem) {
+    .mu-bento__card[data-span="1"] { grid-column: span 1; }
+    .mu-bento__card[data-span="2"] { grid-column: span 2; }
+  }
+}
+@container mu-bento (min-width: 52rem) {
+  @media not (hover: hover) {
+    .mu-bento__card[data-span="1"] { grid-column: span 1; }
+    .mu-bento__card[data-span="2"] { grid-column: span 2; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mu-bento__card, .mu-bento__text, .mu-bento__icon, .mu-bento__cta, .mu-bento__veil, .mu-bento__link, .mu-bento__arrow { transition-duration: 140ms; }
+  .mu-bento__link:active, .mu-bento__link:is(:hover, :focus-visible) .mu-bento__arrow { transform: none; }
+  @container mu-bento (min-width: 52rem) { .mu-bento__card:is(:hover, :focus-within) .mu-bento__text { transform: none; } .mu-bento__cta { transform: none; } }
+}

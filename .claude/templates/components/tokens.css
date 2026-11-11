@@ -1,0 +1,526 @@
+/* Tokens of the reference component set: the single source of the visual decisions. A project
+   copies this file to design/tokens.css and changes the values of its direction; primitives and
+   components read only semantic tokens, never raw values. Names say what a value is for, not what
+   it looks like: --text-soft, not --gray-500.
+   Product register by default: a light neutral theme of twelve OKLCH steps in a cool gray, one
+   muted accent and desaturated semantics. `data-theme="dark"` on the root is the dark neutral;
+   `data-register="showcase"` (showcase.css) is the warm dark skin for landings.
+   The accent is three numbers (--accent-hue, --accent-chroma, --accent-l): every tint, hover, text
+   and ring is derived from them in OKLCH, so changing it is one line and the AA contrast holds.
+   The accent marks the one primary action, the focus ring, the value of a control (a checked box,
+   radio or switch), the selection of data (the chosen day, the selected row, the current bar) and
+   the product mark. Navigation (tabs, the segmented control, the current page's fill, the menu
+   highlight) and the statuses are neutral. */
+:root {
+  color-scheme: light;
+
+  /* ── Accent: the only chromatic decision. Hue, chroma and lightness of the primary fill. ── */
+  --accent-hue: 267;
+  --accent-chroma: 0.23;
+  --accent-l: 54.8%;
+
+  /* ── Primitives: scales without meaning. Only the semantic layer below reads them.
+     Radix roles: 1–2 canvas · 3–5 component background at rest, hover, active · 6 hairline ·
+     7 control border · 8 hover border · 9–10 solids and faint text · 11 soft text · 12 text. ── */
+  --n-1: oklch(99.4% 0.002 265);
+  --n-2: oklch(98% 0.003 265);
+  --n-3: oklch(96% 0.005 265);
+  --n-4: oklch(94% 0.006 265);
+  --n-5: oklch(92% 0.007 265);
+  --n-6: oklch(89.5% 0.008 265);
+  --n-7: oklch(85% 0.01 265);
+  --n-8: oklch(77% 0.013 265);
+  --n-9: oklch(62% 0.016 265);
+  --n-10: oklch(52% 0.016 265);
+  --n-11: oklch(42% 0.018 265);
+  --n-12: oklch(21% 0.02 265);
+  --green-9: oklch(55% 0.12 155);
+  --red-9: oklch(54% 0.16 25);
+  --yellow-9: oklch(68% 0.13 80);
+  --blue-9: oklch(55% 0.12 235);
+
+  /* ── Semantic color. The page, the sidebar and the top bar are one color; the card is white and the
+     overlay (what floats over it) is the same white in light and a step lighter in dark. ── */
+  --bg: oklch(98.5% 0.003 265);
+  --surface: var(--bg);
+  --surface-raised: oklch(100% 0 0);
+  --surface-overlay: oklch(100% 0 0);
+  /* A card inside a card: the page color in light, the overlay step in dark. */
+  --surface-nested: var(--bg);
+  --surface-sunken: var(--n-2);
+  --surface-hover: var(--n-3);
+  --surface-active: var(--n-4);
+  --surface-selected: var(--n-4);
+  --surface-inverse: var(--n-12);
+  /* Edges are translucent so they take the tint of what they sit on: the card's contour, the hairline
+     inside it, and the stronger one of a button. */
+  --border: oklch(22% 0.02 265 / 0.09);
+  --border-subtle: oklch(22% 0.02 265 / 0.055);
+  --border-strong: oklch(22% 0.02 265 / 0.16);
+  --btn-border: var(--border-strong);
+  /* The edge of a control (input, checkbox, radio, switch track): 3:1 against what it sits on. */
+  --control-border: oklch(0% 0 0 / 0.44);
+  --control-border-hover: oklch(0% 0 0 / 0.56);
+  --border-focus: var(--focus);
+  --text: var(--n-12);
+  --text-soft: var(--n-11);
+  --text-faint: var(--n-10);
+  --text-inverse: var(--n-1);
+  /* Fields and the secondary button: the fill at rest and under the pointer. */
+  --field-bg: var(--surface-raised);
+  --field-bg-hover: var(--surface-raised);
+  --btn-bg: var(--surface-raised);
+  --btn-bg-hover: var(--surface-hover);
+  /* The face of a button is lit from above: a light that fades down its first half and a shade at its foot. A field is
+     the opposite, a recess: its shadow falls inside, under its top edge. */
+  --btn-face: none;
+  --primary-face: none;
+  /* The segmented control: a sunken track and a raised thumb that carries the selected option. */
+  --segmented-track: var(--n-4);
+  --segmented-thumb: var(--surface-raised);
+  /* On: the neutral fill of a switch and a checked box (dark on light, light on dark). */
+  --selected-bg: var(--n-12);
+  --selected-fg: var(--n-1);
+  /* The unfilled track of a switch and a slider: a light fill, under the pointer one step more. */
+  --track: var(--surface-active);
+  --track-hover: var(--n-5);
+  --knob: oklch(100% 0 0);
+  --accent: oklch(var(--accent-l) var(--accent-chroma) var(--accent-hue));
+  --accent-hover: oklch(calc(var(--accent-l) - 5%) var(--accent-chroma) var(--accent-hue));
+  --on-accent: oklch(99% 0 0);
+  --accent-text: oklch(42% calc(var(--accent-chroma) * 0.9) var(--accent-hue));
+  --accent-soft: oklch(95.5% calc(var(--accent-chroma) * 0.18) var(--accent-hue));
+  --focus: oklch(55% var(--accent-chroma) var(--accent-hue));
+  --focus-soft: color-mix(in oklab, var(--focus) 20%, transparent);
+  --success: var(--green-9);
+  --success-soft: oklch(55% 0.12 155 / 0.12);
+  --danger: var(--red-9);
+  --danger-soft: oklch(54% 0.16 25 / 0.1);
+  --danger-border: color-mix(in oklab, var(--danger) 70%, transparent);
+  --on-danger: oklch(99% 0 0);
+  --warning: var(--yellow-9);
+  --warning-soft: oklch(68% 0.13 80 / 0.16);
+  --info: var(--blue-9);
+  --info-soft: oklch(55% 0.12 235 / 0.1);
+  --scrim: oklch(20% 0.02 265 / 0.24);
+
+  /* What the data and the lists light: the highlight pill of a menu or a row, the tint of a selected row
+     and of a range of days, the bars of a chart, the sweep of a skeleton, the tint of an avatar. */
+  --hl-bg: oklch(22% 0.02 265 / 0.055);
+  --hl-danger: color-mix(in oklab, var(--danger) 10%, transparent);
+  --hl-ring: color-mix(in oklab, var(--focus) 45%, transparent);
+  --row-hover: oklch(22% 0.02 265 / 0.04);
+  --selected-row: color-mix(in oklab, var(--accent) 6%, var(--surface-raised));
+  --selected-row-hover: color-mix(in oklab, var(--accent) 9%, var(--surface-raised));
+  --range-tint: color-mix(in oklab, var(--accent) 12%, transparent);
+  --chart-bar: color-mix(in oklab, var(--accent) 28%, var(--surface-raised));
+  --sheen: oklch(100% 0 0 / 0.64);
+  --skeleton: color-mix(in oklab, var(--text) 7%, var(--surface-raised));
+  --skeleton-ring: transparent;
+  --avatar-bg-l: 93%;
+  --avatar-bg-c: 0.04;
+  --avatar-fg-l: 40%;
+  --avatar-fg-c: 0.09;
+
+  /* ── Material: product surfaces are flat; the showcase register lights them ── */
+  --material: linear-gradient(transparent, transparent);
+  --highlight: 0 0 0 0 transparent;
+  /* The light that follows the pointer on a card: the accent at low opacity inside, a lit hairline
+     at the edge. Showcase raises both. */
+  --spot: color-mix(in oklab, var(--accent) 6%, transparent);
+  --spot-edge: color-mix(in oklab, var(--accent) 40%, transparent);
+  --spot-size: 280px;
+  --spot-edge-size: 200px;
+  --beam-from: var(--accent);
+  --beam-to: var(--accent-text);
+
+  /* ── Elevation: a hairline plus layered low shadows; what floats gets a ring and more. The overlay
+     ring replaces a border; in dark it also carries a lit top edge. ── */
+  --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-2: 0 4px 6px -1px oklch(0% 0 0 / 0.05), 0 2px 4px -2px oklch(0% 0 0 / 0.05);
+  --shadow-3: 0 10px 15px -3px oklch(0% 0 0 / 0.05), 0 4px 6px -4px oklch(0% 0 0 / 0.05);
+  --overlay-ring: oklch(22% 0.02 265 / 0.09);
+  --overlay-edge: 0 0 #0000;
+  --shadow-overlay: 0 0 0 1px var(--overlay-ring), 0 2px 4px -1px oklch(25% 0.03 265 / 0.06), 0 12px 32px -8px oklch(25% 0.03 265 / 0.14);
+  --shadow-modal: 0 0 0 1px var(--overlay-ring), 0 4px 8px -2px oklch(25% 0.03 265 / 0.06), 0 24px 60px -12px oklch(25% 0.03 265 / 0.22);
+  --shadow-control: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-field: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-control-hover: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-field-focus: 0 0 0 3px var(--focus-soft);
+  --card-hairline: 0 1px 0 oklch(0% 0 0 / 0.04);
+  /* The primary action glows in its own color under it, a glow that grows when the pointer is on it. */
+  --shadow-primary: inset 0 1px 0 0 oklch(100% 0 0 / 0.16), 0 1px 2px 0 oklch(0% 0 0 / 0.08);
+  --shadow-primary-hover: inset 0 1px 0 0 oklch(100% 0 0 / 0.16), 0 4px 12px -4px color-mix(in oklab, var(--accent) 60%, transparent);
+  --shadow-primary-press: none;
+  --shadow-check: inset 0 1px 0 oklch(100% 0 0 / 0.16);
+  /* The knob of a switch and the thumb of a slider carry the control's edge: a 1 px ring that holds 3:1
+     against the light track (WCAG 1.4.11), so the track itself can stay light. */
+  --knob-ring: var(--control-border);
+  --shadow-knob: 0 0 0 1px var(--knob-ring), 0 1px 3px oklch(0% 0 0 / 0.2);
+  --shadow-thumb: 0 1px 2px oklch(25% 0.03 265 / 0.08), 0 0 0 0.5px oklch(0% 0 0 / 0.06);
+  --shimmer-band: oklch(100% 0 0 / 0.26);
+
+  /* ── Type: 12 / 13 / 14 / 16 / 20 / 28; negative tracking from 20 px up. Fields are 14 px, and 16 px
+     on a phone so the browser does not zoom into them. ── */
+  --font: "Inter", "Inter var", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --text-xs: 0.75rem;
+  --text-table-head: 0.78125rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-control: 0.875rem;
+  --text-field: var(--text-control);
+  --text-lg: 1rem;
+  --text-title: 1.375rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.75rem;
+  --tracking-title: -0.015em;
+  --tracking-xl: -0.01em;
+  --tracking-2xl: -0.02em;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-strong: 600;
+
+  /* ── Space: 4 px unit ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --control-sm: 28px;
+  --control-md: 32px;
+  --control-field: 36px;
+  --field-gap: 20px;
+  --control-lg: 40px;
+  --row: 40px;
+  --day: 34px;
+  --sidebar: 232px;
+  --topbar: 48px;
+  /* The page container: 1200 px wide, centered; 24 px gutters, 32 px from 768 px up. */
+  --container: 1200px;
+  --gutter: var(--space-5);
+
+  /* ── Radius: a card is 12, a control 8, an item of a list 6, a palette or a dialog 16; nested = outer − padding ── */
+  --radius: 12px;
+  --radius-control: 8px;
+  --radius-item: 6px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-lg: 16px;
+  --radius-drawer: 14px;
+  --radius-xl: calc(var(--radius) * 2.2);
+  --radius-full: 999px;
+
+  /* ── Time: a scale of milliseconds, then the uses. Hover and press measured on Linear, Attio, Mercury
+     and Stripe; overlays from Carbon, Atlassian, shadcn and coss (reference/motion-benchmark.md). ── */
+  --ms-30: 30ms;
+  --ms-40: 40ms;
+  --ms-60: 60ms;
+  --ms-70: 70ms;
+  --ms-100: 100ms;
+  --ms-110: 110ms;
+  --ms-120: 120ms;
+  --ms-140: 140ms;
+  --ms-150: 150ms;
+  --ms-180: 180ms;
+  --ms-200: 200ms;
+  --ms-220: 220ms;
+  --ms-260: 260ms;
+  --ms-280: 280ms;
+  --ms-300: 300ms;
+  --ms-320: 320ms;
+  --ms-380: 380ms;
+  --ms-500: 500ms;
+  --ms-600: 600ms;
+  --ms-700: 700ms;
+  --ms-1200: 1200ms;
+  --ms-1500: 1500ms;
+  --ms-5000: 5000ms;
+  --ms-90: 90ms;
+  --ms-160: 160ms;
+  --ms-240: 240ms;
+  --ms-360: 360ms;
+  --ms-400: 400ms;
+  --ms-1000: 1000ms;
+  --ms-1600: 1600ms;
+  --ms-2400: 2400ms;
+  --duration-instant: 80ms;
+  --duration-fast: 120ms;
+  --duration-normal: 160ms;
+  --duration-slow: 240ms;
+  --duration-expressive: 400ms;
+  --duration-dialog-enter: 240ms;
+  --duration-dialog-exit: 150ms;
+  /* Enter and exit both start fast: ease-in delays the moment the user is watching. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-toast: cubic-bezier(0.21, 1.02, 0.73, 1);
+  --ease-flip: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Critically damped: arrives without bouncing. For what has physics only. */
+  --spring: linear(0, 0.034 1.5%, 0.13 3.2%, 0.432 8%, 0.63 11.7%, 0.773 15.6%, 0.871 19.6%, 0.936 23.9%, 0.976 28.6%, 0.995 34%, 1.003 41.6%, 1.002 56%, 1);
+  /* The same spring without its 0.3 % of overshoot: what slides inside a box that scrolls must not leave it, or the box grows a scrollbar for the length of the slide. */
+  --spring-flush: linear(0, 0.034 1.5%, 0.13 3.2%, 0.432 8%, 0.63 11.7%, 0.773 15.6%, 0.871 19.6%, 0.936 23.9%, 0.976 28.6%, 0.995 34%, 1);
+  --press-scale: 0.98;
+  --press-scale-sm: 0.96;
+  /* Springs of the JS motion, as "stiffness damping mass". The pointer light is the Magic Card's;
+     the sliding highlight is Animate UI's, damped to critical; the ticker is critically damped
+     (damping = 2·√stiffness), so a figure arrives in about a second and a half, with no tail. */
+  --spring-pointer: 250 30 0.6;
+  --spring-slide: 350 37 1;
+  --spring-ticker: 200 28.3 1;
+  /* What a dragged item does: it is lifted and leans on this spring (ζ .68, a little overshoot), and drops
+     into its gap on it. dnd-kit's lift and Animate UI's list, in one number each. */
+  --spring-drag: 420 28 1;
+  --drag-lift: 1.02;
+  --drag-tilt: 2;
+  --drag-threshold: 4px;
+  --drag-edge: 56px;
+  --drag-speed: 18px;
+  --drag-idle: 70ms;
+  --z-drag: 20;
+  /* The shadow at the edge of a box that scrolls and has more on that side. */
+  --edge-shadow: oklch(22% 0.02 265 / 0.14);
+  --edge-size: 20px;
+  --board-column: 232px;
+
+  /* ── Motion by use: a component says what it is, not how it moves ── */
+  --motion-hover: var(--duration-fast) ease;
+  --motion-press: var(--duration-instant) var(--ease-out);
+  --motion-release: var(--duration-slow) var(--spring);
+  --motion-slide: var(--duration-slow) var(--spring);
+  --motion-ring: 120ms var(--ease-out);
+  --motion-field: 150ms var(--ease-out);
+  --motion-check: 180ms var(--ease-out);
+  --motion-thumb: 220ms var(--spring);
+  --motion-chevron: 200ms var(--spring);
+  --motion-pill: 180ms var(--spring);
+  --motion-pill-fast: 70ms var(--spring);
+  --motion-slide-flush: var(--duration-slow) var(--spring-flush);
+  --motion-pill-flush: 180ms var(--spring-flush);
+  --motion-pill-fast-flush: 70ms var(--spring-flush);
+  --motion-nav-pill: 260ms var(--spring);
+  --motion-popover-fade: 140ms var(--ease-out);
+  --motion-popover-move: 200ms var(--spring);
+  --motion-popover-exit: 110ms var(--ease-out);
+  --motion-sub-enter: 160ms var(--ease-out);
+  --motion-sub-exit: 100ms var(--ease-out);
+  --motion-clip-enter: 200ms var(--ease-out);
+  --motion-list-fade: 120ms var(--ease-out);
+  --motion-list-exit: 100ms var(--ease-out);
+  --motion-tooltip-enter: 120ms var(--ease-out);
+  --motion-tooltip-move: 120ms var(--spring);
+  --motion-tooltip-exit: 80ms var(--ease-out);
+  --motion-hovercard-enter: 200ms var(--ease-out);
+  --motion-hovercard-exit: 120ms var(--ease-out);
+  --motion-dialog-enter: var(--duration-dialog-enter) var(--ease-out);
+  --motion-dialog-fade: 160ms var(--ease-out);
+  --motion-dialog-exit: var(--duration-dialog-exit) var(--ease-out);
+  --motion-scrim: 200ms var(--ease-out);
+  --motion-palette-fade: 120ms var(--ease-out);
+  --motion-palette-move: 200ms var(--ease-out);
+  --motion-palette-scrim: 160ms var(--ease-out);
+  --motion-drawer-enter: 360ms var(--ease-drawer);
+  --motion-drawer-exit: 240ms var(--ease-drawer);
+  --motion-drawer-scrim: 240ms var(--ease-out);
+  --motion-toast: 220ms var(--ease-out);
+  --motion-toast-in: 400ms var(--ease-toast);
+  --motion-toast-out: 200ms var(--ease-out);
+  --motion-indicator: var(--duration-slow) var(--spring);
+  --motion-layout: var(--duration-slow) var(--spring);
+  --motion-view: 200ms var(--ease-out);
+  --motion-data: 480ms var(--ease-out);
+  --motion-roll: 400ms var(--ease-out);
+  --motion-draw: 600ms var(--ease-out);
+  --motion-fade-reduced: 140ms var(--ease-out);
+
+  /* ── Life: what a thing does on the way to being used. How much depends on how often it happens: a
+     palette or a tooltip (a hundred times a day) gets none, a hover or a row only feedback of 200 ms or
+     less, a dialog or a toast its standard motion plus one detail, and what is rare or happens the first
+     time —the signature moments— is where it is expressive. The accent still says value and data; the
+     liveliness is movement, never a new color. ── */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-shine: cubic-bezier(0.4, 0, 0.2, 1);
+  /* A spring of stiffness 380, damping 24, mass 1 (ζ .62): 8.6 % of overshoot. */
+  --spring-pop: linear(0, 0.115, 0.357, 0.615, 0.827, 0.972, 1.053, 1.084, 1.082, 1.064, 1.042, 1.022, 1.007, 0.998, 0.993, 0.993, 0.994, 0.996, 0.997, 0.999, 1);
+  /* Stiffness 350, damping 40, mass 1 (ζ 1.07): the Animated List's spring, written by `springEasing(350, 40)` of core.js. */
+  --spring-list: linear(0, 0.147, 0.391, 0.574, 0.708, 0.803, 0.874, 0.915, 0.943, 0.962, 0.976, 0.984, 0.989, 0.993, 0.995, 0.997, 0.998, 0.999, 0.999, 0.999, 1);
+  --spring-bubble: 300 30 1;
+  --motion-pop: 440ms var(--spring-pop);
+  --motion-list: 320ms var(--spring-list);
+  --motion-ripple: 450ms var(--ease-out);
+  --ripple-on-accent: oklch(100% 0 0 / 0.22);
+  --ripple-neutral: oklch(22% 0.02 265 / 0.08);
+  --btn-light: oklch(22% 0.02 265 / 0.06);
+  --btn-light-on-accent: oklch(100% 0 0 / 0.28);
+  --motion-swap-out: 90ms var(--ease-in);
+  --motion-swap-in: 160ms var(--ease-out);
+  --swap-y: 6px;
+  --motion-icon: 400ms var(--ease-in-out);
+  --icon-intent: 100ms;
+  --motion-shine: 1200ms var(--ease-shine);
+  --shine-band: oklch(100% 0 0 / 0.55);
+  --spin-band: oklch(100% 0 0 / 0.18);
+  --motion-sweep: 700ms var(--ease-shine);
+  --motion-ping: 1000ms cubic-bezier(0, 0, 0.2, 1);
+  --motion-pulse-ring: 1400ms var(--ease-out);
+  --motion-arrival: 1600ms var(--ease-out);
+  --arrival: color-mix(in oklab, var(--accent) 10%, transparent);
+  --motion-beam-lap: 2400ms linear;
+  --motion-theme: 320ms ease-in-out;
+  --motion-particles: 520ms var(--ease-out);
+  --motion-confetti: 1600ms linear;
+  --particle-size: 4px;
+  --particle-radius: 22px;
+  --confetti-1: var(--accent);
+  --confetti-2: var(--accent-text);
+  --confetti-3: oklch(80% 0.1 var(--accent-hue));
+  --confetti-4: var(--success);
+  --stagger: 20ms;
+  --stagger-cap: 8;
+  --stagger-word: 40ms;
+  --reveal-blur: 4px;
+  --reveal-y: 4px;
+  --kpi-hl: var(--hl-bg);
+  --motion-text-shimmer: 1600ms linear;
+  --motion-check-draw: 360ms var(--ease-out);
+  --motion-row-in: 240ms var(--ease-out);
+  --motion-click-ring: 380ms var(--ease-out);
+  --motion-switch-on: 260ms var(--ease-out);
+  --motion-switch-off: 180ms var(--ease-out);
+  --motion-reveal-in: 260ms var(--ease-out);
+  --motion-reveal-out: 180ms var(--ease-out);
+  --motion-flash: 700ms var(--ease-out);
+  --motion-cta-ring: 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-send: 700ms var(--ease-in-out);
+}
+
+@media (min-width: 768px) { :root { --gutter: var(--space-6); } }
+@media (pointer: coarse), (max-width: 640px) { :root { --text-field: var(--text-lg); } }
+
+/* Dark neutral: grays, not browns. The page is the lowest step; the card is about six steps of
+   lightness above it and the overlay three more, so elevation is lightness. The accent keeps its fill
+   and its text and ring lighten to hold 4.5:1 and 3:1 on the dark canvas. The translucent and
+   shadow tokens are shared with the showcase register, whose surfaces are warm. */
+:root[data-theme="dark"], :root[data-register="showcase"] {
+  --control-border: oklch(100% 0 0 / 0.36);
+  --control-border-hover: oklch(100% 0 0 / 0.46);
+  --btn-border: oklch(100% 0 0 / 0.12);
+  --field-bg: oklch(100% 0 0 / 0.045);
+  --field-bg-hover: oklch(100% 0 0 / 0.07);
+  --btn-bg: oklch(100% 0 0 / 0.045);
+  --btn-bg-hover: oklch(100% 0 0 / 0.08);
+  --btn-face: none;
+  --hl-bg: oklch(100% 0 0 / 0.07);
+  --track-hover: oklch(100% 0 0 / 0.13);
+  --edge-shadow: oklch(0% 0 0 / 0.5);
+  --hl-danger: color-mix(in oklab, var(--danger) 18%, transparent);
+  --row-hover: oklch(100% 0 0 / 0.05);
+  --selected-row: color-mix(in oklab, var(--accent) 14%, var(--surface-raised));
+  --selected-row-hover: color-mix(in oklab, var(--accent) 18%, var(--surface-raised));
+  --range-tint: color-mix(in oklab, var(--accent) 20%, transparent);
+  --chart-bar: color-mix(in oklab, var(--accent) 38%, var(--surface-raised));
+  --sheen: oklch(100% 0 0 / 0.04);
+  --skeleton: oklch(100% 0 0 / 0.06);
+  --skeleton-ring: var(--border);
+  --avatar-bg-l: 32%;
+  --avatar-bg-c: 0.05;
+  --avatar-fg-l: 86%;
+  --avatar-fg-c: 0.06;
+  --overlay-ring: oklch(100% 0 0 / 0.1);
+  --overlay-edge: inset 0 1px 0 oklch(100% 0 0 / 0.06);
+  --shadow-overlay: 0 0 0 1px var(--overlay-ring), 0 2px 6px oklch(0% 0 0 / 0.3), 0 12px 32px -6px oklch(0% 0 0 / 0.55);
+  --shadow-modal: 0 0 0 1px var(--overlay-ring), 0 24px 60px -12px oklch(0% 0 0 / 0.65);
+  --shadow-control: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-field: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --shadow-control-hover: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+  --card-hairline: 0 -1px 0 oklch(100% 0 0 / 0.06);
+  --shadow-thumb: inset 0 1px 0 oklch(100% 0 0 / 0.06);
+  --scrim: oklch(0% 0 0 / 0.6);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --n-1: oklch(14.5% 0.006 265);
+  --n-2: oklch(17% 0.007 265);
+  --n-3: oklch(20% 0.008 265);
+  --n-4: oklch(23% 0.009 265);
+  --n-5: oklch(26.5% 0.01 265);
+  --n-6: oklch(31% 0.011 265);
+  --n-7: oklch(37% 0.012 265);
+  --n-8: oklch(46% 0.013 265);
+  --n-9: oklch(58% 0.014 265);
+  --n-10: oklch(70% 0.014 265);
+  --n-11: oklch(80% 0.012 265);
+  --n-12: oklch(95% 0.008 265);
+  --green-9: oklch(76% 0.13 158);
+  --red-9: oklch(72% 0.15 25);
+  --yellow-9: oklch(82% 0.13 88);
+  --blue-9: oklch(76% 0.11 235);
+  --bg: oklch(14.5% 0.006 265);
+  --surface: var(--bg);
+  --surface-raised: oklch(20.5% 0.007 265);
+  --surface-overlay: oklch(23.5% 0.008 265);
+  --surface-nested: var(--surface-overlay);
+  --surface-hover: oklch(100% 0 0 / 0.05);
+  --surface-active: oklch(100% 0 0 / 0.09);
+  --surface-selected: var(--surface-active);
+  --segmented-track: oklch(18% 0.007 265);
+  --segmented-thumb: var(--n-6);
+  --border: oklch(100% 0 0 / 0.08);
+  --border-subtle: oklch(100% 0 0 / 0.05);
+  --border-strong: oklch(100% 0 0 / 0.14);
+  --knob: oklch(96% 0.005 265);
+  --accent-text: oklch(78% calc(var(--accent-chroma) * 0.8) var(--accent-hue));
+  --accent-soft: oklch(30% calc(var(--accent-chroma) * 0.45) var(--accent-hue));
+  --focus: oklch(70% var(--accent-chroma) var(--accent-hue));
+  --success-soft: oklch(76% 0.13 158 / 0.14);
+  --danger-soft: oklch(72% 0.15 25 / 0.14);
+  --on-danger: oklch(18% 0.02 265);
+  --warning-soft: oklch(82% 0.13 88 / 0.14);
+  --info-soft: oklch(76% 0.11 235 / 0.14);
+  --highlight: inset 0 1px 0 oklch(100% 0 0 / 0.05);
+  --ripple-neutral: oklch(100% 0 0 / 0.1);
+  --btn-light: oklch(100% 0 0 / 0.1);
+  --arrival: color-mix(in oklab, var(--accent) 16%, transparent);
+  --spot: color-mix(in oklab, var(--accent) 10%, transparent);
+  --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.4);
+  --shadow-2: 0 0 0 1px oklch(100% 0 0 / 0.05), 0 8px 16px -4px oklch(0% 0 0 / 0.5);
+  --shadow-3: 0 0 0 1px oklch(100% 0 0 / 0.06), 0 16px 40px -8px oklch(0% 0 0 / 0.6);
+}
+
+/* Accent presets: the default is the brand blue (#355DF4, the company logo); a project writes one
+   of these, or its own three numbers. */
+:root[data-accent="brand"] { --accent-hue: 267; --accent-chroma: 0.23; --accent-l: 54.8%; }
+:root[data-accent="indigo"] { --accent-hue: 275; --accent-chroma: 0.14; --accent-l: 50%; }
+:root[data-accent="mono"] { --accent-chroma: 0; --accent-l: 22%; }
+:root[data-accent="mono"][data-theme="dark"] { --accent-l: 92%; --on-accent: oklch(18% 0 0); }
+
+/* Reduced motion: fewer and gentler, not zero. Long and physical motion shortens to a fade. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --spring: var(--ease-out);
+    --duration-slow: var(--duration-fast);
+    --duration-expressive: var(--duration-fast);
+    --motion-drawer-enter: var(--duration-fast) var(--ease-out);
+    --motion-drawer-exit: var(--duration-fast) var(--ease-out);
+    --motion-data: 0ms linear;
+    --motion-roll: 0ms linear;
+    --motion-pop: var(--motion-fade-reduced);
+    --motion-list: var(--motion-fade-reduced);
+    --motion-swap-in: var(--motion-fade-reduced);
+    --motion-ripple: 0ms linear;
+    --motion-shine: 0ms linear;
+    --motion-sweep: 0ms linear;
+    --motion-ping: 0ms linear;
+    --motion-pulse-ring: 0ms linear;
+    --motion-beam-lap: 0ms linear;
+    --motion-particles: 0ms linear;
+    --motion-arrival: 300ms var(--ease-out);
+    --swap-y: 0px;
+    --reveal-y: 0px;
+    --reveal-blur: 0px;
+  }
+}

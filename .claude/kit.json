@@ -1,0 +1,132 @@
+{
+  "kit": "6.47.0",
+  "stack": null,
+  "e2e": "apps/e2e",
+  "rulePaths": {
+    "architecture": [
+      "apps/**",
+      "src/**",
+      "packages/**",
+      "lib/**"
+    ],
+    "design": [
+      "**/*.css",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.vue",
+      "**/*.svelte",
+      "**/*.html"
+    ],
+    "interface": [
+      "**/*.css",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.vue",
+      "**/*.svelte",
+      "**/*.html"
+    ],
+    "speed": [
+      "apps/**",
+      "src/**",
+      "packages/**",
+      "lib/**"
+    ]
+  },
+  "source": {
+    "path": "D:\\projects\\dev-kit",
+    "commit": "cfb889917f3ee850e9c9cc51e31ec2fad5266c51"
+  },
+  "modules": {
+    "ui": {
+      "state": "on",
+      "version": "1.0.0",
+      "since": "install 2026-11-11"
+    },
+    "api": {
+      "state": "off",
+      "reason": "profile backend not chosen at install",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "data": {
+      "state": "off",
+      "reason": "profile backend not chosen at install",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "infra": {
+      "state": "off",
+      "reason": "profile backend not chosen at install",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "ci": {
+      "state": "on",
+      "version": "1.0.0",
+      "since": "install 2026-11-11"
+    },
+    "observability": {
+      "state": "off",
+      "reason": "profile backend not chosen at install",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "docs": {
+      "state": "off",
+      "reason": "not chosen at install: no signal found in the repo",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "i18n": {
+      "state": "off",
+      "reason": "no signal found in the repo",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    },
+    "security-l2": {
+      "state": "off",
+      "reason": "opt-in module, not chosen at install",
+      "by": "person",
+      "at": "2026-11-11",
+      "signalsAtDecision": []
+    }
+  },
+  "grade": {
+    "level": "poc",
+    "reason": "the profile README is a showcase, not a product",
+    "by": "person",
+    "at": "2026-11-11",
+    "history": []
+  },
+  "profiles": {
+    "web": {
+      "state": "on",
+      "since": "install 2026-11-11",
+      "reason": "chosen at install",
+      "mcp": {
+        "motion": {
+          "type": "http",
+          "url": "https://mcp.motion.dev"
+        }
+      }
+    },
+    "backend": {
+      "state": "off",
+      "reason": "not chosen at install",
+      "by": "person",
+      "at": "2026-11-11"
+    },
+    "flutter": {
+      "state": "off",
+      "reason": "not chosen at install",
+      "by": "person",
+      "at": "2026-11-11"
+    }
+  }
+}

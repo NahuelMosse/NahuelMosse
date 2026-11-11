@@ -1,0 +1,89 @@
+/* File upload: layers of the Kokonut original (ring, inner tray, frame, drag glow, corner glow, stage)
+   in the set's material. Its own values live here, derived from the tokens. */
+:root {
+  --file-upload-width: 24rem;
+  --file-upload-height: 240px;
+  --file-upload-ring-l: 56%;
+  --file-upload-ring-c: calc(var(--accent-chroma) * 0.8);
+  --file-upload-glow: color-mix(in oklab, var(--accent) 10%, transparent);
+  --file-upload-error: color-mix(in oklab, var(--danger), var(--text) 25%);
+}
+:root[data-theme="dark"] { --file-upload-ring-l: 68%; }
+
+.fu { position: relative; width: 100%; max-width: var(--file-upload-width); margin-inline: auto; font-family: var(--font); color: var(--text); }
+.fu *, .fu *::before, .fu *::after { box-sizing: border-box; }
+.fu__ring { position: relative; padding: 2px; border-radius: var(--radius); background: var(--surface-raised); box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-1); }
+.fu__hairline { position: absolute; inset: -1px 0 auto; height: 1px; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 20%, transparent), transparent); pointer-events: none; }
+.fu__inner { position: relative; padding: 6px; border-radius: calc(var(--radius) - 2px); background: var(--surface-sunken); }
+.fu__frame { position: relative; overflow: hidden; border-radius: var(--radius-control); border: 1px solid var(--border); background: var(--surface-raised); transition: border-color 200ms var(--ease-out); }
+.fu__frame[data-error] { border-color: color-mix(in oklab, var(--danger) 50%, transparent); }
+
+/* Drag glow: four edges at 20 % and a pulsing core, only while a file is over the card. */
+.fu__drag { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-out); pointer-events: none; }
+.fu[data-state="dragging"] .fu__drag { opacity: 1; }
+.fu__edge { position: absolute; display: block; }
+.fu__edge--t { inset: 0 0 auto; height: 20%; background: linear-gradient(to bottom, var(--file-upload-glow), transparent); }
+.fu__edge--b { inset: auto 0 0; height: 20%; background: linear-gradient(to top, var(--file-upload-glow), transparent); }
+.fu__edge--l { inset: 0 auto 0 0; width: 20%; background: linear-gradient(to right, var(--file-upload-glow), transparent); }
+.fu__edge--r { inset: 0 0 0 auto; width: 20%; background: linear-gradient(to left, var(--file-upload-glow), transparent); }
+.fu__pulse { position: absolute; inset: 20%; border-radius: var(--radius-control); background: color-mix(in oklab, var(--accent) 5%, transparent); }
+.fu[data-state="dragging"] .fu__pulse { animation: fu-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes fu-pulse { 50% { opacity: 0.5; } }
+.fu__corner { position: absolute; top: -16px; right: -16px; width: 32px; height: 32px; background: linear-gradient(to bottom left, color-mix(in oklab, var(--accent) 20%, transparent), transparent); filter: blur(12px); opacity: 0; transition: opacity 500ms var(--ease-out); pointer-events: none; }
+@media (hover: hover) and (pointer: fine) { .fu__ring:hover .fu__corner { opacity: 1; } }
+
+.fu__stage { position: relative; height: var(--file-upload-height); }
+.fu__pane { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out); }
+.fu__pane[hidden] { display: none; }
+.fu[data-state="dragging"] .fu__pane[data-pane="idle"] { opacity: 0.8; transform: scale(0.98); }
+.fu__art-wrap { width: 64px; height: 64px; margin-bottom: 16px; flex: none; }
+.fu__art, .fu__rings, .fu__done-mark { width: 100%; height: 100%; display: block; overflow: visible; }
+.fu__art-dash { stroke: var(--border-strong); }
+.fu__art-box { fill: var(--accent-soft); stroke: var(--accent); }
+.fu__art-line { stroke: var(--accent); }
+.fu__copy { margin-bottom: 16px; text-align: center; max-width: 100%; }
+.fu__title { font-size: var(--text-lg); font-weight: var(--weight-strong); letter-spacing: var(--tracking-title); line-height: 1.5; margin: 0 0 6px; }
+.fu__hint, .fu__alt { margin: 0; font-size: var(--text-xs); color: var(--text-soft); }
+.fu__alt { margin-top: 12px; }
+.fu__name { margin: 0 0 6px; max-width: 240px; font-size: var(--text-md); font-weight: var(--weight-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fu__meta { margin: 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: var(--text-xs); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.fu__pct { font-weight: var(--weight-medium); color: var(--accent-text); }
+.fu__ok { font-weight: var(--weight-medium); color: color-mix(in oklab, var(--success), var(--text) 30%); }
+
+.fu__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 80%; padding: 10px 16px; border: 0; border-radius: var(--radius-control); background: var(--surface-hover); color: var(--text); font-size: var(--text-md); font-weight: var(--weight-strong); cursor: pointer; transition: background-color 200ms var(--ease-out), transform 80ms var(--ease-out); }
+.fu__btn--half { width: auto; flex: 1; }
+.fu__row { display: flex; gap: 8px; width: 80%; }
+.fu__btn:active { transform: scale(var(--press-scale)); }
+@media (hover: hover) and (pointer: fine) { .fu__btn:hover { background: var(--surface-active); } .fu__btn:hover .fu__icon { transform: scale(1.1); } }
+.fu__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fu__icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms var(--ease-out); }
+
+/* The progress ring: fourteen dashed circles turning in opposite senses, revealed clockwise by the wipe. */
+.fu__track { stroke: var(--border-strong); stroke-width: 1.5; }
+.fu__wipe { transition: stroke-dasharray 120ms linear; }
+.fu__spin circle { stroke: oklch(calc(var(--file-upload-ring-l) + var(--dl)) var(--file-upload-ring-c) calc(var(--accent-hue) + var(--dh))); opacity: 0.95; transform-origin: 120px 120px; transform-box: view-box; animation: fu-cw 8s linear infinite; }
+.fu__spin circle:nth-child(even) { animation-name: fu-ccw; }
+.fu__spin circle:nth-child(2n) { animation-delay: 0.2s; }
+.fu__spin circle:nth-child(3n) { animation-delay: 0.3s; }
+.fu__spin circle:nth-child(5n) { animation-delay: 0.5s; }
+.fu__spin circle:nth-child(7n) { animation-delay: 0.7s; }
+@keyframes fu-cw { to { transform: rotate(360deg); } }
+@keyframes fu-ccw { to { transform: rotate(-360deg); } }
+.fu[data-offscreen] .fu__spin circle, :root[data-tab-hidden] .fu__spin circle { animation-play-state: paused; }
+
+.fu__done-mark circle { stroke: color-mix(in oklab, var(--success) 35%, transparent); stroke-width: 3; stroke-dasharray: 1; }
+.fu__done-mark path { stroke: var(--success); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+.fu__pane[data-pane="done"]:not([hidden]) .fu__done-mark circle { animation: fu-draw 500ms var(--ease-out) both; }
+.fu__pane[data-pane="done"]:not([hidden]) .fu__done-mark path { animation: fu-draw 400ms 220ms var(--ease-out) both; }
+@keyframes fu-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+.fu__error { position: absolute; left: 50%; bottom: 16px; translate: -50% 0; max-width: calc(100% - 32px); padding: 8px 16px; border-radius: var(--radius-control); border: 1px solid color-mix(in oklab, var(--danger) 20%, transparent); background: color-mix(in oklab, var(--danger) 10%, var(--surface-raised)); color: var(--file-upload-error); font-size: var(--text-sm); text-align: center; }
+.fu__error[hidden] { display: none; }
+.fu__live, .fu__input { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fu__pane, .fu__drag, .fu__corner, .fu__btn, .fu__icon { transition-duration: 120ms; }
+  .fu[data-state="dragging"] .fu__pane[data-pane="idle"] { transform: none; }
+  .fu[data-state="dragging"] .fu__pulse, .fu__spin circle { animation: none; }
+  .fu__pane[data-pane="done"]:not([hidden]) .fu__done-mark circle, .fu__pane[data-pane="done"]:not([hidden]) .fu__done-mark path { animation: none; }
+}

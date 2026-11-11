@@ -1,0 +1,3 @@
+/* Magnetic (Motion Primitives): the element is pulled toward the pointer by script; CSS only gives it a box that moves. */
+.mu-magnetic { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .mu-magnetic { transform: none !important; } }

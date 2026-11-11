@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Toolbar expandable</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./toolbar-expandable.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Toolbar expandable</h1>
+      <p class="demo__lead">La barra de selección múltiple de la lista de facturas: cada acción abre su detalle sobre la barra, el panel crece con un resorte y cambia de contenido al pasar de una acción a otra.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-seleccion">
+    <h2 id="s-seleccion">3 facturas seleccionadas</h2>
+    <p>Flechas mueven entre acciones, la misma acción o Escape pliegan el panel.</p>
+    <div class="demo__stage demo__stage--end">
+      <div class="tbe" data-motion="toolbar-expandable" id="selection" aria-label="Acciones sobre las facturas seleccionadas">
+        <div class="tbe__box">
+          <div class="tbe__clip" data-te="clip">
+            <div class="tbe__body" data-te="body">
+              <div class="tbe__content" data-te="content">
+                <div data-te-panel="send"><div class="tbe__panel">
+                  <p>Se envían <strong>3 facturas</strong> por email a sus clientes, con el PDF adjunto.</p>
+                  <p>Sánchez Hermanos S.A., Distribuidora Del Sur S.R.L. y Estudio Herrera &amp; Asoc.</p>
+                  <button type="button" class="tbe__action">Enviar ahora</button>
+                </div></div>
+                <div data-te-panel="download"><div class="tbe__panel">
+                  <p>Descargá <strong>3 facturas</strong> en un solo archivo.</p>
+                  <button type="button" class="tbe__action">Descargar ZIP con PDFs</button>
+                </div></div>
+                <div data-te-panel="tag"><div class="tbe__panel">
+                  <p>Etiquetá las facturas para encontrarlas después.</p>
+                  <button type="button" class="tbe__action">Elegir etiqueta</button>
+                </div></div>
+                <div data-te-panel="void"><div class="tbe__panel">
+                  <p>Anular genera una nota de crédito por <strong>$ 1.863.100,00</strong>. No se puede deshacer.</p>
+                  <button type="button" class="tbe__action">Revisar y anular</button>
+                </div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tbe__menu" data-te="menu">
+            <span class="tbe__count">3 seleccionadas</span>
+            <span class="tbe__sep" aria-hidden="true"></span>
+            <button type="button" class="tbe__btn" data-te-item="send" aria-label="Enviar por email"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11v8h-11zM2.5 4.5l5.5 4 5.5-4"/></svg></button>
+            <button type="button" class="tbe__btn" data-te-item="download" aria-label="Descargar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.5 7.5L8 11l3.5-3.5M3 13.5h10"/></svg></button>
+            <button type="button" class="tbe__btn" data-te-item="tag" aria-label="Etiquetar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 2.5H8l5.5 5.5L8 13.5 2.5 8zM5.5 5.5v.01"/></svg></button>
+            <button type="button" class="tbe__btn" data-te-item="void" aria-label="Anular"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M4.2 4.2l7.6 7.6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="demo__log" id="log" role="status"></p>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './toolbar-expandable.js';
+import './mp-demo.js';
+
+const bar = document.getElementById('selection');
+mount(bar);
+bar.addEventListener('toolbar-expandable:change', (e) => { document.getElementById('log').textContent = e.detail.value ? `Acción: ${e.detail.value}` : ''; });
+</script>
+</body>
+</html>

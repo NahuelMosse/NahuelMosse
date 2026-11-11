@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Describí la factura</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ai-prompt.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__stage { min-height: 380px; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Alta de factura</h1><p class="text-soft">Describí el comprobante con tus palabras y Ledger completa los campos. Enter envía; Shift Enter agrega una línea.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <section class="surface demo__stage stack" data-gap="4" aria-label="Nueva factura">
+    <div id="prompt" data-motion="ai-prompt"></div>
+    <div class="inline">
+      <button class="btn btn--sm" type="button" id="example">Usar un ejemplo</button>
+    </div>
+    <ul id="sent" class="stack" data-gap="2" aria-label="Descripciones enviadas"></ul>
+  </section>
+</main>
+<script type="module">
+  import { mount } from './ai-prompt.js';
+  const prompt = mount(document.getElementById('prompt'));
+  document.getElementById('example').onclick = () => prompt.setValue('Factura B a Estudio Pereyra por diseño de identidad visual, $ 480.000 más IVA 21 %, vence a 30 días.');
+  document.addEventListener('aiprompt:submit', (e) => {
+    const li = document.createElement('li');
+    li.className = 'text-caption';
+    li.textContent = `${e.detail.type}: ${e.detail.value}`;
+    document.getElementById('sent').prepend(li);
+  });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

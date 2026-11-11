@@ -1,0 +1,60 @@
+/* Morphing popover. The values of the component, derived from the set's tokens. */
+:root {
+  --morphing-popover-radius: var(--radius);
+  --morphing-popover-trigger-radius: var(--radius-control);
+  --morphing-popover-width: min(364px, calc(100vw - 16px));
+  --morphing-popover-height: 200px;
+  --morphing-popover-surface: var(--surface-overlay);
+  --morphing-popover-shadow: var(--shadow-overlay);
+  --morphing-popover-z: 20;
+}
+
+.mpop { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+
+.mpop-trigger {
+  display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); margin: 0;
+  font: inherit; font-size: var(--text-sm); color: var(--text); cursor: pointer; background: var(--surface-raised);
+  border: 0; border-radius: var(--morphing-popover-trigger-radius); box-shadow: 0 0 0 1px var(--border), var(--shadow-control);
+  transition: background-color var(--duration-fast), box-shadow var(--duration-normal) var(--ease-out), transform var(--duration-instant) var(--ease-out);
+}
+.mpop-trigger:hover { background: var(--surface-hover); box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-control); }
+.mpop-trigger:active { transform: scale(0.98); }
+.mpop-trigger:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mpop-trigger .icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; color: var(--text-soft); }
+
+.mpop-box {
+  position: absolute; z-index: var(--morphing-popover-z); overflow: hidden; font-family: var(--font); color: var(--text);
+  background: var(--morphing-popover-surface); border-radius: var(--morphing-popover-radius);
+  box-shadow: var(--morphing-popover-shadow), var(--overlay-edge); will-change: transform, opacity;
+}
+.mpop-box :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mpop-inner { position: relative; }
+.mpop-box [data-mpo] { will-change: transform; }
+
+/* The note form the demo and the screens put inside. */
+.mpop-panel { width: var(--morphing-popover-width); height: var(--morphing-popover-height); }
+.mpop-form { display: flex; flex-direction: column; height: 100%; }
+.mpop-field {
+  flex: 1; width: 100%; min-height: 0; padding: var(--space-3) var(--space-4); resize: none; font: inherit; font-size: var(--text-sm);
+  color: var(--text); background: transparent; border: 0; border-radius: var(--radius-control);
+}
+.mpop-field:focus-visible { outline: 2px solid transparent; }
+.mpop-box:has(.mpop-field:focus-visible) { box-shadow: var(--morphing-popover-shadow), var(--overlay-edge), 0 0 0 3px var(--focus-soft); }
+.mpop-label { position: absolute; top: var(--space-3); left: var(--space-4); font-size: var(--text-sm); line-height: 1.45; color: var(--text-faint); user-select: none; pointer-events: none; transition: opacity var(--duration-fast); }
+.mpop-box[data-filled] .mpop-label { opacity: 0; }
+.mpop-actions { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-2); }
+.mpop-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1); height: 32px; padding: 0 var(--space-2); font: inherit; font-size: var(--text-sm);
+  color: var(--text-soft); cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-control);
+  transition: background-color var(--duration-fast), color var(--duration-fast), transform var(--duration-instant) var(--ease-out);
+}
+.mpop-btn:hover { background: var(--surface-hover); color: var(--text); }
+.mpop-btn:active { transform: scale(0.98); }
+.mpop-btn[type="submit"] { box-shadow: 0 0 0 1px var(--border); }
+.mpop-btn .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--duration-normal) var(--ease-out); }
+.mpop-btn:hover .icon { transform: translateX(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mpop-trigger, .mpop-btn, .mpop-label, .mpop-btn .icon { transition-duration: 120ms; }
+  .mpop-trigger:active, .mpop-btn:active, .mpop-btn:hover .icon { transform: none; }
+}

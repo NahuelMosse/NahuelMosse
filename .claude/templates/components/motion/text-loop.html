@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que rota · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./text-loop.css">
+<style>
+  .big { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: -0.02em; }
+  .big .accent { color: var(--accent); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que rota</h1>
+      <p class="mu-demo__note">Varias frases se turnan en el mismo lugar: la actual sube y se va, la siguiente llega desde abajo. Se frena mientras el puntero o el foco están encima, y con el botón de pausa. Un lector de pantalla solo oye la frase visible. Con movimiento reducido cambia sin desplazarse.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-title">
+    <h2 class="mu-demo__label" id="s-title">Titular con frase cambiante</h2>
+    <p class="big">Ledger te ayuda a <span class="accent" id="loop" data-motion="text-loop" data-items="facturar|cobrar|conciliar|cerrar el mes"></span></p>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="toggle" aria-pressed="false">Pausar</button>
+      <button type="button" class="btn-demo" id="next">Siguiente</button>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './text-loop.js';
+  themeSwitch();
+  const loop = mount(document.getElementById('loop'), {});
+  const toggle = document.getElementById('toggle');
+  toggle.addEventListener('click', () => {
+    const paused = toggle.getAttribute('aria-pressed') === 'true';
+    if (paused) loop.play(); else loop.pause();
+    toggle.setAttribute('aria-pressed', String(!paused));
+    toggle.textContent = paused ? 'Pausar' : 'Reanudar';
+  });
+  document.getElementById('next').addEventListener('click', () => loop.next());
+</script>
+</body>
+</html>

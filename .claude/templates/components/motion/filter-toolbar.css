@@ -1,0 +1,78 @@
+/* Filter toolbar (Arc, MIT): the chips in force, a clear-all action and an "Agregar filtro" button that grows
+   into its own menu. Sizes and colours are the set's; the shapes and the rhythm are Arc's. */
+:root {
+  --ft-radius-panel: var(--radius-xl);
+  --ft-radius-control: calc(var(--control-field) / 2);
+  --ft-height: var(--control-field);
+  --ft-menu-width: 16rem;
+  --ft-tint: color-mix(in oklab, var(--text) 6%, transparent);
+}
+
+.ft { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); min-height: 50px; padding: var(--space-3) var(--space-4); background: var(--surface-raised); border: 1px solid var(--border-strong); border-radius: var(--ft-radius-panel); }
+/* The frame springs to the chip list height, so a new line of chips opens the toolbar instead of snapping it. */
+.ft-frame { flex: 1; min-width: 0; }
+.ft-chips { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-width: 0; min-height: var(--ft-height); }
+/* The slot clips with a pill radius while it opens, so a growing chip reads as a pill stretching out. */
+.ft-slot { display: inline-flex; flex: none; min-width: 0; max-width: 100%; border-radius: var(--radius-full); }
+/* --slot-moving is 1 while the slot animates: the chip then ignores the slot width instead of squeezing. */
+.ft-chip { display: inline-flex; flex: none; align-items: center; gap: var(--space-2); max-width: calc(100% + var(--slot-moving, 0) * 100vw); min-height: var(--ft-height); padding: 0 var(--space-2) 0 var(--space-3); font-size: var(--text-xs); color: var(--text-soft); background: var(--surface-sunken); border: 1px solid var(--border-strong); border-radius: var(--radius-full); }
+.ft-chip-label { overflow-x: clip; overflow-y: visible; text-overflow: ellipsis; white-space: nowrap; }
+.ft-value { font-weight: 500; color: var(--text); }
+.ft-sep { font-weight: 400; color: var(--text-soft); }
+.ft-morph { position: relative; display: inline-flex; overflow-x: clip; overflow-y: visible; white-space: nowrap; vertical-align: bottom; }
+.ft-morph-value { display: inline-block; flex: none; white-space: nowrap; }
+.ft-measure { position: absolute; top: 0; left: 0; visibility: hidden; white-space: nowrap; pointer-events: none; }
+.ft-chip button { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; color: var(--text-faint); cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-full); transition: background var(--arc-fast) var(--arc-ease-standard), color var(--arc-fast) var(--arc-ease-standard), transform 580ms var(--spring); }
+.ft-chip button:active { transform: scale(0.96); transition-duration: var(--arc-fast), var(--arc-fast), var(--arc-instant); }
+.ft-chip button:focus-visible, .ft-clear:focus-visible, .ft-trigger:focus-visible, .ft-back:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ft-empty { position: absolute; top: 0; bottom: 0; left: 0; display: flex; align-items: center; max-width: 100%; overflow: hidden; font-size: var(--text-sm); color: var(--text-faint); white-space: nowrap; pointer-events: none; }
+.ft-actions { display: inline-flex; flex: 0 0 auto; align-items: center; gap: var(--space-3); }
+.ft-clear { min-height: var(--ft-height); padding: 0 var(--space-3); font: inherit; font-size: var(--text-sm); line-height: 1.4; letter-spacing: -0.01em; color: var(--text-faint); white-space: nowrap; cursor: pointer; background: transparent; border: 0; border-radius: var(--ft-radius-control); transition: background var(--arc-fast) var(--arc-ease-standard), color var(--arc-fast) var(--arc-ease-standard), transform 580ms var(--spring); }
+.ft-clear-text { display: block; }
+.ft-clear:active { transform: scale(0.97); transition-duration: var(--arc-fast), var(--arc-fast), var(--arc-instant); }
+
+/* Agregar filtro: the trigger is transparent and the surface behind it is the button's rounded rectangle.
+   Opening springs that same surface to the panel size, so the button itself becomes the menu. */
+.ft-menu { position: relative; display: inline-flex; flex: none; isolation: isolate; }
+.ft-menu:not([data-state="closed"]) { z-index: 30; }
+.ft-trigger { position: relative; z-index: 1; display: inline-flex; align-items: center; min-height: var(--ft-height); padding: 0 var(--space-3); font: inherit; font-size: var(--text-sm); font-weight: 500; line-height: 1.4; letter-spacing: -0.01em; color: var(--text); white-space: nowrap; cursor: pointer; background: transparent; border: 1px solid transparent; border-radius: var(--ft-radius-control); -webkit-tap-highlight-color: transparent; }
+.ft-menu[data-state="open"] .ft-trigger { pointer-events: none; }
+.ft-face { display: inline-flex; align-items: center; gap: var(--space-2); }
+/* clip, not hidden: focus and scripts cannot scroll the panel inside the growing shape. */
+.ft-surface { position: absolute; top: 0; left: 0; z-index: 0; width: 100%; height: 100%; box-sizing: border-box; overflow: clip; background: var(--surface-raised); border: 1px solid var(--border-strong); border-radius: var(--ft-radius-control); transition: background-color var(--arc-fast) var(--arc-ease-standard), border-radius 580ms var(--spring), box-shadow var(--arc-standard) var(--arc-ease-standard); }
+.ft-menu[data-y="up"] .ft-surface { top: auto; bottom: 0; }
+.ft-menu:not([data-state="closed"]) .ft-surface { background: var(--surface-overlay); border-radius: var(--ft-radius-panel); box-shadow: var(--shadow-overlay); }
+/* The trigger anchors the panel, so a press answers in colour and never scales. */
+.ft-menu[data-state="closed"] .ft-trigger:active + .ft-surface { background: var(--surface-active); }
+@media (hover: hover) and (pointer: fine) {
+  .ft-menu[data-state="closed"] .ft-trigger:hover + .ft-surface { background: var(--surface-hover); box-shadow: var(--shadow-1); }
+}
+.ft-panel { position: absolute; top: 0; left: 0; width: min(var(--ft-menu-width), calc(100vw - var(--space-8))); padding: 6px; outline: none; }
+.ft-menu[data-y="up"] .ft-panel { top: auto; bottom: 0; }
+.ft-menu[data-state="closed"] .ft-panel { visibility: hidden; }
+.ft-head { display: flex; align-items: center; height: 32px; padding: 0 var(--space-2) 0 10px; }
+.ft-menu[data-y="up"] .ft-head { margin-top: 4px; }
+.ft-back { display: grid; place-items: center; flex: none; width: 28px; height: 28px; margin-left: -6px; padding: 0; color: var(--text-soft); cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-full); transition: background-color var(--arc-fast) var(--arc-ease-standard), color var(--arc-fast) var(--arc-ease-standard); }
+.ft-back:active { color: var(--text); background: var(--surface-sunken); }
+.ft-title { position: relative; display: flex; min-width: 0; font-size: var(--text-sm); font-weight: 500; letter-spacing: -0.01em; color: var(--text); white-space: nowrap; }
+.ft-title-text { display: block; }
+.ft-stage { position: relative; margin-top: 2px; }
+.ft-step { width: 100%; }
+.ft-list { position: relative; display: grid; max-height: min(20rem, 55vh); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ft-highlight { position: absolute; top: 0; right: 0; left: 0; height: 0; background: var(--ft-tint); border-radius: calc(var(--ft-radius-panel) - 6px); opacity: 0; pointer-events: none; transition: opacity 80ms linear; }
+.ft-highlight[data-ring] { box-shadow: inset 0 0 0 2px var(--focus); }
+.ft-item { position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; min-height: var(--ft-height); padding: 0 10px; font: inherit; font-size: var(--text-sm); letter-spacing: -0.01em; text-align: left; color: var(--text); cursor: pointer; background: transparent; border: 0; border-radius: calc(var(--ft-radius-panel) - 6px); outline: none; -webkit-tap-highlight-color: transparent; }
+.ft-item-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; min-width: 16px; color: var(--text-soft); }
+.ft-item-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-item-meta { display: inline-flex; flex: none; align-items: center; gap: 6px; min-width: 0; max-width: 50%; font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--text-faint); }
+.ft-meta-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-hint { min-width: 2ch; text-align: right; }
+.ft-check { display: inline-flex; width: 15px; color: var(--text); opacity: 0; }
+.ft-check[data-on] { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .ft-chip button:hover { color: var(--text); background: var(--border-strong); }
+  .ft-clear:hover, .ft-back:hover { color: var(--text); background: var(--surface-sunken); }
+}
+/* In a column the frame must size from its height, not a zero flex basis, or its spring is ignored and a new line of chips snaps. */
+@media (max-width: 520px) { .ft { flex-direction: column; align-items: stretch; } .ft-frame { flex: none; } .ft-actions { justify-content: flex-end; } }
+@media (prefers-reduced-motion: reduce) { .ft-chip button, .ft-clear, .ft-surface, .ft-back, .ft-highlight { transition: none; } .ft-chip button:active, .ft-clear:active { transform: none; } }

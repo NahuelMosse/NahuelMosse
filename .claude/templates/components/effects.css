@@ -1,0 +1,55 @@
+/* Effects of the reference set: what makes a surface feel lit. The cards the user can press
+   (`.card[data-interactive]`, `.card[data-dialog]`) are lit by the Magic Card port (motion/magic-card) in every
+   register; any `.spotlight` is lit here, in the showcase register (showcase.css, `data-register="showcase"` on
+   the root); the border beam and the glass are the showcase's only. An overdue figure still says so with the danger tone of its value. The JS writes
+   a transform to a real element that follows the pointer on a spring; it never moves a pseudo-element
+   through a variable of its parent. Everything that moves does it with transform, opacity or filter, and each
+   effect has its reduced-motion version at the bottom: the light stays, the travel goes. What the rest of the
+   set does on the way to being used (ripples, shines, the signature moments) is in life.css. */
+
+/* ── Pointer light (the showcase's spotlight): a surface lit under the pointer, hairline included. `.spot` is a
+   200–280 px radial blob; the follower writes its transform, and the light fades in with opacity, only with
+   a fine pointer. One blob lights the inside of the card, another the 1 px of its edge, through a static mask. ── */
+.spotlight { position: relative; isolation: isolate; }
+.spot-layer, .spot-edge { position: absolute; inset: 0; z-index: -1; display: none; overflow: hidden; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity var(--ms-240) ease; }
+.spot-edge { padding: 1px; -webkit-mask: linear-gradient(var(--text) 0 0) content-box, linear-gradient(var(--text) 0 0); -webkit-mask-composite: xor; mask: linear-gradient(var(--text) 0 0) content-box exclude, linear-gradient(var(--text) 0 0); }
+.spot { position: absolute; left: calc(var(--_size) / -2); top: calc(var(--_size) / -2); width: var(--_size); height: var(--_size); border-radius: 50%; background: radial-gradient(closest-side, var(--_color), transparent); will-change: transform; }
+.spot-layer > .spot { --_size: var(--spot-size, 280px); --_color: var(--spot); }
+.spot-edge > .spot { --_size: var(--spot-edge-size, 200px); --_color: var(--spot-edge); }
+[data-register="showcase"] .spotlight > :is(.spot-layer, .spot-edge) { display: block; }
+@media (hover: hover) and (pointer: fine) { .spotlight:hover > :is(.spot-layer, .spot-edge) { opacity: 1; } }
+
+/* ── Beam (Border Beam): a light that travels the border of the one element that needs attention —
+   an upload in progress—. `data-attention` turns it on and off with the data; a conic gradient turns
+   behind a mask the width of the border, and only `rotate` animates. Showcase only. ── */
+[data-register="showcase"] .beam { position: relative; isolation: isolate; }
+[data-register="showcase"] .beam[data-attention] { overflow: hidden; }
+[data-register="showcase"] .beam[data-attention]::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(from 0deg, transparent 0 70%, var(--beam-from) 86%, var(--beam-to) 95%, transparent 100%), color-mix(in oklab, var(--beam-from) 24%, var(--border)); animation: beam 6s linear infinite; }
+[data-register="showcase"] .beam[data-attention]::after { content: ""; position: absolute; z-index: -1; inset: 1px; border-radius: calc(var(--radius) - 1px); background: var(--material), var(--surface-raised); }
+[data-register="showcase"] .beam[data-tone="danger"] { --beam-from: var(--danger); --beam-to: color-mix(in oklab, var(--danger), white 45%); }
+@keyframes beam { to { rotate: 1turn; } }
+
+/* ── Glass: a floating chip of material; the blur is the depth ── */
+[data-register="showcase"] .glass { background: linear-gradient(160deg, oklch(100% 0 0 / 0.16), var(--spot)); border: 1px solid var(--border-strong); box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.25), var(--shadow-3); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+
+/* ── Shimmer: a band of light crosses the primary action once each time it is hovered (never in a
+   loop); the showcase register runs it on the `.btn--shimmer` one. ── */
+.btn--primary { overflow: hidden; }
+.btn--primary::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 40%, var(--shimmer-band) 50%, transparent 60%); transform: translateX(-120%); }
+@media (hover: hover) and (pointer: fine) { .btn--primary:hover:not(:disabled)::after { animation: shimmer-once 700ms var(--ease-in-out) both; } }
+@keyframes shimmer-once { to { transform: translateX(120%); } }
+[data-register="showcase"] .btn--shimmer::after { background: linear-gradient(105deg, transparent 38%, oklch(100% 0 0 / 0.5) 50%, transparent 62%); animation: shimmer 3.4s var(--ease-in-out) infinite; }
+@keyframes shimmer { 0%, 35% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+/* ── Scroll progress: a hairline at the top that fills as the page is read, driven by the scroll
+   timeline (no listener); where the browser lacks it, it stays empty and invisible. ── */
+.scroll-progress { display: none; position: fixed; z-index: 50; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--beam-from), var(--accent), var(--beam-to)); transform: scaleX(0); transform-origin: left; pointer-events: none; }
+[data-register="showcase"] .scroll-progress { display: block; }
+@supports (animation-timeline: scroll()) { .scroll-progress { animation: progress linear both; animation-timeline: scroll(root block); } }
+@keyframes progress { to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-register="showcase"] .beam[data-attention]::before { animation: none; rotate: 200deg; opacity: 0.6; }
+  .btn--primary::after, [data-register="showcase"] .btn--shimmer::after { animation: none; display: none; }
+  .scroll-progress { display: none !important; }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resplandor · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./glow-effect.css">
+<style>
+  .stage { padding: var(--space-5); }
+  .card { display: grid; gap: var(--space-1); max-width: 320px; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .card span { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Resplandor</h1>
+      <p class="mu-demo__note">Un degradado desenfocado detrás de la tarjeta, en seis modos: gira, late, respira, cambia de color, fluye o queda fijo. Se detiene fuera de pantalla y, con movimiento reducido, queda en el primer cuadro.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Giratorio</h2>
+    <div class="stage"><div class="card" data-motion="glow-effect" data-mode="rotate" data-blur="strong" data-colors="#7c5cff,#2fb6a8,#f4b740,#e5566d"><b>Cobrado este mes</b><span>$ 3.280.400,00</span></div></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-b">
+    <h2 class="mu-demo__label" id="s-b">Pulso</h2>
+    <div class="stage"><div class="card" data-motion="glow-effect" data-mode="pulse" data-blur="stronger" data-duration="3" data-colors="#7c5cff,#2fb6a8"><b>Facturas por vencer</b><span>12 esta semana</span></div></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-c">
+    <h2 class="mu-demo__label" id="s-c">Fijo</h2>
+    <div class="stage"><div class="card" data-motion="glow-effect" data-mode="static" data-blur="medium" data-colors="#7c5cff,#2fb6a8,#f4b740"><b>Clientes activos</b><span>148</span></div></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './glow-effect.js';
+  themeSwitch();
+</script>
+</body>
+</html>

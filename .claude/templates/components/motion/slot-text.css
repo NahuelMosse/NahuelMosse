@@ -1,0 +1,16 @@
+/* Slot text (Arc): every character is a reel that spins to its new value and lands from left to right. */
+:root { --slot-text-fade: .24em; }
+
+.ar-slot { position: relative; display: inline-block; font-variant-numeric: tabular-nums; line-height: 1.15; white-space: nowrap; vertical-align: bottom; color: var(--text); }
+.ar-slot__reels { display: inline-flex; height: 1.15em; align-items: flex-start; }
+/* One slot per character. Its width follows the character on a spring, so the word never resizes in one frame. */
+.ar-slot__slot { position: relative; display: inline-block; height: 1.15em; flex: none; overflow: visible; }
+.ar-slot__sizer { display: inline-block; visibility: hidden; white-space: pre; pointer-events: none; }
+/* The window reaches a little past the line so glyphs fade at the edges instead of being cut. */
+.ar-slot__window {
+  position: absolute; inset: -.22em -.08em; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--slot-text-fade), #000 calc(100% - var(--slot-text-fade)), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--slot-text-fade), #000 calc(100% - var(--slot-text-fade)), transparent);
+}
+.ar-slot__strip { position: absolute; top: calc(.22em - .225em); right: .08em; left: .08em; display: flex; flex-direction: column; align-items: center; will-change: transform; }
+.ar-slot__cell { display: block; height: 1.6em; padding-top: .225em; box-sizing: border-box; line-height: 1.15; white-space: pre; }

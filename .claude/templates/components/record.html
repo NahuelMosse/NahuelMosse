@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Cuenta de Northwind Traders</title>
+<link rel="preload" href="./fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./primitives.css">
+<link rel="stylesheet" href="./effects.css">
+<link rel="stylesheet" href="./life.css">
+<link rel="stylesheet" href="./components.css">
+<link rel="stylesheet" href="./motion/sliding-number.css">
+<link rel="stylesheet" href="./motion/animated-background.css">
+<link rel="stylesheet" href="./record.css">
+</head>
+<body class="ui">
+<svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 16 16"><path d="M2.5 7.5L8 3l5.5 4.5M4 6.5v6.5h8V6.5M6.5 13V9.5h3V13"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 16 16"><path d="M3.5 2.5h9v11l-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1-1.5 1z"/><path d="M6 6h4M6 9h4"/></symbol>
+    <symbol id="i-users" viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 13c.3-2.4 2.2-3.8 4.5-3.8s4.2 1.4 4.5 3.8"/><path d="M10.5 3.2a2.4 2.4 0 0 1 0 4.6M12 9.5c1.6.5 2.4 1.7 2.6 3.5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 16 16"><path d="M2 4.5h6M11 4.5h3M2 11.5h3M8 11.5h6"/><circle cx="9.5" cy="4.5" r="1.5"/><circle cx="6.5" cy="11.5" r="1.5"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 16 16"><path d="M8 4.5v4.5M8 11.5v.01"/></symbol>
+    <symbol id="i-back" viewBox="0 0 16 16"><path d="M10 4L6 8l4 4"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5L8 9l5.5-4.5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 16 16"><path d="M4 2.5h2l1 3-1.5 1a7 7 0 0 0 4 4l1-1.5 3 1v2a1 1 0 0 1-1 1A10.5 10.5 0 0 1 3 3.5a1 1 0 0 1 1-1z"/></symbol>
+  </defs>
+</svg>
+<a class="skip-link" href="#main">Saltar al contenido</a>
+
+<div class="app">
+  <aside class="sidebar" aria-label="Navegación principal">
+    <a class="brand" href="#"><span class="brand__mark" aria-hidden="true"></span>Ledger</a>
+    <nav class="nav" aria-label="Secciones" data-motion="animated-background" data-mode="click" data-default="clients" data-hl>
+      <a class="nav__item" href="#" data-id="home"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-home"/></svg>Inicio</a>
+      <a class="nav__item" href="#" data-id="invoices"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-receipt"/></svg>Facturas<span class="nav__count">8</span></a>
+      <a class="nav__item" href="#" data-id="clients" aria-current="page"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-users"/></svg>Clientes<span class="nav__count">5</span></a>
+      <a class="nav__item" href="#" data-id="settings"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-sliders"/></svg>Configuración</a>
+    </nav>
+  </aside>
+
+  <div class="app__main">
+    <main class="record" id="main">
+      <header class="record-head">
+        <div class="record-head__top">
+          <span class="avatar record-head__avatar" data-name="Northwind Traders" aria-hidden="true">NT</span>
+          <div class="record-head__title">
+            <nav class="breadcrumb record-head__crumbs" aria-label="Ruta">
+              <ol><li><a href="#"><svg class="icon record-head__back" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-back"/></svg>Clientes</a></li><li aria-current="page">C-2087</li></ol>
+            </nav>
+            <h1 class="record-head__name">Northwind Traders <span class="badge" data-tone="warning">En revisión de crédito</span></h1>
+            <p class="record-head__meta">CUIT 30-71234567-9 · Cliente desde 03/2019 · Riesgo medio · Ejecutiva: Lucía Ferreyra</p>
+          </div>
+          <div class="decision" role="group" aria-label="Decisión">
+            <button class="btn btn--destructive" type="button" data-dialog="d-suspend"><span class="btn__label">Suspender</span></button>
+            <button class="btn" type="button" data-dialog="d-ask"><span class="btn__label">Pedir información</span></button>
+            <button class="btn btn--primary" type="button" data-dialog="d-raise"><span class="btn__label">Ampliar límite</span></button>
+          </div>
+        </div>
+        <dl class="facts" aria-label="Datos clave">
+          <div class="facts__item" data-tone="danger">
+            <dt>Vencido</dt>
+            <dd class="facts__value" data-sliding data-ticker data-value="53154" data-format='{"style":"currency","currency":"ARS","maximumFractionDigits":0}'>$ 53.154</dd>
+            <dd class="facts__foot"><span class="figure__delta" data-tone="danger">tope $ 10.000</span><svg class="spark" data-tone="danger" data-spark="[0,0,9480,9480,43674,53154]"></svg></dd>
+          </div>
+          <div class="facts__item" data-tone="warning">
+            <dt>Días promedio de pago</dt>
+            <dd class="facts__value" data-sliding data-ticker data-value="41">41</dd>
+            <dd class="facts__foot"><span class="figure__delta" data-tone="warning">máx. 45</span><svg class="spark" data-tone="warning" data-spark="[28,31,30,35,38,41]"></svg></dd>
+          </div>
+          <div class="facts__item">
+            <dt>Uso del límite</dt>
+            <dd class="facts__value" data-sliding data-ticker data-good="down" data-value="0.522" data-format='{"style":"percent","minimumFractionDigits":1,"maximumFractionDigits":1}'>52,2 %</dd>
+            <dd class="facts__foot facts__meter"><span class="progress" role="progressbar" aria-label="Uso del límite de $ 120.000" aria-valuemin="0" aria-valuemax="100" aria-valuenow="52"><span class="progress__bar" style="--value: 0.522"></span></span><span class="facts__of">de $ 120.000</span></dd>
+          </div>
+          <div class="facts__item">
+            <dt>Saldo pendiente</dt>
+            <dd class="facts__value" data-sliding data-ticker data-value="62634" data-format='{"style":"currency","currency":"ARS","maximumFractionDigits":0}'>$ 62.634</dd>
+            <dd class="facts__foot"><span class="figure__delta">3 facturas</span><svg class="spark" data-spark="[21780,30240,27114,39420,53154,62634]"></svg></dd>
+          </div>
+          <div class="facts__item">
+            <dt>Próximo vencimiento</dt>
+            <dd class="facts__value">14/11</dd>
+            <dd class="facts__foot"><span class="figure__delta">en 16 días · $ 9.480</span></dd>
+          </div>
+        </dl>
+      </header>
+
+      <ol class="path" aria-label="Etapa de la cuenta" tabindex="0">
+        <li class="path__step" data-done>Alta</li>
+        <li class="path__step" data-done>Verificada</li>
+        <li class="path__step" data-done>Activa</li>
+        <li class="path__step" aria-current="step">En revisión de crédito</li>
+        <li class="path__step">Renovada</li>
+      </ol>
+
+      <section class="surface record-alerts" aria-labelledby="exceptions-title">
+        <div class="record-alerts__head">
+          <h2 class="record-alerts__title" id="exceptions-title"><span class="record-alerts__count">3</span> puntos frenan la decisión</h2>
+          <span class="record-section__note">Ordenados por lo que bloquea</span>
+        </div>
+        <ul class="exceptions">
+          <li class="exceptions__item" data-tone="danger"><a href="#reglas"><span class="badge" data-tone="danger">No cumple</span><span class="exceptions__what">Mora mayor a 30 días</span><span class="exceptions__measure num">$ 53.154 <small>tope $ 10.000</small></span><svg class="icon exceptions__go" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+          <li class="exceptions__item" data-tone="danger"><a href="#facturas"><span class="badge" data-tone="danger">Vencidas</span><span class="exceptions__what">2 facturas, la más antigua del 28/09/2026</span><span class="exceptions__measure num">31 días</span><svg class="icon exceptions__go" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+          <li class="exceptions__item" data-tone="warning"><a href="#documentos"><span class="badge" data-tone="warning">Falta</span><span class="exceptions__what">Balance 2025</span><span class="exceptions__measure">pedido hace 9 días <small>sin respuesta</small></span><svg class="icon exceptions__go" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chevron-right"/></svg></a></li>
+        </ul>
+      </section>
+
+      <nav class="section-nav" aria-label="Secciones de la cuenta">
+        <ul class="section-nav__list">
+          <li><a class="section-nav__link" href="#reglas">Reglas<span class="count" data-tone="danger">1</span></a></li>
+          <li><a class="section-nav__link" href="#datos">Datos</a></li>
+          <li><a class="section-nav__link" href="#facturas">Facturas<span class="count">6</span></a></li>
+          <li><a class="section-nav__link" href="#documentos">Documentos<span class="count" data-tone="warning">1</span></a></li>
+          <li><a class="section-nav__link" href="#historial">Historial</a></li>
+        </ul>
+      </nav>
+
+      <div class="record-body">
+        <div class="record-main">
+          <section class="record-section" id="reglas" aria-labelledby="reglas-title">
+            <div class="record-section__head"><h2 class="record-section__title" id="reglas-title">Reglas de crédito</h2><span class="record-section__note">Central de deudores y cuenta corriente al 29/10/2026 · 09:14</span></div>
+            <div class="surface record-panel">
+              <ul class="checks">
+                <li class="checks__item" data-state="fail"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">No cumple · Mora mayor a 30 días</span><span class="checks__meter" aria-hidden="true" style="--limit: 0.171"><span class="progress"><span class="progress__bar" style="--value: 0.909"></span></span></span><span class="checks__measure">$ 53.154 <small>tope $ 10.000</small></span></li>
+                <li class="checks__item" data-state="warn"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">A revisar · Días promedio de pago</span><span class="checks__meter" aria-hidden="true" style="--limit: 0.8"><span class="progress"><span class="progress__bar" style="--value: 0.729"></span></span></span><span class="checks__measure">41 <small>tope 45</small></span></li>
+              </ul>
+              <div class="accordion record-more">
+                <div class="accordion__item">
+                  <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="reglas-ok" id="reglas-ok-t">4 reglas cumplen<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+                  <div class="accordion__panel" id="reglas-ok" role="region" aria-labelledby="reglas-ok-t"><div><div class="accordion__body">
+                    <ul class="checks">
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Uso del límite</span><span class="checks__meter" aria-hidden="true" style="--limit: 0.8"><span class="progress"><span class="progress__bar" style="--value: 0.522"></span></span></span><span class="checks__measure">52,2 % <small>tope 80 %</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Antigüedad como cliente</span><span class="checks__meter" aria-hidden="true"></span><span class="checks__measure">7 años <small>mínimo 1</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Situación en la central de deudores</span><span class="checks__meter" aria-hidden="true" style="--limit: 0.8"><span class="progress"><span class="progress__bar" style="--value: 0.4"></span></span></span><span class="checks__measure">1 <small>máximo 2</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Cheques rechazados en 12 meses</span><span class="checks__meter" aria-hidden="true" style="--limit: 0.8"><span class="progress"><span class="progress__bar" style="--value: 0"></span></span></span><span class="checks__measure">0 <small>máximo 1</small></span></li>
+                    </ul>
+                  </div></div></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="record-section" id="datos" aria-labelledby="datos-title">
+            <div class="record-section__head"><h2 class="record-section__title" id="datos-title">Datos de la cuenta</h2></div>
+            <div class="surface record-panel kv-groups">
+              <div class="kv-group">
+                <h3 class="kv-group__title">Fiscales</h3>
+                <dl class="kv">
+                  <div><dt>Razón social</dt><dd>Northwind Traders S.A.</dd></div>
+                  <div><dt>CUIT</dt><dd class="num">30-71234567-9</dd></div>
+                  <div><dt>Condición IVA</dt><dd>Responsable inscripto</dd></div>
+                  <div><dt>Ingresos brutos</dt><dd class="num">901-123456-7</dd></div>
+                  <div><dt>Domicilio fiscal</dt><dd>Av. Corrientes 1234, piso 8, CABA</dd></div>
+                </dl>
+              </div>
+              <div class="kv-group">
+                <h3 class="kv-group__title">Condiciones comerciales</h3>
+                <dl class="kv">
+                  <div><dt>Plazo de pago</dt><dd>30 días</dd></div>
+                  <div><dt>Moneda</dt><dd>Pesos</dd></div>
+                  <div><dt>Descuento por pronto pago</dt><dd class="num">2 % a 10 días</dd></div>
+                  <div><dt>Interés por mora</dt><dd class="num">4,5 % mensual</dd></div>
+                  <div><dt>Garantía</dt><dd></dd></div>
+                </dl>
+              </div>
+              <div class="kv-group">
+                <h3 class="kv-group__title">Facturación</h3>
+                <dl class="kv">
+                  <div><dt>Facturado en 12 meses</dt><dd class="num">$ 742.180,00</dd></div>
+                  <div><dt>Cobrado en 12 meses</dt><dd class="num">$ 679.546,00</dd></div>
+                  <div><dt>Ticket promedio</dt><dd class="num">$ 30.924,17</dd></div>
+                  <div><dt>Última compra</dt><dd class="num">22/10/2026</dd></div>
+                </dl>
+              </div>
+              <div class="kv-group">
+                <h3 class="kv-group__title">Cobranza</h3>
+                <dl class="kv">
+                  <div><dt>Medio de pago</dt><dd>Transferencia</dd></div>
+                  <div><dt>Banco</dt><dd>Banco Nación</dd></div>
+                  <div><dt>CBU</dt><dd class="num">0110599520000012345678</dd></div>
+                  <div><dt>Último pago</dt><dd class="num">$ 9.480,00 · 12/10/2026</dd></div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="record-section" id="facturas" aria-labelledby="facturas-title">
+            <div class="record-section__head"><h2 class="record-section__title" id="facturas-title">Facturas</h2><span class="record-section__note">2 vencidas · $ 53.154</span></div>
+            <div class="surface record-panel">
+              <div class="record-table-wrap" role="region" aria-label="Facturas, se desplaza de costado" tabindex="0">
+                <table class="record-table">
+                  <caption class="visually-hidden">Facturas de la cuenta, vencidas primero</caption>
+                  <thead><tr><th scope="col">Número</th><th scope="col">Estado</th><th scope="col">Emitida</th><th scope="col">Vence</th><th scope="col" class="num">Importe</th></tr></thead>
+                  <tbody>
+                    <tr data-tone="danger"><td>F-1043</td><td><span class="badge" data-tone="danger">Vencida</span></td><td class="num">29/08/2026</td><td class="num">28/09/2026</td><td class="num">$ 43.674,00</td></tr>
+                    <tr data-tone="danger"><td>F-1051</td><td><span class="badge" data-tone="danger">Vencida</span></td><td class="num">05/09/2026</td><td class="num">05/10/2026</td><td class="num">$ 9.480,00</td></tr>
+                    <tr><td>F-1046</td><td><span class="badge" data-tone="info">Enviada</span></td><td class="num">15/10/2026</td><td class="num">14/11/2026</td><td class="num">$ 9.480,00</td></tr>
+                    <tr><td>F-1042</td><td><span class="badge" data-tone="success">Pagada</span></td><td class="num">12/09/2026</td><td class="num">12/10/2026</td><td class="num">$ 9.480,00</td></tr>
+                    <tr><td>F-1038</td><td><span class="badge" data-tone="success">Pagada</span></td><td class="num">02/08/2026</td><td class="num">01/09/2026</td><td class="num">$ 27.114,00</td></tr>
+                    <tr><td>F-1031</td><td><span class="badge" data-tone="success">Pagada</span></td><td class="num">01/07/2026</td><td class="num">31/07/2026</td><td class="num">$ 12.300,00</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="record-section" id="documentos" aria-labelledby="documentos-title">
+            <div class="record-section__head"><h2 class="record-section__title" id="documentos-title">Documentos</h2><span class="record-section__note">1 falta</span></div>
+            <div class="surface record-panel">
+              <ul class="checks">
+                <li class="checks__item" data-state="warn" data-doc="balance-2025"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Falta · Balance 2025</span><span class="checks__measure"><small>pedido el 20/10/2026</small></span></li>
+              </ul>
+              <div class="accordion record-more">
+                <div class="accordion__item">
+                  <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="docs-ok" id="docs-ok-t">4 documentos validados<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+                  <div class="accordion__panel" id="docs-ok" role="region" aria-labelledby="docs-ok-t"><div><div class="accordion__body">
+                    <ul class="checks">
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Validado · Estatuto social</span><span class="checks__measure"><small>03/2019</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Validado · Constancia de CUIT</span><span class="checks__measure"><small>01/2026</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Validado · Balance 2024</span><span class="checks__measure"><small>05/2025</small></span></li>
+                      <li class="checks__item"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Validado · Poder del firmante</span><span class="checks__measure"><small>03/2024</small></span></li>
+                    </ul>
+                  </div></div></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="record-section" id="historial" aria-labelledby="historial-title">
+            <div class="record-section__head"><h2 class="record-section__title" id="historial-title">Historial</h2></div>
+            <div class="surface record-panel" data-pad="0">
+              <ol class="timeline history" data-static>
+                <li class="timeline__item" data-status="overdue"><span class="timeline__dot" aria-hidden="true"></span><time class="timeline__date" datetime="2026-10-27">27/10/2026</time><span class="history__what">Pasó a revisión de crédito por mora <span class="history__who">· Sistema</span></span></li>
+                <li class="timeline__item" data-status="sent"><span class="timeline__dot" aria-hidden="true"></span><time class="timeline__date" datetime="2026-10-22">22/10/2026</time><span class="history__what">Pidió ampliar el límite a $ 180.000,00 <span class="history__who">· Martín Sosa (cliente)</span></span></li>
+                <li class="timeline__item"><span class="timeline__dot" aria-hidden="true"></span><time class="timeline__date" datetime="2026-10-20">20/10/2026</time><span class="history__what">Se pidió el balance 2025 <span class="history__who">· Lucía Ferreyra</span></span></li>
+                <li class="timeline__item" data-status="paid"><span class="timeline__dot" aria-hidden="true"></span><time class="timeline__date" datetime="2026-10-12">12/10/2026</time><span class="history__what">Pago de F-1042 por $ 9.480,00 <span class="history__who">· Transferencia</span></span></li>
+                <li class="timeline__item" data-status="paid"><span class="timeline__dot" aria-hidden="true"></span><time class="timeline__date" datetime="2026-03-15">15/03/2026</time><span class="history__what">Límite ampliado a $ 120.000,00 <span class="history__who">· Comité de crédito</span></span></li>
+              </ol>
+            </div>
+          </section>
+        </div>
+
+        <aside class="record-aside" aria-label="Contexto de la cuenta">
+          <section class="surface record-panel record-ask" aria-labelledby="pedido-title" data-balance="62634" data-current="120000" data-requested="180000" data-cap="0.8" data-rise-cap="1">
+            <div class="record-ask__head">
+              <div class="figure">
+                <h2 class="figure__label" id="pedido-title">Límite a otorgar</h2>
+                <span class="figure__value" data-sliding data-ticker data-value="180000" data-format='{"style":"currency","currency":"ARS","maximumFractionDigits":0}'>$ 180.000</span>
+                <span class="figure__delta" data-trend="up">+ 50 % sobre $ 120.000</span>
+              </div>
+              <div class="ring" style="--value: 34.8" role="img" aria-label="Con este límite el uso queda en 34,8 %"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring__track" cx="18" cy="18" r="15.9155"/><circle class="ring__bar" cx="18" cy="18" r="15.9155"/></svg><span class="ring__label" aria-hidden="true"><span data-sliding data-value="0.348" data-format='{"style":"percent","maximumFractionDigits":0}'>35 %</span></span></div>
+            </div>
+            <div class="record-ask__try">
+              <div class="record-ask__try-head">
+                <span class="text-label" id="ask-try-label">Probar otro límite</span>
+                <button class="btn btn--ghost btn--sm record-ask__reset" type="button" hidden>Volver al pedido</button>
+              </div>
+              <div class="slider" aria-labelledby="ask-try-label" aria-valuemin="120000" aria-valuemax="300000" aria-valuenow="180000" data-step="10000"></div>
+              <span class="record-ask__scale num" aria-hidden="true"><span>$ 120.000</span><span>$ 300.000</span></span>
+            </div>
+            <ul class="checks record-ask__rules" aria-label="Reglas con este límite">
+              <li class="checks__item" data-state="fail"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">No cumple · Mora mayor a 30 días</span><span class="checks__measure"><small>no depende del límite</small></span></li>
+              <li class="checks__item" data-rule="rise"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Ampliación sin comité</span><span class="checks__measure">+ 50 % <small>tope + 100 %</small></span></li>
+              <li class="checks__item" data-rule="use"><span class="checks__icon" aria-hidden="true"></span><span class="checks__name">Cumple · Uso del límite</span><span class="checks__measure">34,8 % <small>tope 80 %</small></span></li>
+            </ul>
+            <dl class="kv">
+              <div><dt>Pedido</dt><dd class="num">$ 180.000 · 22/10/2026</dd></div>
+              <div><dt>Motivo</dt><dd>Temporada alta de diciembre</dd></div>
+            </dl>
+          </section>
+          <section class="surface record-panel" aria-labelledby="pago-title">
+            <div class="panel-head"><h2 class="panel-title" id="pago-title">Días promedio de pago</h2><div class="figure chart__readout" id="pago-readout" data-inline></div></div>
+            <div class="chart" data-readout="pago-readout" data-animate data-label="Días promedio de pago, últimos seis meses" data-line="[28,31,30,35,38,41]" data-labels='["May","Jun","Jul","Ago","Sep","Oct"]' data-format='{"maximumFractionDigits":0}'></div>
+          </section>
+          <section class="surface record-panel record-contact" aria-labelledby="contacto-title">
+            <h2 class="kv-group__title" id="contacto-title">Contacto</h2>
+            <div class="record-contact__who"><span class="avatar" data-name="Martín Sosa" aria-hidden="true">MS</span><div><p class="record-contact__name">Martín Sosa</p><p class="record-section__note">Gerente de compras</p></div></div>
+            <ul class="record-contact__ways">
+              <li><a class="btn btn--sm" href="mailto:msosa@northwind.example"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-mail"/></svg>msosa@northwind.example</a></li>
+              <li><a class="btn btn--sm num" href="tel:+541143215678"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-phone"/></svg>+54 11 4321-5678</a></li>
+            </ul>
+          </section>
+          <section class="surface record-panel" aria-labelledby="notas-title">
+            <h2 class="kv-group__title" id="notas-title">Última nota</h2>
+            <blockquote class="record-note">«Pagan tarde en temporada baja y se ponen al día en diciembre; en 2025 regularizaron todo antes del 15/12.»</blockquote>
+            <p class="record-section__note">Lucía Ferreyra · 27/10/2026</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<dialog class="dialog" id="d-raise" aria-labelledby="d-raise-title" aria-describedby="d-raise-desc">
+  <form method="dialog" novalidate>
+    <div class="dialog__head">
+      <div><h2 class="text-title" id="d-raise-title">Ampliar el límite de Northwind Traders</h2><p class="dialog__desc num" id="d-raise-desc">De $ 120.000 a $ 180.000 · el uso queda en 34,8 %</p></div>
+      <button class="btn btn--ghost btn--icon btn--sm" type="button" data-close aria-label="Cerrar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="dialog__body stack" data-gap="3">
+      <div class="notice" data-tone="danger" data-persistent><svg class="notice__icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-alert"/></svg><div class="notice__body"><span class="notice__title">Va contra 1 regla: mora mayor a 30 días</span><span class="text-soft">$ 53.154 vencidos, tope $ 10.000. La ampliación queda como excepción, con su motivo en el historial.</span><span class="text-soft" data-review hidden></span></div></div>
+      <div class="field">
+        <label class="field__label" for="raise-reason">Motivo de la excepción</label>
+        <textarea class="textarea" id="raise-reason" name="reason" required minlength="8" maxlength="280" placeholder="Por qué se amplía pese a la mora" data-error="Escribí el motivo: queda en el historial"></textarea>
+        <span class="field__foot"><span>Lo lee quien revise la cuenta.</span><span class="field__counter"></span></span>
+        <span class="field__message" aria-live="polite"><span class="field__error"><span></span></span></span>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn" type="button" data-close>Cancelar</button>
+      <button class="btn btn--primary num" type="submit" data-confirm>Ampliar a $ 180.000</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dialog" id="d-ask" aria-labelledby="d-ask-title">
+  <form method="dialog" novalidate>
+    <div class="dialog__head">
+      <div><h2 class="text-title" id="d-ask-title">Pedir información a Martín Sosa</h2><p class="dialog__desc">Le llega por correo a msosa@northwind.example.</p></div>
+      <button class="btn btn--ghost btn--icon btn--sm" type="button" data-close aria-label="Cerrar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="dialog__body stack" data-gap="3">
+      <div class="radio-group" role="radiogroup" aria-label="Qué se pide">
+        <label class="radio"><input type="radio" name="what" value="el balance 2025" checked><span class="radio__dot"></span><span class="radio__text">Balance 2025<span class="radio__desc">Falta desde el 20/10/2026.</span></span></label>
+        <label class="radio"><input type="radio" name="what" value="un plan de pago de lo vencido"><span class="radio__dot"></span><span class="radio__text">Plan de pago de lo vencido<span class="radio__desc">$ 53.154 en 2 facturas.</span></span></label>
+        <label class="radio"><input type="radio" name="what" value="información"><span class="radio__dot"></span><span class="radio__text">Otra cosa<span class="radio__desc">La que diga el mensaje.</span></span></label>
+      </div>
+      <div class="field">
+        <label class="field__label" for="ask-message">Mensaje <span class="text-soft">(opcional)</span></label>
+        <textarea class="textarea" id="ask-message" name="message" maxlength="280" placeholder="Lo que tiene que saber" data-error="Escribí qué se pide"></textarea>
+        <span class="field__foot"><span></span><span class="field__counter"></span></span>
+        <span class="field__message" aria-live="polite"><span class="field__error"><span></span></span></span>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn" type="button" data-close>Cancelar</button>
+      <button class="btn btn--primary" type="submit" data-confirm>Enviar pedido</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dialog" id="d-suspend" role="alertdialog" aria-labelledby="d-suspend-title" aria-describedby="d-suspend-desc">
+  <form method="dialog" novalidate>
+    <div class="dialog__head">
+      <div><h2 class="text-title" id="d-suspend-title">¿Suspender la cuenta de Northwind Traders?</h2><p class="dialog__desc" id="d-suspend-desc">No se le puede vender a crédito mientras siga suspendida. Las facturas vencidas siguen en cobranza.</p></div>
+    </div>
+    <div class="dialog__body stack" data-gap="3">
+      <div class="field">
+        <label class="field__label" for="suspend-reason">Motivo</label>
+        <textarea class="textarea" id="suspend-reason" name="reason" required minlength="8" maxlength="280" placeholder="Por qué se suspende" data-error="Escribí el motivo: queda en el historial"></textarea>
+        <span class="field__foot"><span></span><span class="field__counter"></span></span>
+        <span class="field__message" aria-live="polite"><span class="field__error"><span></span></span></span>
+      </div>
+    </div>
+    <div class="dialog__foot">
+      <button class="btn" type="button" data-close autofocus>Cancelar</button>
+      <button class="btn btn--destructive" type="submit" data-confirm>Suspender cuenta</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module">
+  import { ui, setNumber, setBadge, toast } from './components.js';
+  import './motion/animated-background.js';
+  import { mountRecord, logEvent, decide } from './record.js';
+  ui.init();
+  mountRecord();
+
+  const record = document.querySelector('.record');
+  const badge = record.querySelector('.record-head__name .badge');
+  const ask = record.querySelector('.record-ask');
+  const balance = Number(ask.dataset.balance);
+  const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  const percent = new Intl.NumberFormat('es-AR', { style: 'percent', maximumFractionDigits: 1 });
+  const ME = 'Lucía Ferreyra';
+
+  // The raise dialog says the limit being tried, not the one asked for.
+  const raise = document.getElementById('d-raise');
+  const sayLimit = ({ limit, use, review = [] }) => {
+    raise.querySelector('#d-raise-desc').textContent = `De ${money.format(Number(ask.dataset.current))} a ${money.format(limit)} · el uso queda en ${percent.format(use)}`;
+    const also = raise.querySelector('[data-review]');
+    also.hidden = !review.length;
+    also.textContent = review.length ? `Además queda a revisar: ${review.join(', ')}.` : '';
+    raise.querySelector('[data-confirm]').textContent = `Ampliar a ${money.format(limit)}`;
+  };
+  ask.addEventListener('record:limit', (event) => sayLimit(event.detail));
+  sayLimit({ limit: Number(ask.dataset.limit), use: balance / Number(ask.dataset.limit) });
+
+  decide(raise, (data) => {
+    const limit = Number(ask.dataset.limit);
+    const use = balance / limit;
+    setBadge(badge, { tone: 'success', label: 'Límite ampliado' });
+    const step = record.querySelector('.path [aria-current="step"]');
+    step.removeAttribute('aria-current');
+    step.setAttribute('data-done', '');
+    step.nextElementSibling?.setAttribute('aria-current', 'step');
+    const fact = [...record.querySelectorAll('.facts__item')].find((item) => item.querySelector('dt').textContent === 'Uso del límite');
+    setNumber(fact.querySelector('.facts__value'), Math.round(use * 1000) / 1000);
+    fact.querySelector('.facts__of').textContent = `de ${money.format(limit)}`;
+    const meter = fact.querySelector('.progress');
+    meter.querySelector('.progress__bar').style.setProperty('--value', String(use));
+    meter.setAttribute('aria-valuenow', String(Math.round(use * 100)));
+    meter.setAttribute('aria-label', `Uso del límite de ${money.format(limit)}`);
+    ask.dataset.current = String(limit);
+    ask.dispatchEvent(new CustomEvent('record:repaint'));
+    record.querySelector('[data-dialog="d-raise"]').disabled = true;
+    logEvent(record, { what: `Límite ampliado a ${money.format(limit)} por excepción: ${data.get('reason').trim()}`, who: ME, status: 'paid' });
+    toast(`Límite ampliado a ${money.format(limit)}`, { description: 'El motivo quedó en el historial.', tone: 'success' });
+  });
+
+  // «Otra cosa» is only what the message says, so then the message is required.
+  const askDialog = document.getElementById('d-ask');
+  const askMessage = askDialog.querySelector('#ask-message');
+  askDialog.addEventListener('change', (event) => {
+    if (event.target.name !== 'what') return;
+    askMessage.required = event.target.value === 'información';
+    askMessage.closest('.field').querySelector('.field__label .text-soft').hidden = askMessage.required;
+  });
+  askDialog.addEventListener('close', () => { askMessage.required = false; askMessage.closest('.field').querySelector('.field__label .text-soft').hidden = false; });
+  decide(askDialog, (data) => {
+    const what = data.get('what');
+    const message = data.get('message').trim();
+    logEvent(record, { what: `Se pidió ${what} a Martín Sosa${message ? `: ${message}` : ''}`, who: ME, status: 'sent' });
+    if (what === 'el balance 2025') record.querySelector('[data-doc="balance-2025"] .checks__measure small').textContent = 'pedido de nuevo hoy';
+    toast('Pedido enviado a Martín Sosa', { description: `Le llegó por correo: ${what}.`, tone: 'success' });
+  });
+
+  decide(document.getElementById('d-suspend'), (data) => {
+    setBadge(badge, { tone: 'danger', label: 'Suspendida' });
+    record.querySelectorAll('[data-dialog="d-raise"], [data-dialog="d-suspend"]').forEach((button) => { button.disabled = true; });
+    logEvent(record, { what: `Cuenta suspendida: ${data.get('reason').trim()}`, who: ME, status: 'overdue' });
+    toast('Cuenta suspendida', { description: 'No se le puede vender a crédito; el motivo quedó en el historial.' });
+  });
+</script>
+</body>
+</html>

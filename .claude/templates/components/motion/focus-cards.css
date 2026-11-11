@@ -1,0 +1,35 @@
+/* Focus cards (Aceternity UI): hover one, the rest blur back. */
+:root {
+  --ac-focus-gap: 40px;
+  --ac-focus-height: 384px;
+  --ac-focus-height-small: 240px;
+  --ac-focus-radius: var(--radius-sm);
+  --ac-focus-blur: 8px;
+  --ac-focus-shrink: 0.98;
+  --ac-focus-dim: 0.55;
+  --ac-focus-time: 300ms;
+  --ac-focus-veil: oklch(0% 0 0 / 0.5);
+  --ac-focus-caption: oklch(98% 0.003 265);
+  --ac-focus-caption-soft: oklch(98% 0.003 265 / 0.78);
+  --ac-focus-bg: var(--surface-sunken);
+}
+
+.ac-focus { display: grid; grid-template-columns: 1fr; gap: var(--ac-focus-gap); width: 100%; max-width: 64rem; margin-inline: auto; }
+@media (min-width: 768px) { .ac-focus { grid-template-columns: repeat(3, 1fr); padding-inline: var(--space-6); } }
+
+.ac-focus__card { position: relative; display: block; width: 100%; height: var(--ac-focus-height-small); overflow: hidden; border-radius: var(--ac-focus-radius); background: var(--ac-focus-bg); color: inherit; text-decoration: none; transition: transform var(--ac-focus-time) ease-out, filter var(--ac-focus-time) ease-out, opacity var(--ac-focus-time) ease-out; }
+@media (min-width: 768px) { .ac-focus__card { height: var(--ac-focus-height); } }
+.ac-focus__card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ac-focus__card[data-state="dim"] { filter: blur(var(--ac-focus-blur)); transform: scale(var(--ac-focus-shrink)); }
+.ac-focus__pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ac-focus__cap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-1); padding: var(--space-6) var(--space-4); background: var(--ac-focus-veil); opacity: 0; transition: opacity var(--ac-focus-time) ease; }
+.ac-focus__card[data-state="active"] .ac-focus__cap { opacity: 1; }
+.ac-focus__title { font-size: var(--text-xl); font-weight: var(--weight-medium); color: var(--ac-focus-caption); }
+.ac-focus__sub { font-size: var(--text-sm); color: var(--ac-focus-caption-soft); }
+@media (min-width: 768px) { .ac-focus__title { font-size: var(--text-2xl); letter-spacing: var(--tracking-2xl); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-focus__card { transition-duration: 120ms; }
+  .ac-focus__cap { transition-duration: 120ms; }
+  .ac-focus__card[data-state="dim"] { filter: none; transform: none; opacity: var(--ac-focus-dim); }
+}

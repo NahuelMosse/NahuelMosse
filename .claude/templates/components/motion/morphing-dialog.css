@@ -1,0 +1,77 @@
+/* Morphing dialog. The values of the component, derived from the set's tokens. */
+:root {
+  --morphing-dialog-radius: var(--radius);
+  --morphing-dialog-trigger-radius: var(--radius-control);
+  --morphing-dialog-width: 500px;
+  --morphing-dialog-margin: var(--space-4);
+  --morphing-dialog-pad: var(--space-5);
+  --morphing-dialog-max-height: 90vh;
+  --morphing-dialog-surface: var(--surface-overlay);
+  --morphing-dialog-backdrop: color-mix(in oklab, var(--surface) 40%, transparent);
+  --morphing-dialog-blur: 4px;
+  --morphing-dialog-shadow: var(--shadow-modal);
+  --morphing-dialog-z: 60;
+}
+
+/* The trigger: the card that becomes the dialog. */
+.mdlg-trigger {
+  position: relative; display: block; width: 100%; padding: 0; margin: 0; text-align: start; cursor: pointer;
+  font: inherit; color: var(--text); background: var(--surface-raised);
+  border: 0; border-radius: var(--morphing-dialog-trigger-radius);
+  box-shadow: 0 0 0 1px var(--border), var(--shadow-1);
+  transition: box-shadow var(--duration-normal) var(--ease-out), transform var(--duration-instant) var(--ease-out);
+}
+.mdlg-trigger:hover { box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-2); }
+.mdlg-trigger:active { transform: scale(0.99); }
+.mdlg-trigger:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mdlg-trigger__row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); }
+.mdlg-trigger__text { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.mdlg-trigger [data-md="title"] { font-size: var(--text-sm); font-weight: 500; color: var(--text); }
+.mdlg-trigger [data-md="subtitle"] { font-size: var(--text-xs); color: var(--text-soft); }
+
+/* An avatar: the shared image. It is sized by its modifier, its initials by its size. */
+.mdlg-avatar {
+  --size: 32px;
+  display: grid; place-items: center; flex: none; width: var(--size); height: var(--size); border-radius: 50%;
+  font-size: calc(var(--size) * 0.38); font-weight: 600; letter-spacing: 0.01em; line-height: 1; user-select: none;
+  color: oklch(36% 0.08 var(--hue, 267)); background: oklch(93% 0.04 var(--hue, 267));
+  box-shadow: inset 0 0 0 1px oklch(60% 0.08 var(--hue, 267) / 0.18);
+}
+:root[data-theme="dark"] .mdlg-avatar { color: oklch(86% 0.07 var(--hue, 267)); background: oklch(32% 0.05 var(--hue, 267)); }
+.mdlg-avatar--lg { --size: 80px; }
+
+/* The layer in the body: the backdrop and the centered box. */
+.mdlg-portal { position: fixed; inset: 0; z-index: var(--morphing-dialog-z); font-family: var(--font); color: var(--text); }
+.mdlg-portal :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mdlg-backdrop { position: fixed; inset: 0; background: var(--morphing-dialog-backdrop); -webkit-backdrop-filter: blur(var(--morphing-dialog-blur)); backdrop-filter: blur(var(--morphing-dialog-blur)); }
+.mdlg-wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--morphing-dialog-margin); pointer-events: none; }
+.mdlg-box {
+  position: relative; width: var(--morphing-dialog-width); max-width: 100%; max-height: var(--morphing-dialog-max-height);
+  overflow: hidden; pointer-events: auto; background: var(--morphing-dialog-surface);
+  border-radius: var(--morphing-dialog-radius); box-shadow: var(--morphing-dialog-shadow);
+  will-change: transform, opacity;
+}
+.mdlg-inner { position: relative; width: 100%; }
+.mdlg-scroll { max-height: var(--morphing-dialog-max-height); overflow-y: auto; overscroll-behavior: contain; padding: var(--morphing-dialog-pad); }
+.mdlg-box [data-md] { will-change: transform; }
+
+.mdlg-close {
+  position: absolute; z-index: 1; top: var(--space-4); right: var(--space-4); display: grid; place-items: center; width: 36px; height: 36px;
+  padding: 0; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--text-soft); cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast), transform var(--duration-instant) var(--ease-out);
+}
+.mdlg-close:hover { background: var(--surface-hover); color: var(--text); }
+.mdlg-close:active { transform: scale(0.94); }
+.mdlg-close svg { transition: transform var(--duration-normal) var(--ease-out); }
+.mdlg-close:hover svg { transform: rotate(90deg); }
+
+/* The content the demo and the screens put inside: a sheet of a record. */
+.mdlg-sheet__head { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-5) 0 var(--space-4); text-align: center; }
+.mdlg-sheet [data-md="title"] { font-size: var(--text-xl); font-weight: 600; color: var(--text); }
+.mdlg-sheet [data-md="subtitle"] { font-size: var(--text-md); color: var(--text-faint); }
+.mdlg-sheet__body { display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--text-md); color: var(--text-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mdlg-trigger, .mdlg-close, .mdlg-close svg { transition-duration: 120ms; }
+  .mdlg-trigger:active, .mdlg-close:active, .mdlg-close:hover svg { transform: none; }
+}

@@ -1,0 +1,5 @@
+/* Animated icons (Animate UI): inline SVG at 24 px units, drawn with the text color. The parts that move
+   do it with WAAPI from icons.js; nothing here animates. */
+:root { --icon-size: 1em; }
+.ani-icon { display: inline-block; flex: none; vertical-align: middle; color: inherit; }
+[data-motion="icons"] { display: inline-flex; align-items: center; justify-content: center; line-height: 0; }

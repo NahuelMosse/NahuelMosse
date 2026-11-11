@@ -1,0 +1,27 @@
+/* Draw signature (Watermelon UI): a start button, a signature pad and a signed chip in one frame that resizes between them. */
+:root {
+  --mu-draw-signature-pad-width: 20rem;
+}
+.mu-draw-signature { display: inline-block; max-width: 100%; color: var(--text); }
+.mu-draw-signature__frame { position: relative; display: inline-flex; overflow: hidden; box-sizing: border-box; border: 3px dashed transparent; border-radius: 32px; transition: border-color 300ms ease; }
+.mu-draw-signature__frame[data-step="drawing"] { border-color: var(--border); }
+.mu-draw-signature__inner { display: flex; padding: 4px; }
+.mu-draw-signature__btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: var(--space-4) var(--space-6); border: 0; border-radius: var(--radius-full); background: var(--surface-sunken); color: var(--text); font: inherit; font-size: var(--text-lg); font-weight: var(--weight-strong); cursor: pointer; }
+.mu-draw-signature__btn:hover:not(:disabled) { background: var(--surface-active, var(--surface-sunken)); }
+.mu-draw-signature__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.mu-draw-signature__btn--wide { width: 100%; margin-top: var(--space-3); }
+.mu-draw-signature__pad { box-sizing: border-box; width: min(var(--mu-draw-signature-pad-width), calc(100vw - 4rem)); padding: var(--space-5) var(--space-5) var(--space-3); border-radius: 34px; background: var(--surface-raised); }
+.mu-draw-signature__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+.mu-draw-signature__title { font-size: var(--text-lg); font-weight: var(--weight-strong); color: var(--text-soft); }
+.mu-draw-signature__icon, .mu-draw-signature__close, .mu-draw-signature__again { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-soft); cursor: pointer; }
+.mu-draw-signature__icon svg, .mu-draw-signature__close svg, .mu-draw-signature__again svg, .mu-draw-signature__btn svg, .mu-draw-signature__chip svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mu-draw-signature__icon:hover, .mu-draw-signature__close:hover { color: var(--text); }
+.mu-draw-signature__again { width: 52px; height: 52px; background: var(--surface-sunken); color: var(--text); }
+.mu-draw-signature__canvas { display: block; width: 100%; aspect-ratio: 290 / 200; border-radius: var(--radius); background: var(--surface-sunken); touch-action: none; cursor: crosshair; }
+.mu-draw-signature__done { display: flex; align-items: center; gap: var(--space-3); }
+.mu-draw-signature__chip { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-6); border-radius: var(--radius-full); background: var(--text); color: var(--surface-raised); font-size: var(--text-lg); font-weight: var(--weight-strong); }
+.mu-draw-signature button:focus-visible, .mu-draw-signature__canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mu-draw-signature__live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .mu-draw-signature__frame { transition: none; }
+}

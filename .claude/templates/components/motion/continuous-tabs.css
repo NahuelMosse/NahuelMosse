@@ -1,0 +1,14 @@
+/* Continuous tabs (Watermelon UI): one pill shared by every tab, slid and resized to the chosen one. */
+:root {
+  --mu-continuous-tabs-pill: var(--text);
+  --mu-continuous-tabs-pill-text: var(--surface-raised);
+}
+.mu-continuous-tabs { position: relative; display: inline-flex; align-items: center; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--surface-sunken); box-shadow: inset 0 1px 2px oklch(0% 0 0 / 0.06); max-width: 100%; overflow-x: auto; }
+.mu-continuous-tabs__pill { position: absolute; left: 0; top: 0; border-radius: var(--radius-full); background: var(--mu-continuous-tabs-pill); box-shadow: var(--shadow-1); transition: transform var(--mu-continuous-tabs-ms) var(--mu-continuous-tabs-ease), width var(--mu-continuous-tabs-ms) var(--mu-continuous-tabs-ease), height var(--mu-continuous-tabs-ms) var(--mu-continuous-tabs-ease); pointer-events: none; }
+.mu-continuous-tabs__tab { position: relative; z-index: 1; min-height: 44px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-full); background: none; color: var(--text-soft); font: inherit; font-weight: var(--weight-medium); white-space: nowrap; cursor: pointer; transition: color 200ms; }
+.mu-continuous-tabs__tab:hover { color: var(--text); }
+.mu-continuous-tabs__tab[aria-selected="true"] { color: var(--mu-continuous-tabs-pill-text); }
+.mu-continuous-tabs__tab:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .mu-continuous-tabs__pill, .mu-continuous-tabs__tab { transition: none; }
+}

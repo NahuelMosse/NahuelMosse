@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Tabla de facturas ordenable</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mp-demo.css">
+<link rel="stylesheet" href="./arc-demo.css">
+<link rel="stylesheet" href="./arc.css">
+<link rel="stylesheet" href="./sortable-data-table.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Tabla de facturas ordenable</h1>
+      <p class="demo__lead">Al ordenar, las filas se acomodan con un resorte y las columnas no se mueven. La flecha aparece donde se ordena y se da vuelta al cambiar el sentido; el casillero de la cabecera es uno solo para «todas» y «algunas»; abajo, el conteo cambia en el lugar.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-facturas">
+    <h2 id="s-facturas">Facturas del mes</h2>
+    <p>Clic en una cabecera para ordenar; otra vez para invertir. Shift selecciona un rango; las flechas recorren las cabeceras y los casilleros; Escape quita la selección.</p>
+    <div class="demo__stage" style="min-height: 0; padding: var(--space-5)">
+      <div id="table" style="width: min(760px, 100%)"></div>
+    </div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-vacia">
+    <h2 id="s-vacia">Sin resultados</h2>
+    <p>Una tabla sin filas dice por qué.</p>
+    <div class="demo__stage" style="min-height: 0; padding: var(--space-5)">
+      <div id="empty" style="width: min(760px, 100%)"></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './sortable-data-table.js';
+import './mp-demo.js';
+
+const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+const day = new Intl.DateTimeFormat('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Argentina/Buenos_Aires' });
+const tone = { Pagada: 'success', Emitida: '', Vencida: 'danger', Borrador: 'warning' };
+const pill = (v) => `<span class="arc-pill"${tone[v] ? ` data-tone="${tone[v]}"` : ''}>${v}</span>`;
+const rows = [
+  { id: 'a', numero: 'FC A 0001-00002340', cliente: 'Ferretería del Plata', estado: 'Pagada', vence: new Date('2026-09-18T12:00:00-03:00'), monto: 184500 },
+  { id: 'b', numero: 'FC A 0001-00002347', cliente: 'Sánchez Hermanos S.A.', estado: 'Emitida', vence: new Date('2026-10-12T12:00:00-03:00'), monto: 920000 },
+  { id: 'c', numero: 'FC A 0001-00002351', cliente: 'Panificadora Norte', estado: 'Emitida', vence: new Date('2026-10-14T12:00:00-03:00'), monto: 412300 },
+  { id: 'd', numero: 'FC B 0001-00001184', cliente: 'Distribuidora Cuyo', estado: 'Borrador', vence: new Date('2026-11-06T12:00:00-03:00'), monto: 78000 },
+  { id: 'e', numero: 'FC A 0001-00002322', cliente: 'Estudio Acosta y Asoc.', estado: 'Vencida', vence: new Date('2026-09-28T12:00:00-03:00'), monto: 256400 },
+];
+const columns = [
+  { key: 'numero', label: 'Factura' },
+  { key: 'cliente', label: 'Cliente' },
+  { key: 'estado', label: 'Estado', render: pill },
+  { key: 'vence', label: 'Vence', render: (v) => day.format(v) },
+  { key: 'monto', label: 'Importe', numeric: true, render: (v) => money.format(v) },
+];
+const table = mount(document.getElementById('table'), {
+  columns, rows, rowKey: 'id', caption: 'Facturas del mes', selectable: true, defaultSort: { key: 'monto', direction: 'desc' },
+  itemName: { one: 'factura', other: 'facturas' }, labels: { selected: (n) => (n === 1 ? 'seleccionada' : 'seleccionadas'), selectAll: 'Seleccionar todas las facturas', select: (n) => `Seleccionar ${n}`, clear: 'Quitar selección' },
+});
+mount(document.getElementById('empty'), { columns, rows: [], rowKey: 'id', caption: 'Facturas sin resultados', emptyMessage: 'Ninguna factura coincide con los filtros.' });
+window.table = table;
+</script>
+</body>
+</html>

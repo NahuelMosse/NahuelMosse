@@ -1,0 +1,35 @@
+/* Animated tooltip (Aceternity UI): avatars that overlap, and a tooltip that follows the pointer. */
+:root {
+  --ac-tip-size: 56px;
+  --ac-tip-overlap: -16px;
+  --ac-tip-rise: 64px;
+  --ac-tip-ring: var(--surface-raised);
+  --ac-tip-bg: var(--surface-inverse);
+  --ac-tip-fg: var(--text-inverse);
+  --ac-tip-soft: color-mix(in oklab, var(--text-inverse) 78%, transparent);
+  --ac-tip-line-a: var(--accent);
+  --ac-tip-line-b: var(--info);
+  --ac-tip-scale: 1.05;
+  --ac-tip-hover: 500ms ease;
+}
+
+.ac-tip { position: relative; isolation: isolate; display: flex; flex-direction: row; align-items: center; justify-content: center; padding-inline-end: calc(var(--ac-tip-overlap) * -1); }
+.ac-tip__item { position: relative; margin: 0 var(--ac-tip-overlap) 0 0; padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; font: inherit; cursor: pointer; }
+.ac-tip__item:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ac-tip__face { position: relative; display: grid; place-items: center; width: var(--ac-tip-size); height: var(--ac-tip-size); box-sizing: border-box; overflow: hidden; border: 2px solid var(--ac-tip-ring); border-radius: 50%; background: oklch(var(--avatar-bg-l) var(--avatar-bg-c) var(--h, 265)); color: oklch(var(--avatar-fg-l) var(--avatar-fg-c) var(--h, 265)); font-size: var(--text-md); font-weight: var(--weight-strong); transition: transform var(--ac-tip-hover); }
+.ac-tip__face img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.ac-tip__item:is(:hover, :focus-visible) .ac-tip__face { z-index: 30; transform: scale(var(--ac-tip-scale)); }
+
+.ac-tip__tip { position: absolute; top: calc(var(--ac-tip-rise) * -1); left: 50%; translate: -50% 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-2) var(--space-4); border-radius: var(--radius-control); background: var(--ac-tip-bg); color: var(--ac-tip-fg); font-size: var(--text-xs); white-space: nowrap; box-shadow: var(--shadow-3); pointer-events: none; opacity: 0; }
+.ac-tip__tip[data-state="in"] { opacity: 1; }
+.ac-tip__name { position: relative; z-index: 30; font-size: var(--text-lg); font-weight: var(--weight-strong); }
+.ac-tip__role { font-size: var(--text-xs); color: var(--ac-tip-soft); }
+.ac-tip__line { position: absolute; bottom: -1px; z-index: 30; height: 1px; }
+.ac-tip__line--a { left: 40px; width: 20%; background: linear-gradient(to right, transparent, var(--ac-tip-line-a), transparent); }
+.ac-tip__line--b { left: 40px; width: 40%; background: linear-gradient(to right, transparent, var(--ac-tip-line-b), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-tip__face { transition-duration: 120ms; }
+  .ac-tip__item:is(:hover, :focus-visible) .ac-tip__face { transform: none; }
+  .ac-tip__tip { transition: opacity 120ms linear; }
+}

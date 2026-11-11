@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que gira · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./spinning-text.css">
+<style>
+  .seal { display: grid; place-items: center; width: max-content; padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--surface-raised); }
+  .seal > * { grid-area: 1 / 1; }
+  .seal__mark { font-size: var(--text-2xl); font-weight: var(--weight-strong); color: var(--accent); }
+  .ring { font-size: var(--text-sm); font-weight: var(--weight-medium); text-transform: uppercase; letter-spacing: .08em; }
+  .wrap { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: center; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que gira</h1>
+      <p class="mu-demo__note">Las letras forman un círculo que gira sin parar, como un sello. Un lector de pantalla oye la frase una vez, sin letra por letra. Con movimiento reducido el círculo queda quieto y se lee igual.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-seal">
+    <h2 class="mu-demo__label" id="s-seal">Sello de factura emitida</h2>
+    <div class="wrap">
+      <div class="seal">
+        <span class="seal__mark" aria-hidden="true">$</span>
+        <span class="ring" data-motion="spinning-text" data-radius="4.4" data-duration="12">Factura emitida · Ledger · </span>
+      </div>
+      <div class="seal">
+        <span class="seal__mark" aria-hidden="true">✓</span>
+        <span class="ring" data-motion="spinning-text" data-radius="4.4" data-duration="8" data-reverse="true">Cobrado a tiempo · Gracias · </span>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './spinning-text.js';
+  themeSwitch();
+</script>
+</body>
+</html>

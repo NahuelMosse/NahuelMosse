@@ -1,0 +1,98 @@
+/* Morph select (Arc): the trigger is the list. One surface springs between the closed trigger and the open options. */
+:root {
+  --morph-select-h: var(--control-field);
+  --morph-select-pad: 14px;
+  --morph-select-option-h: 36px;
+  --morph-select-option-radius: 16px;
+  --morph-select-highlight: color-mix(in oklab, var(--text) 6.5%, transparent);
+  --morph-select-closed-bg: var(--field-bg);
+  --morph-select-open-bg: var(--surface-overlay);
+  --morph-select-border: var(--control-border);
+  --morph-select-shadow: var(--shadow-control);
+  --morph-select-open-shadow: 0 20px 48px oklch(0% 0 0 / 0.105), 0 3px 10px oklch(0% 0 0 / 0.045);
+}
+:root[data-theme="dark"] { --morph-select-open-shadow: 0 0 0 1px var(--overlay-ring), 0 20px 48px oklch(0% 0 0 / 0.55), 0 3px 10px oklch(0% 0 0 / 0.35); }
+
+/* The root lays out the label and the anchor. The anchor holds the closed trigger's place; the shape floats over it and grows past it when open. */
+.ar-select { --ar-select-trigger-w: 0px; position: relative; display: inline-grid; justify-items: start; gap: var(--space-2); min-width: 0; color: var(--text); font-size: var(--text-sm); line-height: 1.4; }
+.ar-select[data-align="end"] { justify-items: end; }
+.ar-select[data-open] { z-index: 30; }
+.ar-select__label { color: var(--text-soft); font-size: var(--text-sm); font-weight: var(--weight-medium); }
+.ar-select__anchor { position: relative; height: var(--morph-select-h); max-width: 100%; }
+
+/* One material for both states. The border is an overlay so it never changes a measurement. */
+.ar-select__shape { position: absolute; top: 0; left: 0; overflow: clip; background: var(--morph-select-closed-bg); box-shadow: var(--morph-select-shadow); transition: box-shadow var(--ar-duration-considered) var(--ar-ease-standard), background-color var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-select__shape::after { content: ""; position: absolute; inset: 0; z-index: 2; border: 1px solid var(--morph-select-border); border-radius: inherit; pointer-events: none; transition: border-color var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-select[data-align="end"] .ar-select__shape { right: 0; left: auto; }
+.ar-select[data-open] .ar-select__shape { background: var(--morph-select-open-bg); box-shadow: var(--morph-select-open-shadow); }
+.ar-select[data-open] .ar-select__shape::after { border-color: var(--border-strong); }
+.ar-select[data-disabled] .ar-select__shape { opacity: .55; }
+@media (hover: hover) and (pointer: fine) {
+  .ar-select:not([data-open], [data-disabled]) .ar-select__shape:hover { background: var(--field-bg-hover); }
+  .ar-select:not([data-open], [data-disabled]) .ar-select__shape:hover::after { border-color: var(--control-border-hover); }
+}
+
+/* The lid is the trigger row. It stays at the top of the surface in both states and sits above the list, so a lifted label passes over it. */
+.ar-select__lid { position: absolute; z-index: 1; top: 0; right: 0; left: 0; height: var(--morph-select-h); }
+.ar-select__trigger { box-sizing: border-box; display: flex; height: var(--morph-select-h); align-items: center; gap: var(--space-2); padding: 0 36px 0 var(--morph-select-pad); font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; }
+.ar-select__lid > .ar-select__trigger { position: absolute; inset: 0; width: 100%; margin: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font-family: inherit; letter-spacing: inherit; text-align: left; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.ar-select__lid > .ar-select__trigger:disabled { cursor: not-allowed; }
+/* An invisible copy that says how wide the closed trigger wants to be. */
+.ar-select__measure { position: static; visibility: hidden; pointer-events: none; width: max-content; max-width: min(20rem, calc(100vw - 2rem)); }
+.ar-select[data-ready] .ar-select__measure { position: absolute; top: 0; left: 0; }
+.ar-select[data-align="end"][data-ready] .ar-select__measure { right: 0; left: auto; }
+
+.ar-select__slot { position: relative; display: block; min-width: 0; height: 100%; flex: 1; }
+.ar-select__slot[data-hidden] { opacity: 0; transition: opacity var(--ar-duration-instant) var(--ar-ease-standard); }
+.ar-select__layer { position: absolute; inset: 0; display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.ar-select__value-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ar-select__placeholder { color: var(--text-faint); font-weight: var(--weight-regular); }
+.ar-select__icon { display: grid; width: 20px; height: 20px; flex: none; place-items: center; color: var(--text-soft); }
+.ar-select__icon > svg { width: 16px; height: 16px; }
+.ar-select__icon[data-mark] { border-radius: 50%; background: oklch(var(--avatar-bg-l) var(--avatar-bg-c) var(--h)); color: oklch(var(--avatar-fg-l) var(--avatar-fg-c) var(--h)); font-size: 9px; font-weight: var(--weight-strong); letter-spacing: 0; }
+
+.ar-select__chevron { position: absolute; top: 50%; right: 12px; display: grid; width: 16px; height: 16px; margin-top: -8px; place-items: center; color: var(--text-faint); pointer-events: none; transition: transform var(--ar-duration-spring) var(--ar-spring); }
+.ar-select[data-open] .ar-select__chevron { transform: rotate(180deg); }
+
+/* Search takes the lid's place when the list is long. */
+.ar-select__search { position: absolute; inset: 0; display: flex; align-items: center; gap: var(--space-2); padding: 0 2px 0 var(--morph-select-pad); }
+.ar-select__search[inert] { pointer-events: none; }
+.ar-select__search-icon { flex: none; color: var(--text-faint); }
+.ar-select__input { min-width: 0; height: 100%; flex: 1; padding: 0; border: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); outline: none; }
+.ar-select__input::placeholder { color: var(--text-faint); }
+.ar-select__clear { display: grid; width: 24px; height: 24px; flex: none; place-items: center; padding: 0; border: 0; border-radius: var(--radius-full); background: color-mix(in oklab, var(--text) 8%, transparent); color: var(--text-soft); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ar-select__clear[hidden] { display: none; }
+.ar-select__clear svg { width: 14px; height: 14px; }
+/* Sits exactly over the shared chevron, so the chevron closes the list in both lid states. */
+.ar-select__close-hit { width: 36px; height: var(--morph-select-h); flex: none; padding: 0; border: 0; border-radius: var(--radius-full); background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) and (pointer: fine) {
+  .ar-select__close-hit:hover, .ar-select__clear:hover { background: color-mix(in oklab, var(--text) 8%, transparent); }
+  .ar-select__clear:hover { color: var(--text); }
+}
+
+/* The list hangs under the lid at its own width, so it measures the same whatever size the surface is mid spring. */
+.ar-select__list-face { position: absolute; top: var(--morph-select-h); left: 0; box-sizing: border-box; width: max(var(--ar-select-trigger-w), min(var(--ar-select-panel-w), calc(100vw - 2rem))); padding: 0 6px 6px; }
+.ar-select[data-align="end"] .ar-select__list-face { right: 0; left: auto; }
+.ar-select__list-face::before { content: ""; position: absolute; top: 0; right: 14px; left: 14px; height: 1px; background: var(--border); }
+.ar-select__list-face[inert] { pointer-events: none; }
+.ar-select__scroll { max-height: var(--ar-select-list-max); overflow-y: auto; overscroll-behavior: contain; padding-top: 6px; scrollbar-width: thin; }
+.ar-select__options { position: relative; display: grid; gap: 2px; }
+.ar-select__highlight { position: absolute; top: 0; right: 0; left: 0; border-radius: var(--morph-select-option-radius); background: var(--morph-select-highlight); pointer-events: none; opacity: 0; }
+
+.ar-select__group { display: grid; gap: 2px; }
+.ar-select__group + .ar-select__group { margin-top: 4px; }
+.ar-select__group-label { padding: 8px 10px 4px; color: var(--text-faint); font-size: var(--text-xs); }
+
+.ar-select__option { position: relative; display: flex; min-height: var(--morph-select-option-h); box-sizing: border-box; align-items: center; gap: var(--space-2); padding: 0 10px 0 8px; border-radius: var(--morph-select-option-radius); color: var(--text-soft); cursor: pointer; user-select: none; -webkit-user-select: none; transition: color var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-select__option[data-active], .ar-select__option[aria-selected="true"] { color: var(--text); }
+.ar-select__option[aria-disabled="true"] { color: var(--text-faint); cursor: not-allowed; opacity: .6; }
+.ar-select__option-value { display: flex; min-width: 0; flex: 1; align-items: center; gap: var(--space-2); font-weight: var(--weight-medium); }
+.ar-select__meta { flex: none; color: var(--text-faint); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.ar-select__check { display: grid; width: 16px; height: 16px; flex: none; place-items: center; color: var(--text); opacity: 0; transform: scale(.6); transition: opacity var(--ar-duration-fast) var(--ar-ease-standard), transform var(--ar-duration-spring) var(--ar-spring); }
+.ar-select__check[data-on] { opacity: 1; transform: none; }
+.ar-select__empty { margin: 0; padding: 12px 10px 14px; color: var(--text-faint); font-size: var(--text-sm); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-select__shape, .ar-select__check, .ar-select__slot, .ar-select__chevron { transition-duration: 120ms; transition-timing-function: ease-out; }
+}
+@media (prefers-contrast: more) { .ar-select__shape::after { border-color: var(--border-strong); } }

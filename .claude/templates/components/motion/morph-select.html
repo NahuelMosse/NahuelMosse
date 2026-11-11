@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selector que se transforma · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./morph-select.css">
+<style>
+  /* The first row is as tall as the tallest open list, so what sits in the next row is never cut by a panel's lower edge. */
+  .form { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); grid-template-rows: 22rem auto; gap: var(--space-5) var(--space-6); align-items: start; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  @media (max-width: 40rem) { .form { grid-template-rows: none; min-height: 28rem; } }
+  .picked { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Selector que se transforma</h1>
+      <p class="mu-demo__note">El disparador es la lista: al abrirse crece hasta formar la superficie de opciones, un resaltado se desliza entre ellas y la etiqueta elegida sube al disparador, que se ajusta de ancho con un resorte. Con más de ocho opciones aparece la búsqueda. Teclado completo de listbox: flechas, Inicio, Fin, Re Pág, Av Pág, escribir para saltar, Enter o Espacio para elegir, Esc para cerrar.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-form">
+    <h2 class="mu-demo__label" id="s-form">Formulario de factura</h2>
+    <form class="form" id="invoice" onsubmit="return false">
+      <div id="state"></div>
+      <div id="client"></div>
+      <div id="currency"></div>
+      <div id="blank"></div>
+    </form>
+    <p class="picked" id="picked" role="status">Sin elegir todavía</p>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './morph-select.js';
+  themeSwitch();
+  const labels = { search: 'Buscar', clearSearch: 'Borrar la búsqueda', close: 'Cerrar', options: (n) => `${n} ${n === 1 ? 'opción' : 'opciones'}`, none: 'Sin resultados', noMatchesFor: (q) => `Sin resultados para “${q}”` };
+  const picked = document.getElementById('picked');
+  const say = (what) => (value, option) => { picked.textContent = `${what}: ${option.label}`; };
+
+  mount(document.getElementById('state'), {
+    label: 'Estado', value: 'emitida', labels, onChange: say('Estado'), name: 'estado',
+    items: [
+      { value: 'borrador', label: 'Borrador' },
+      { value: 'emitida', label: 'Emitida' },
+      { value: 'pagada', label: 'Pagada' },
+      { value: 'vencida', label: 'Vencida' },
+      { value: 'anulada', label: 'Anulada', disabled: true },
+    ],
+  });
+
+  const clients = ['Ferretería Alvear', 'Estudio Quiroga', 'Bodega Los Álamos', 'Taller Morán', 'Café Palermo', 'Librería Del Sur', 'Transportes Cuyo', 'Clínica Belgrano', 'Panadería La Espiga', 'Estudio Contable Pérez', 'Distribuidora Norte', 'Imprenta San Martín'];
+  const mark = (name) => name.split(/\s+/).filter((w) => w.length > 2).slice(0, 2).map((w) => w[0]).join('');
+  mount(document.getElementById('client'), {
+    label: 'Cliente', labels, placeholder: 'Elegí un cliente', onChange: say('Cliente'), name: 'cliente',
+    items: clients.map((n, i) => ({ value: `c${i}`, label: n, icon: mark(n), meta: `${(i % 5) + 1} facturas` })),
+  });
+
+  mount(document.getElementById('currency'), {
+    label: 'Moneda', value: 'ARS', labels, onChange: say('Moneda'), name: 'moneda', panelWidth: 288,
+    items: [
+      { label: 'Habituales', options: [{ value: 'ARS', label: 'Peso argentino', meta: 'ARS' }, { value: 'USD', label: 'Dólar estadounidense', meta: 'USD' }] },
+      { label: 'Otras', options: [{ value: 'EUR', label: 'Euro', meta: 'EUR' }, { value: 'BRL', label: 'Real', meta: 'BRL' }, { value: 'UYU', label: 'Peso uruguayo', meta: 'UYU' }] },
+    ],
+  });
+
+  mount(document.getElementById('blank'), { label: 'Condición de pago', labels, placeholder: 'Elegí una condición', onChange: say('Condición de pago'),
+    items: [{ value: 'c', label: 'Contado' }, { value: '15', label: 'A 15 días' }, { value: '30', label: 'A 30 días' }, { value: '60', label: 'A 60 días' }] });
+</script>
+</body>
+</html>

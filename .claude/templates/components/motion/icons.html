@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Íconos animados · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./icons.css">
+<style>
+  .demo { max-width: 860px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: var(--space-3); }
+  .tile { display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-2); background: var(--surface-raised); border: 0; border-radius: var(--radius); box-shadow: var(--shadow-1), 0 0 0 1px var(--border); color: var(--text); cursor: pointer; font-size: var(--text-xs); }
+  .tile:hover { background: var(--surface-hover); }
+  .tile span:last-child { color: var(--text-soft); }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Íconos animados</h1>
+      <p class="demo__note">Porte de Animate UI · Icons. Pasá el mouse o enfocá con el teclado: cada ícono juega su animación y vuelve.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section class="stack">
+    <h2>Los que usa Ledger</h2>
+    <div class="tiles" id="tiles">
+      <button class="tile" aria-label="Agregar"><span data-motion="icons" data-icon="plus" data-size="28"></span><span>plus</span></button>
+      <button class="tile" aria-label="Cerrar"><span data-motion="icons" data-icon="x" data-size="28"></span><span>x</span></button>
+      <button class="tile" aria-label="Confirmar"><span data-motion="icons" data-icon="check" data-size="28"></span><span>check</span></button>
+      <button class="tile" aria-label="Buscar"><span data-motion="icons" data-icon="search" data-size="28"></span><span>search</span></button>
+      <button class="tile" aria-label="Enviar"><span data-motion="icons" data-icon="send" data-size="28"></span><span>send</span></button>
+      <button class="tile" aria-label="Eliminar"><span data-motion="icons" data-icon="trash" data-size="28"></span><span>trash</span></button>
+      <button class="tile" aria-label="Copiar"><span data-motion="icons" data-icon="copy" data-size="28"></span><span>copy</span></button>
+      <button class="tile" aria-label="Clientes"><span data-motion="icons" data-icon="users" data-size="28"></span><span>users</span></button>
+      <button class="tile" aria-label="Ajustes"><span data-motion="icons" data-icon="settings" data-size="28"></span><span>settings</span></button>
+      <button class="tile" aria-label="Panel"><span data-motion="icons" data-icon="layout-dashboard" data-size="28"></span><span>layout-dashboard</span></button>
+      <button class="tile" aria-label="Notificaciones"><span data-motion="icons" data-icon="bell" data-size="28"></span><span>bell</span></button>
+      <button class="tile" aria-label="Actualizar"><span data-motion="icons" data-icon="refresh" data-size="28"></span><span>refresh</span></button>
+      <button class="tile" aria-label="Tema claro"><span data-motion="icons" data-icon="sun" data-size="28"></span><span>sun</span></button>
+      <button class="tile" aria-label="Tema oscuro"><span data-motion="icons" data-icon="moon" data-size="28"></span><span>moon</span></button>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>En botones</h2>
+    <div class="inline">
+      <button class="btn btn--primary"><span data-motion="icons" data-icon="plus" data-size="16"></span>Nueva factura</button>
+      <button class="btn"><span data-motion="icons" data-icon="refresh" data-size="16"></span>Actualizar</button>
+      <button class="btn btn--destructive"><span data-motion="icons" data-icon="trash" data-size="16"></span>Anular</button>
+      <button class="btn btn--ghost btn--icon" aria-label="Notificaciones"><span data-motion="icons" data-icon="bell" data-size="16"></span></button>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./icons.js"></script>
+</body>
+</html>

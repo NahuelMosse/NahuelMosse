@@ -1,0 +1,73 @@
+/* Toast stack (Arc): new toasts rise from the bottom, older ones tuck behind, hover or focus fans them out. */
+:root {
+  --toast-stack-width: 22.5rem;
+  --toast-stack-radius: 20px;
+  --toast-stack-bg: var(--surface-raised);
+  --toast-stack-tucked-bg: var(--surface-sunken);
+  --toast-stack-border: var(--border);
+  --toast-stack-shadow: var(--shadow-2);
+  --toast-stack-front-shadow: var(--shadow-overlay);
+  --toast-stack-z: 60;
+}
+
+/* The region only holds the list; it never blocks clicks outside the toasts themselves. */
+.ar-toast { position: fixed; z-index: var(--toast-stack-z); bottom: var(--space-6); width: min(var(--toast-stack-width), calc(100% - var(--space-8))); pointer-events: none; }
+.ar-toast[data-position="bottom-right"] { right: var(--space-6); }
+.ar-toast[data-position="bottom-left"] { left: var(--space-6); }
+.ar-toast[data-position="bottom-center"] { right: 0; left: 0; margin-inline: auto; }
+.ar-toast[data-contained] { position: absolute; z-index: 2; bottom: var(--space-5); }
+.ar-toast[data-contained][data-position="bottom-right"] { right: var(--space-5); }
+.ar-toast[data-contained][data-position="bottom-left"] { left: var(--space-5); }
+@media (max-width: 30rem) { .ar-toast:not([data-contained]) { right: 0; bottom: var(--space-4); left: 0; margin-inline: auto; } }
+
+/* Toasts hang from the bottom of the list. Its height covers the gaps between open toasts, so hover survives the space between them. */
+.ar-toast__list { position: relative; margin: 0; padding: 0; list-style: none; pointer-events: auto; }
+/* Tucked toasts scale from their top edge, so exactly the peek shows above the toast in front. */
+.ar-toast__item { position: absolute; right: 0; bottom: 0; left: 0; transform-origin: 50% 0; opacity: 0; }
+.ar-toast__card { position: absolute; inset: 0; overflow: hidden; border: 1px solid var(--toast-stack-border); border-radius: var(--toast-stack-radius); background: var(--toast-stack-bg); color: var(--text); box-shadow: var(--toast-stack-shadow); container-type: inline-size; touch-action: pan-y; -webkit-tap-highlight-color: transparent; transition: background-color var(--ar-duration-standard) var(--ar-ease-standard), border-color var(--ar-duration-standard) var(--ar-ease-standard); }
+.ar-toast__item[data-front="true"] .ar-toast__card, .ar-toast__item[data-expanded="true"] .ar-toast__card { box-shadow: var(--toast-stack-front-shadow); }
+/* Tucked toasts sit a step back in tone as well as scale. */
+.ar-toast__item[data-front="false"][data-expanded="false"] .ar-toast__card { background: var(--toast-stack-tucked-bg); }
+.ar-toast__card[data-dragging] { cursor: grabbing; user-select: none; }
+
+.ar-toast__content { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); }
+.ar-toast__icon { position: relative; display: grid; width: 18px; height: 20px; flex: none; place-items: center; color: var(--text-faint); transition: color var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-toast__icon[data-type="success"] { color: var(--success); }
+.ar-toast__icon[data-type="info"] { color: var(--info); }
+.ar-toast__icon[data-type="warning"] { color: var(--warning); }
+.ar-toast__icon[data-type="error"] { color: var(--danger); }
+.ar-toast__glyph { grid-area: 1 / 1; display: grid; place-items: center; }
+.ar-toast__glyph svg { display: block; }
+/* The spinner turns only while something is loading; the icon swap is its stop. */
+.ar-toast__spinner { display: block; width: 15px; height: 15px; border: 1.75px solid currentColor; border-right-color: transparent; border-radius: var(--radius-full); animation: ar-toast-spin .8s linear infinite; }
+
+.ar-toast__copy { position: relative; min-width: 0; flex: 1; font-size: var(--text-sm); line-height: 20px; }
+.ar-toast__title { position: relative; display: block; font-weight: var(--weight-medium); }
+.ar-toast__description-host { position: relative; display: block; }
+.ar-toast__line, .ar-toast__description { display: block; }
+.ar-toast__description { margin-top: 2px; color: var(--text-soft); }
+
+/* Clips only while its width folds, so the focus ring stays whole at rest. */
+.ar-toast__action-slot { display: flex; flex: none; justify-content: flex-end; margin-top: -4px; }
+.ar-toast__action-slot[data-moving="true"] { overflow: hidden; }
+.ar-toast__action, .ar-toast__close { flex: none; border: 1px solid transparent; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: scale var(--ar-duration-spring) var(--ar-spring), background-color var(--ar-duration-fast) var(--ar-ease-standard), border-color var(--ar-duration-fast) var(--ar-ease-standard), color var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-toast__action { height: 28px; padding: 0 var(--space-3); border-color: var(--border-strong); border-radius: var(--radius-full); background: var(--surface-raised); color: var(--text); font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; }
+.ar-toast__close { display: grid; width: 28px; height: 28px; margin: -4px -2px 0 0; place-items: center; border-radius: var(--radius-full); background: transparent; color: var(--text-faint); }
+@media (hover: hover) and (pointer: fine) {
+  .ar-toast__action:hover { background: var(--surface-hover); }
+  .ar-toast__close:hover { background: var(--surface-hover); color: var(--text); }
+}
+/* Quick press, spring release. */
+.ar-toast__action:active, .ar-toast__close:active { scale: .96; transition-duration: var(--ar-duration-instant); transition-timing-function: var(--ar-ease-standard); }
+/* A narrow toast keeps its copy wide: the action drops under the copy instead of squeezing it. */
+@container (max-width: 21rem) {
+  .ar-toast__content { flex-wrap: wrap; row-gap: var(--space-2); }
+  .ar-toast__action-slot { order: 1; flex-basis: 100%; justify-content: flex-start; margin-top: 0; padding-left: calc(18px + var(--space-3)); }
+}
+
+@keyframes ar-toast-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .ar-toast__card, .ar-toast__icon, .ar-toast__action, .ar-toast__close { transition-duration: 120ms; transition-timing-function: ease-out; }
+  .ar-toast__action:active, .ar-toast__close:active { scale: none; }
+  .ar-toast__spinner { animation-duration: 2.4s; }
+}

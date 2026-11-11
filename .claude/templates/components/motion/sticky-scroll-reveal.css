@@ -1,0 +1,62 @@
+/* Sticky scroll reveal (Aceternity UI): steps that scroll, a visual that stays. */
+:root {
+  --ac-ssr-height: 30rem;
+  --ac-ssr-pad: 40px;
+  --ac-ssr-gap: 40px;
+  --ac-ssr-radius: var(--radius-item);
+  /* The stage follows the page's theme: a sunken ground with the text color in light, the overlay surface in dark. */
+  --ac-ssr-base: var(--surface-sunken);
+  --ac-ssr-fg: var(--text);
+  --ac-ssr-fg-soft: color-mix(in oklab, var(--ac-ssr-fg) 92%, transparent);
+  --ac-ssr-bg-0: color-mix(in oklab, var(--ac-ssr-base) 92%, var(--accent));
+  --ac-ssr-bg-1: color-mix(in oklab, var(--ac-ssr-base) 88%, var(--text));
+  --ac-ssr-bg-2: var(--ac-ssr-base);
+  --ac-ssr-tone-0: linear-gradient(to bottom right, var(--accent), var(--info));
+  --ac-ssr-tone-1: linear-gradient(to bottom right, var(--info), var(--success));
+  --ac-ssr-tone-2: linear-gradient(to bottom right, var(--accent-text), var(--accent));
+  --ac-ssr-dim: 0.69;
+  --ac-ssr-time: 300ms;
+  --ac-ssr-panel-w: 20rem;
+  --ac-ssr-panel-h: 15rem;
+}
+:root[data-theme="dark"] {
+  --ac-ssr-base: var(--surface-overlay);
+  --ac-ssr-fg: var(--n-12);
+  --ac-ssr-fg-soft: color-mix(in oklab, var(--ac-ssr-fg) 80%, transparent);
+  --ac-ssr-dim: 0.65;
+  --ac-ssr-bg-0: color-mix(in oklab, var(--ac-ssr-base) 88%, var(--accent));
+  --ac-ssr-bg-1: color-mix(in oklab, var(--ac-ssr-base) 70%, black);
+}
+
+.ac-ssr { position: relative; display: flex; justify-content: center; gap: var(--ac-ssr-gap); height: var(--ac-ssr-height); padding: var(--ac-ssr-pad); box-sizing: border-box; overflow-y: auto; border-radius: var(--ac-ssr-radius); --ac-ssr-from: var(--ac-ssr-bg-0); --ac-ssr-to: var(--ac-ssr-bg-1); --ac-ssr-t: 0; background-color: color-mix(in oklab, var(--ac-ssr-to) calc(var(--ac-ssr-t) * 100%), var(--ac-ssr-from)); color: var(--ac-ssr-fg); box-shadow: inset 0 0 0 1px var(--border); }
+.ac-ssr:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ac-ssr__col { position: relative; display: flex; align-items: flex-start; padding: 0 var(--space-4); }
+.ac-ssr__steps { max-width: 42rem; }
+.ac-ssr__step { margin: 5rem 0; }
+.ac-ssr__step > :where(h2, h3) { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-2xl); opacity: var(--ac-ssr-dim); transition: opacity var(--ac-ssr-time) ease; }
+.ac-ssr__step > p { max-width: 24rem; margin: 2.5rem 0 0; font-size: var(--text-lg); color: var(--ac-ssr-fg-soft); opacity: var(--ac-ssr-dim); transition: opacity var(--ac-ssr-time) ease; }
+.ac-ssr__step[data-active] > :where(h2, h3, p) { opacity: 1; }
+.ac-ssr__step > [data-visual] { display: none; }
+.ac-ssr__tail { height: 10rem; }
+
+.ac-ssr__panel { position: sticky; top: var(--ac-ssr-pad); display: none; flex: none; align-self: flex-start; width: var(--ac-ssr-panel-w); height: var(--ac-ssr-panel-h); overflow: hidden; border-radius: var(--ac-ssr-radius); background: var(--ac-ssr-tone-0); box-shadow: var(--shadow-2); }
+@media (min-width: 1024px) { .ac-ssr__panel { display: block; } }
+.ac-ssr__layer { position: absolute; inset: 0; opacity: 0; transition: opacity var(--ac-ssr-time) ease; }
+.ac-ssr__layer[data-tone="0"] { background: var(--ac-ssr-tone-0); }
+.ac-ssr__layer[data-tone="1"] { background: var(--ac-ssr-tone-1); }
+.ac-ssr__layer[data-tone="2"] { background: var(--ac-ssr-tone-2); }
+.ac-ssr__layer[data-active] { opacity: 1; }
+.ac-ssr__layer > [data-visual] { display: block; position: absolute; inset: 0; }
+
+/* On a phone the stage gives its room to the text: less padding, smaller steps, closer together. */
+@media (max-width: 480px) {
+  :root { --ac-ssr-pad: var(--space-4); --ac-ssr-gap: var(--space-4); }
+  .ac-ssr__col { padding-inline: var(--space-1); }
+  .ac-ssr__step { margin: 3rem 0; }
+  .ac-ssr__step > :where(h2, h3) { font-size: var(--text-xl); letter-spacing: var(--tracking-xl); }
+  .ac-ssr__step > p { margin-top: var(--space-3); font-size: var(--text-md); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-ssr__step > :where(h2, h3, p), .ac-ssr__layer { transition-duration: 120ms; }
+}

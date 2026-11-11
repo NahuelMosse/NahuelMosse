@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pestañas continuas · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./continuous-tabs.css">
+<style>
+  .panel { padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); max-width: 420px; }
+  .panel h3 { margin: 0 0 var(--space-1); font-size: var(--text-lg); }
+  .panel p { margin: 0; color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Pestañas continuas</h1>
+      <p class="mu-demo__note">Una sola píldora recorre todas las pestañas: al elegir, se desliza y cambia de ancho con un resorte. Flechas, Inicio y Fin mueven la selección. Con movimiento reducido salta sin recorrer.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Secciones de un cliente</h2>
+    <nav data-motion="continuous-tabs" aria-label="Secciones del cliente">
+      <button data-tab="resumen" data-panel="p-resumen">Resumen</button>
+      <button data-tab="facturas" data-panel="p-facturas">Facturas</button>
+      <button data-tab="cobros" data-panel="p-cobros">Cobros pendientes</button>
+      <button data-tab="notas" data-panel="p-notas">Notas</button>
+    </nav>
+    <div class="panel" id="p-resumen"><h3>Ferretería Alvear</h3><p>Cliente desde 2021 · 14 facturas · saldo en cero.</p></div>
+    <div class="panel" id="p-facturas"><h3>Facturas</h3><p>La última, A-0004-00001284, se emitió hace 5 minutos.</p></div>
+    <div class="panel" id="p-cobros"><h3>Cobros pendientes</h3><p>No hay cobros pendientes por ahora.</p></div>
+    <div class="panel" id="p-notas"><h3>Notas</h3><p>Prefiere recibir las facturas por mail a primera hora.</p></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './continuous-tabs.js';
+  themeSwitch();
+</script>
+</body>
+</html>

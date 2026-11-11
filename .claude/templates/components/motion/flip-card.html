@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjeta que gira · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./flip-button.css">
+<link rel="stylesheet" href="./flip-card.css">
+<style>
+  .demo { max-width: 860px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .cards { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+  .invoice { --flip-card-w: 320px; --flip-card-h: 240px; }
+  .invoice .num { font-size: var(--text-xs); color: var(--text-soft); letter-spacing: 0.02em; }
+  .invoice .client { font-weight: var(--weight-strong); font-size: var(--text-lg); }
+  .invoice .total { font-size: var(--text-2xl); letter-spacing: var(--tracking-2xl); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+  .invoice .status { font-size: var(--text-xs); color: var(--success); }
+  .items { width: 100%; display: grid; gap: var(--space-1); font-size: var(--text-sm); text-align: left; list-style: none; padding: 0; }
+  .items li { display: flex; justify-content: space-between; gap: var(--space-3); }
+  .items li span:last-child { font-variant-numeric: tabular-nums; color: var(--text-soft); }
+  .meta { width: 100%; text-align: left; font-size: var(--text-xs); color: var(--text-soft); }
+  .logo { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: var(--text-xl); font-weight: var(--weight-strong); letter-spacing: 0.02em; }
+  .client { font-weight: var(--weight-strong); font-size: var(--text-lg); }
+  .fc__face[data-face="back"].client-back { justify-content: center; gap: var(--space-4); text-align: center; }
+  .stat { display: grid; justify-items: center; }
+  .stat b { font-size: var(--text-lg); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+  .stats { display: flex; justify-content: center; gap: var(--space-6); width: 100%; font-size: var(--text-xs); color: var(--text-soft); }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Tarjeta que gira</h1>
+      <p class="demo__note">Porte de Animate UI · Flip Card. Giro de 500 ms sobre Y, con el dorso oculto.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section class="stack">
+    <h2>Dorso de una factura (con «Ver dorso»)</h2>
+    <p class="demo__note">Se da vuelta con el botón; también con un toque en el cuerpo de la tarjeta.</p>
+    <div class="cards">
+      <div data-motion="flip-card" data-trigger="click" class="invoice" aria-label="Factura A 0001-00004821">
+        <div data-face="front">
+          <span class="num">FACTURA A 0001-00004821</span>
+          <span class="client">Ferretería Del Plata S.R.L.</span>
+          <span class="total">$ 1.284.500,00</span>
+          <span class="status">Cobrada el 09/10/2026</span>
+          <button data-flip-toggle data-motion="flip-button" data-size="sm" data-front-variant="ghost" data-front="Ver dorso" data-back="Dar vuelta"></button>
+        </div>
+        <div data-face="back">
+          <ul class="items" aria-label="Detalle">
+            <li><span>Mantenimiento mensual</span><span>$ 850.000,00</span></li>
+            <li><span>Horas de soporte (12)</span><span>$ 180.000,00</span></li>
+            <li><span>IVA 21 %</span><span>$ 216.300,00</span></li>
+            <li><span>Percepción IIBB</span><span>$ 38.200,00</span></li>
+          </ul>
+          <p class="meta">CAE 74123456789012 · vence 19/10/2026<br>Condición de venta: transferencia a 30 días.</p>
+          <button data-flip-toggle data-motion="flip-button" data-size="sm" data-front-variant="ghost" data-front="Ver frente" data-back="Dar vuelta"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Como el original: gira al pasar el mouse</h2>
+    <div class="cards">
+      <div data-motion="flip-card" aria-label="Cliente Estudio Quiroga y Asoc.">
+        <div data-face="front">
+          <span class="logo" aria-hidden="true">EQ</span>
+          <span class="client">Estudio Quiroga y Asoc.</span>
+          <span class="demo__note">CUIT 30-71234567-8</span>
+        </div>
+        <div data-face="back" class="client-back">
+          <p class="demo__note">Cliente desde marzo de 2022. Paga por transferencia, siempre dentro de los 30 días.</p>
+          <div class="stats"><span class="stat"><b>18</b>Facturas</span><span class="stat"><b>0</b>Vencidas</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./flip-button.js"></script>
+<script type="module" src="./flip-card.js"></script>
+</body>
+</html>

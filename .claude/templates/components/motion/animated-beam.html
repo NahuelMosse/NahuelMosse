@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haz animado · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./animated-beam.css">
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Haz animado</h1>
+      <p class="mu-demo__note">Las integraciones de Ledger: el banco y AFIP le mandan datos, Ledger le devuelve mails y planilla. Cada haz recorre su línea cada 3 segundos con la curva easeOutExpo del original.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-hub">
+    <h2 class="mu-demo__label" id="s-hub">Ledger al centro · entradas a la izquierda, salidas a la derecha</h2>
+    <div class="mu-demo__stage">
+      <div id="hub" class="mu-beam" data-motion="animated-beam" role="group" aria-label="Integraciones de Ledger: banco y AFIP entran, mail y planilla salen" data-beams="banco>ledger, afip>ledger, ledger>mail, ledger>planilla" data-duration="3">
+        <div class="mu-beam__layout">
+          <div class="mu-beam__col">
+            <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="banco" role="img" aria-label="Banco"></div><span class="mu-beam__name">Banco</span></div>
+            <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="afip" role="img" aria-label="AFIP"></div><span class="mu-beam__name">AFIP</span></div>
+          </div>
+          <div class="mu-beam__col">
+            <div class="mu-beam__cell"><div class="mu-beam__node mu-beam__node--hub" data-beam-node="ledger" role="img" aria-label="Ledger"></div><span class="mu-beam__name">Ledger</span></div>
+          </div>
+          <div class="mu-beam__col">
+            <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="mail" role="img" aria-label="Mail"></div><span class="mu-beam__name">Mail</span></div>
+            <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="planilla" role="img" aria-label="Planilla"></div><span class="mu-beam__name">Planilla</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-curve">
+    <h2 class="mu-demo__label" id="s-curve">Curvatura y sentido inverso · el haz sale del centro hacia la izquierda</h2>
+    <div class="mu-demo__stage">
+      <div id="curve" class="mu-beam" role="group" aria-label="Dos nodos unidos por haces curvos en sentidos opuestos" style="height: 220px">
+        <div class="mu-beam__layout" style="justify-content: space-between; align-items: center">
+          <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="a" role="img" aria-label="Facturas"></div><span class="mu-beam__name">Facturas</span></div>
+          <div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="b" role="img" aria-label="Cobros"></div><span class="mu-beam__name">Cobros</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { svgIcon, themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const icon = { banco: 'bank', afip: 'shield', ledger: 'ledger', mail: 'mail', planilla: 'sheet', a: 'invoice', b: 'coin' };
+  for (const n of document.querySelectorAll('[data-beam-node]')) n.innerHTML = svgIcon(icon[n.dataset.beamNode]);
+  const { mount } = await import('./animated-beam.js');
+  // The first demo mounts itself from its attributes (the import runs after the icons are in); the second
+  // is given its beams as options, one curved each way, the second running the other way.
+  mount(document.getElementById('curve'), { beams: [{ from: 'a', to: 'b', curvature: -60, duration: 4 }, { from: 'a', to: 'b', curvature: 60, reverse: true, duration: 4, delay: 1 }] });
+</script>
+</body>
+</html>

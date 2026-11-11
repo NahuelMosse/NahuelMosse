@@ -1,0 +1,58 @@
+/* AI prompt: two stacked translucent layers (shell, then textarea and bar over it), as in the original. */
+:root {
+  --ai-prompt-width: 40rem;
+  --ai-prompt-layer: var(--hl-bg);
+  --ai-prompt-radius: 16px;
+  --ai-prompt-inner-radius: 12px;
+}
+
+.ap { position: relative; width: 100%; max-width: var(--ai-prompt-width); font-family: var(--font); color: var(--text); }
+.ap *, .ap *::before, .ap *::after { box-sizing: border-box; }
+.ap__shell { padding: 16px 6px 6px; border-radius: var(--ai-prompt-radius); background: var(--ai-prompt-layer); transition: box-shadow var(--motion-ring); }
+.ap__shell:has(.ap__text:focus-visible) { box-shadow: 0 0 0 3px var(--focus-soft); }
+.ap__head { display: flex; align-items: center; gap: 8px; margin: 0 8px 10px; font-size: var(--text-xs); letter-spacing: -0.04em; }
+.ap__headline { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
+.ap__headtext { margin: 0; font: inherit; font-size: var(--text-xs); font-weight: var(--weight-regular); letter-spacing: inherit; color: var(--text); }
+.ap__headaction { margin: 0; color: var(--text); }
+.ap__body { display: flex; flex-direction: column; }
+.ap__scroll { max-height: 400px; overflow-y: auto; }
+.ap__text { display: block; width: 100%; min-height: 72px; resize: none; padding: 12px 16px; border: 0; border-radius: var(--ai-prompt-inner-radius) var(--ai-prompt-inner-radius) 0 0; background: var(--ai-prompt-layer); color: var(--text); font: inherit; font-size: var(--text-md); line-height: 1.5; outline: 0; overflow: hidden; }
+.ap__text::placeholder { color: var(--text-soft); }
+.ap__bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 56px; padding: 0 12px; border-radius: 0 0 var(--ai-prompt-inner-radius) var(--ai-prompt-inner-radius); background: var(--ai-prompt-layer); }
+.ap__tools { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ap__icon { width: 16px; height: 16px; flex: none; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.ap__icon--mark { width: 14px; height: 14px; fill: var(--accent); stroke: var(--accent); stroke-width: 1; }
+.ap__icon--chev { width: 12px; height: 12px; opacity: 0.5; transition: transform var(--motion-chevron); }
+.ap__model[aria-expanded="true"] .ap__icon--chev { transform: rotate(180deg); }
+
+.ap__model { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 8px 0 8px; border: 0; border-radius: var(--radius-item); background: transparent; color: var(--text); font: inherit; font-size: var(--text-xs); cursor: pointer; transition: background-color var(--motion-hover), transform var(--motion-press); }
+.ap__model-label { display: inline-block; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) { .ap__model:hover { background: var(--hl-bg); } }
+.ap__model:active { transform: scale(var(--press-scale)); }
+.ap__model:focus-visible, .ap__attach:has(:focus-visible), .ap__send:focus-visible, .ap__opt:focus-visible, .ap__chip-x:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.ap__sep { width: 1px; height: 16px; margin-inline: 2px; background: var(--border-strong); }
+.ap__attach, .ap__send { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--ai-prompt-layer); color: var(--text-soft); cursor: pointer; transition: background-color var(--motion-hover), color var(--motion-hover), transform var(--motion-press); }
+.ap__attach .ap__icon { transition: color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .ap__attach:hover, .ap__send:not(:disabled):hover { background: var(--surface-active); color: var(--text); } }
+.ap__attach:active, .ap__send:not(:disabled):active { transform: scale(var(--press-scale-sm)); }
+.ap__file { position: absolute; inset: 0; opacity: 0; width: 100%; cursor: pointer; font-size: 0; }
+.ap__sr, .ap__live { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ap__send { color: var(--text); }
+.ap__send:disabled { cursor: default; }
+.ap__send .ap__icon--arrow { opacity: 0.3; transition: opacity 200ms var(--ease-out); }
+.ap__send[data-ready="true"] .ap__icon--arrow { opacity: 1; }
+.ap__chip { display: inline-flex; align-items: center; gap: 4px; max-width: 180px; height: 28px; padding: 0 4px 0 8px; border-radius: var(--radius-item); background: var(--accent-soft); color: var(--accent-text); font-size: var(--text-xs); }
+.ap__chip[hidden] { display: none; }
+.ap__chip-icon { display: inline-flex; }
+.ap__chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ap__chip-x { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 4px; background: transparent; color: inherit; cursor: pointer; }
+.ap__chip-x .ap__icon { width: 12px; height: 12px; }
+
+.ap__menu { position: fixed; z-index: 60; min-width: 10rem; padding: 4px; border-radius: var(--radius-control); background: var(--surface-overlay); box-shadow: var(--shadow-overlay), var(--overlay-edge); transform-origin: var(--_origin, top left); }
+.ap__menu[hidden] { display: none; }
+.ap__opt { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 6px 8px; border: 0; border-radius: var(--radius-item); background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); text-align: left; cursor: pointer; transition: background-color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .ap__opt:hover { background: var(--surface-hover); } }
+.ap__opt:focus-visible { background: var(--surface-hover); outline-offset: -2px; }
+.ap__icon--check { color: var(--accent-text); opacity: 0; }
+.ap__opt[aria-checked="true"] .ap__icon--check { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .ap__model, .ap__attach, .ap__send, .ap__opt, .ap__shell { transition-duration: 120ms; } .ap__send .ap__icon--arrow { transition-duration: 120ms; } }

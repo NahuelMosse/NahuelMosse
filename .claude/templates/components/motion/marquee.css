@@ -1,0 +1,29 @@
+/* Marquee (Magic UI): rows that slide forever. */
+:root {
+  --mu-marquee-duration: 40s;
+  --mu-marquee-gap: 1rem;
+  --mu-marquee-fade: 33%;
+}
+
+.mu-marquee { --duration: var(--mu-marquee-duration); --gap: var(--mu-marquee-gap); display: flex; flex-direction: row; gap: var(--gap); padding: var(--space-2); overflow: hidden; }
+.mu-marquee[data-direction="vertical"] { flex-direction: column; }
+.mu-marquee__track { display: flex; flex: none; flex-direction: row; justify-content: space-around; gap: var(--gap); animation: mu-marquee var(--duration) linear infinite; }
+.mu-marquee[data-direction="vertical"] .mu-marquee__track { flex-direction: column; animation-name: mu-marquee-vertical; }
+.mu-marquee[data-reverse] .mu-marquee__track { animation-direction: reverse; }
+.mu-marquee[data-pause-on-hover]:hover .mu-marquee__track, .mu-marquee:focus-within .mu-marquee__track, .mu-marquee[data-paused] .mu-marquee__track { animation-play-state: paused; }
+/* The edges fade into the surface the row sits on, as the original demo does with two gradient overlays. */
+.mu-marquee[data-fade] { -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--mu-marquee-fade), #000 calc(100% - var(--mu-marquee-fade)), transparent); mask-image: linear-gradient(to right, transparent, #000 var(--mu-marquee-fade), #000 calc(100% - var(--mu-marquee-fade)), transparent); }
+.mu-marquee[data-fade][data-direction="vertical"] { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--mu-marquee-fade), #000 calc(100% - var(--mu-marquee-fade)), transparent); mask-image: linear-gradient(to bottom, transparent, #000 var(--mu-marquee-fade), #000 calc(100% - var(--mu-marquee-fade)), transparent); }
+.mu-marquee[data-still] { flex-wrap: wrap; justify-content: center; -webkit-mask-image: none; mask-image: none; }
+.mu-marquee[data-still] .mu-marquee__track { flex-wrap: wrap; animation: none; }
+.mu-marquee[data-still] .mu-marquee__track[aria-hidden="true"] { display: none; }
+.mu-marquee__control { margin-top: var(--space-2); height: var(--control-sm); padding: 0 var(--space-3); border: 1px solid var(--btn-border); border-radius: var(--radius-control); background: var(--surface-raised); color: var(--text); font-size: var(--text-xs); cursor: pointer; }
+.mu-marquee__control[aria-pressed="true"] { background: var(--surface-active); }
+
+@keyframes mu-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-100% - var(--gap))); } }
+@keyframes mu-marquee-vertical { from { transform: translateY(0); } to { transform: translateY(calc(-100% - var(--gap))); } }
+@media (prefers-reduced-motion: reduce) {
+  .mu-marquee { flex-wrap: wrap; justify-content: center; -webkit-mask-image: none; mask-image: none; }
+  .mu-marquee__track { flex-wrap: wrap; animation: none; }
+  .mu-marquee__track[aria-hidden="true"] { display: none; }
+}

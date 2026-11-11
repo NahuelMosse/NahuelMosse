@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto con destello · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./text-shimmer.css">
+<style>
+  .status { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-medium); }
+  .big { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: -0.02em; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto con destello</h1>
+      <p class="mu-demo__note">Una banda de luz recorre un texto apagado, para decir que algo está pasando. El texto es texto común, así que un lector de pantalla lo lee. Con movimiento reducido queda quieto y apagado.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-status">
+    <h2 class="mu-demo__label" id="s-status">Estado en curso</h2>
+    <p class="status" role="status"><span data-motion="text-shimmer">Conciliando 248 movimientos…</span></p>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-big">
+    <h2 class="mu-demo__label" id="s-big">Más lento y más ancho</h2>
+    <p class="big"><span data-motion="text-shimmer" data-duration="3.5" data-spread="6">Generando el informe de cobranzas</span></p>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './text-shimmer.js';
+  themeSwitch();
+</script>
+</body>
+</html>

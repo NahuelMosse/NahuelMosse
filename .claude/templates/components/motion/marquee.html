@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marquesina · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./marquee.css">
+<style>
+  .band { position: relative; width: 100%; overflow: hidden; }
+  .vertical { height: 320px; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Marquesina</h1>
+      <p class="mu-demo__note">Los clientes de Ledger, en filas que se deslizan sin costura. Se detienen al pasar el puntero, con el foco adentro, fuera de pantalla y con la pestaña oculta; con movimiento reducido quedan quietas y en varias líneas.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-logos">
+    <h2 class="mu-demo__label" id="s-logos">Clientes que cobran con Ledger · dos filas, una en sentido contrario, se frenan con el puntero</h2>
+    <div class="mu-demo__stage band" role="group" aria-label="Clientes de Ledger">
+      <div id="row1" data-fade data-pause-on-hover style="--duration: 30s"></div>
+      <div id="row2" data-fade data-reverse data-pause-on-hover style="--duration: 30s"></div>
+    </div>
+    <div class="mu-demo__row"><button type="button" class="btn-demo" id="freeze" aria-pressed="false">Pausar movimiento</button></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-vertical">
+    <h2 class="mu-demo__label" id="s-vertical">Vertical</h2>
+    <div class="mu-demo__stage"><div id="col" class="vertical" data-fade data-vertical style="--duration: 20s"></div></div>
+  </section>
+</main>
+<script type="module">
+  import { clients, logo, themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const half = clients.length / 2;
+  const fill = (id, names) => { const el = document.getElementById(id); for (const n of names) el.append(logo(n)); return el; };
+  fill('row1', clients.slice(0, half));
+  fill('row2', clients.slice(half));
+  fill('col', clients.slice(0, 5));
+  const { mount } = await import('./marquee.js');
+  const marquees = ['row1', 'row2', 'col'].map((id) => mount(document.getElementById(id), {}));
+  const freeze = document.getElementById('freeze');
+  freeze.addEventListener('click', () => {
+    const stop = freeze.getAttribute('aria-pressed') !== 'true';
+    freeze.setAttribute('aria-pressed', String(stop));
+    for (const m of marquees) (stop ? m.pause : m.play)();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barra de progreso circular · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./animated-circular-progress-bar.css">
+<style>
+  .goal { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
+  .goal__figures { display: grid; gap: var(--space-1); }
+  .goal__big { font-size: var(--text-2xl); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+  .goal__small { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Barra de progreso circular</h1>
+      <p class="mu-demo__note">La meta de cobro del mes. El arco dibuja el valor desde arriba y el resto del recorrido queda con un hueco de 5 % a cada lado; los dos se mueven en 1 segundo.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-goal">
+    <h2 class="mu-demo__label" id="s-goal">Meta de cobro del mes</h2>
+    <div class="mu-demo__stage goal">
+      <div id="goal" data-motion="animated-circular-progress-bar" data-value="68" aria-label="Meta de cobro del mes"></div>
+      <div class="goal__figures">
+        <span class="goal__big" id="goal-amount">$ 3.400.000</span>
+        <span class="goal__small">cobrado de $ 5.000.000</span>
+        <div class="mu-demo__row" style="margin-top: var(--space-3)">
+          <button type="button" class="btn-demo" id="less">− $ 500.000</button>
+          <button type="button" class="btn-demo" id="more">+ $ 500.000</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-cycle">
+    <h2 class="mu-demo__label" id="s-cycle">El ciclo de la demo original · +10 cada 2 segundos, vuelve a 0 en 100</h2>
+    <div class="mu-demo__stage"><div id="cycle" data-value="0" aria-label="Avance del ciclo"></div></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-states">
+    <h2 class="mu-demo__label" id="s-states">Valores de borde · 0 %, 90 %, 100 % y un rango propio</h2>
+    <div class="mu-demo__stage mu-demo__row" style="gap: var(--space-6)">
+      <div data-motion="animated-circular-progress-bar" data-value="0" aria-label="Sin cobrar"></div>
+      <div data-motion="animated-circular-progress-bar" data-value="90" aria-label="Casi cobrado"></div>
+      <div data-motion="animated-circular-progress-bar" data-value="100" aria-label="Cobrado"></div>
+      <div id="range" data-min="20" data-max="60" data-value="45" aria-label="Facturas cobradas, de 20 a 60"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const { mount } = await import('./animated-circular-progress-bar.js');
+  const goal = mount(document.getElementById('goal'), { value: 68 });
+  const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  let paid = 3400000;
+  const move = (delta) => {
+    paid = Math.min(5000000, Math.max(0, paid + delta));
+    goal.set(paid / 50000);
+    document.getElementById('goal-amount').textContent = money.format(paid);
+  };
+  document.getElementById('more').addEventListener('click', () => move(500000));
+  document.getElementById('less').addEventListener('click', () => move(-500000));
+  const cycle = mount(document.getElementById('cycle'), { value: 0 });
+  let v = 0;
+  setInterval(() => { if (!document.hidden) { v = v === 100 ? 0 : v + 10; cycle.set(v); } }, 2000);
+  mount(document.getElementById('range'), {});
+</script>
+</body>
+</html>

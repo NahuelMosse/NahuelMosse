@@ -1,0 +1,590 @@
+{
+ "url": "http://127.0.0.1:52415/",
+ "intent": null,
+ "kind": "landing",
+ "brand": {
+  "file": "specs/NM-1-widgets-together/brand.json",
+  "fonts": [
+   "Boska",
+   "General Sans",
+   "Boska",
+   "General Sans",
+   "Courier Prime"
+  ],
+  "colors": [
+   "#0c0c0b",
+   "#ede4d0",
+   "#d2231b",
+   "#c41f17",
+   "#9a9283",
+   "#6b655a",
+   "#0d1117",
+   "#ffffff"
+  ],
+  "sheetHash": "868fcf6eff5fa4bf6b55f5eeb1595b7586a158d845f43a19a8de62f7639879f1"
+ },
+ "gpu": false,
+ "path": "non-gpu",
+ "cta": {
+  "1012x900": {
+   "none": true,
+   "reason": "no candidate"
+  },
+  "390x844": {
+   "none": true,
+   "reason": "no candidate"
+  }
+ },
+ "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F08) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+ "software": false,
+ "widths": {
+  "1012x900": {
+   "measure": {
+    "grain": false
+   },
+   "responsive": {
+    "width": 1012,
+    "tapSmall": [],
+    "clickSmall": [],
+    "medianButton": null,
+    "hoverOnly": [
+     ".markdown-body h1:hover .anchor .octicon-link::before, .markdown-body h2:hover .anchor .octicon-link::before, .markdown-body h3:hover .anchor .octicon-link::before, .markdown-body h4:hover .anchor .octicon-link::before, .markdown-body h5:hover .anchor .octicon-link::before, .markdown-body h6:hover .anchor .octicon-link::before",
+     ".markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anchor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octicon-link, .markdown-body h6:hover .anchor .octicon-link"
+    ],
+    "smallFields": [],
+    "overflow": {
+     "scrollWidth": 1012,
+     "clientWidth": 1012
+    },
+    "queries": {
+     "min": 0,
+     "max": 0
+    },
+    "coveredPct": 0,
+    "cta": null,
+    "nav": {
+     "bottomBar": false,
+     "hamburger": false,
+     "hamburgerLabeled": false
+    }
+   },
+   "rules": [
+    {
+     "rule": "display/body ratio",
+     "range": "report only: winners median 2.9x, 2-9x",
+     "pass": false,
+     "report": true
+    },
+    {
+     "rule": "display line height",
+     "range": "report only: winners median 1.0",
+     "pass": false,
+     "report": true
+    },
+    {
+     "rule": "display tracking (em)",
+     "range": "-0.03..-0.02",
+     "pass": false
+    },
+    {
+     "rule": "body tracking (em)",
+     "range": "0..0.02",
+     "pass": false
+    },
+    {
+     "rule": "font sizes, first viewport",
+     "range": "<= 9",
+     "pass": false
+    },
+    {
+     "rule": "grain or noise",
+     "value": "no",
+     "range": "a texture, or none declared",
+     "pass": false
+    },
+    {
+     "rule": "hamburger, expanded",
+     "value": "no",
+     "range": "no",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "frames with 2+ flags",
+     "value": 1,
+     "range": "0",
+     "pass": false,
+     "detail": [
+      "frame 4: 1 axes (2-9); 4 elements (5-24)"
+     ]
+    },
+    {
+     "rule": "void frames (>70% empty, no focal)",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "image file width >= shown x 2",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "pasted boxes",
+     "value": 1,
+     "range": "0",
+     "pass": false,
+     "detail": [
+      "img cebador-landing, moving: 322/322/546/2075 px of margin over a contrasting background"
+     ]
+    },
+    {
+     "rule": "repeated images",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "broken images (naturalWidth 0)",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "alt text painted as page text",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "LCP image",
+     "value": "eager, hidden at t0",
+     "range": "not lazy, visible at t0",
+     "pass": false,
+     "detail": [
+      "img Contributions in the las"
+     ]
+    }
+   ],
+   "frames": [
+    {
+     "frame": 1,
+     "y": 0,
+     "n": 12,
+     "focalShare": 0.306,
+     "focalKind": "media",
+     "competing": 0,
+     "axes": 6,
+     "empty": 0.072,
+     "flags": [],
+     "reported": []
+    },
+    {
+     "frame": 2,
+     "y": 900,
+     "n": 12,
+     "focalShare": 0.242,
+     "focalKind": "media",
+     "competing": 1,
+     "axes": 3,
+     "empty": 0.047,
+     "flags": [],
+     "reported": []
+    },
+    {
+     "frame": 3,
+     "y": 1800,
+     "n": 5,
+     "focalShare": 0.341,
+     "focalKind": "media",
+     "competing": 2,
+     "axes": 1,
+     "empty": 0.047,
+     "flags": [
+      "1 axes (2-9)"
+     ],
+     "reported": []
+    },
+    {
+     "frame": 4,
+     "y": 1949,
+     "n": 4,
+     "focalShare": 0.267,
+     "focalKind": "media",
+     "competing": 3,
+     "axes": 1,
+     "empty": 0.072,
+     "flags": [
+      "1 axes (2-9)",
+      "4 elements (5-24)"
+     ],
+     "reported": []
+    }
+   ],
+   "images": {
+    "low": [],
+    "pasted": [
+     "img cebador-landing, moving: 322/322/546/2075 px of margin over a contrasting background"
+    ],
+    "unknown": [],
+    "repeated": [],
+    "lcp": {
+     "img": "img Contributions in the las",
+     "lazy": false,
+     "visibleT0": false
+    },
+    "sizes": [
+     {
+      "img": "img ClubNahuelMosse, moving",
+      "file": 800,
+      "shown": 321
+     },
+     {
+      "img": "img cebador-landing, moving",
+      "file": 800,
+      "shown": 321
+     },
+     {
+      "img": "img Portfolio, moving",
+      "file": 800,
+      "shown": 321
+     }
+    ],
+    "broken": [],
+    "altShown": []
+   },
+   "sweep": null,
+   "canvas": [],
+   "scrub": null,
+   "layout": {
+    "hero": {
+     "n": 12,
+     "span": 0.953,
+     "widest": 0.953
+    },
+    "sections": []
+   },
+   "product": null
+  },
+  "390x844": {
+   "measure": {
+    "grain": false
+   },
+   "responsive": {
+    "width": 390,
+    "tapSmall": [],
+    "clickSmall": [],
+    "medianButton": null,
+    "hoverOnly": [
+     ".markdown-body h1:hover .anchor .octicon-link::before, .markdown-body h2:hover .anchor .octicon-link::before, .markdown-body h3:hover .anchor .octicon-link::before, .markdown-body h4:hover .anchor .octicon-link::before, .markdown-body h5:hover .anchor .octicon-link::before, .markdown-body h6:hover .anchor .octicon-link::before",
+     ".markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anchor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octicon-link, .markdown-body h6:hover .anchor .octicon-link"
+    ],
+    "smallFields": [],
+    "overflow": {
+     "scrollWidth": 390,
+     "clientWidth": 390
+    },
+    "queries": {
+     "min": 0,
+     "max": 0
+    },
+    "coveredPct": 0,
+    "cta": null,
+    "nav": {
+     "bottomBar": false,
+     "hamburger": false,
+     "hamburgerLabeled": false
+    }
+   },
+   "rules": [
+    {
+     "rule": "display/body ratio",
+     "range": "report only: winners median 2.9x, 2-9x",
+     "pass": false,
+     "report": true
+    },
+    {
+     "rule": "display line height",
+     "range": "report only: winners median 1.0",
+     "pass": false,
+     "report": true
+    },
+    {
+     "rule": "display tracking (em)",
+     "range": "-0.03..-0.02",
+     "pass": false
+    },
+    {
+     "rule": "body tracking (em)",
+     "range": "0..0.02",
+     "pass": false
+    },
+    {
+     "rule": "font sizes, first viewport",
+     "range": "<= 9",
+     "pass": false
+    },
+    {
+     "rule": "grain or noise",
+     "value": "no",
+     "range": "a texture, or none declared",
+     "pass": false
+    },
+    {
+     "rule": "tap targets under 44x44",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "hover-only reveals",
+     "value": 2,
+     "range": "0",
+     "pass": false,
+     "detail": [
+      ".markdown-body h1:hover .anchor .octicon-link::before, .markdown-body h2:hover .anchor .octicon-link::before, .markdown-body h3:hover .anchor .octicon-link::before, .markdown-body h4:hover .anchor .octicon-link::before, .markdown-body h5:hover .anchor .octicon-link::before, .markdown-body h6:hover .anchor .octicon-link::before",
+      ".markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anchor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octicon-link, .markdown-body h6:hover .anchor .octicon-link"
+     ]
+    },
+    {
+     "rule": "inputs under 16 px",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "document overflow",
+     "value": "none",
+     "range": "none",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "media queries",
+     "value": "min 0 / max 0",
+     "range": "min >= max",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "fixed layers (% of viewport, no canvas or scene)",
+     "value": 0,
+     "range": "<= 20",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "cta in first viewport (% of height)",
+     "value": "no button or link",
+     "range": "n/a",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "navigation, compact",
+     "value": "none",
+     "range": "bottom bar or labeled menu",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "dead clicks",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "frames with 2+ flags",
+     "value": 2,
+     "range": "0",
+     "pass": false,
+     "detail": [
+      "frame 1: focal 11% under 15%; 18 elements (4-17)",
+      "frame 2: focal 12% under 15%; 4 compete (max 3)"
+     ]
+    },
+    {
+     "rule": "void frames (>70% empty, no focal)",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "image file width >= shown x 2",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "pasted boxes",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "repeated images",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "broken images (naturalWidth 0)",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "alt text painted as page text",
+     "value": 0,
+     "range": "0",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "rule": "LCP image",
+     "value": "eager, visible at t0",
+     "range": "not lazy, visible at t0",
+     "pass": true,
+     "detail": [
+      "img NAWI. Nahuel Mosse, Buen"
+     ]
+    }
+   ],
+   "frames": [
+    {
+     "frame": 1,
+     "y": 0,
+     "n": 18,
+     "focalShare": 0.107,
+     "focalKind": "media",
+     "competing": 1,
+     "axes": 3,
+     "empty": 0.191,
+     "flags": [
+      "focal 11% under 15%",
+      "18 elements (4-17)"
+     ],
+     "reported": []
+    },
+    {
+     "frame": 2,
+     "y": 376,
+     "n": 13,
+     "focalShare": 0.119,
+     "focalKind": "media",
+     "competing": 4,
+     "axes": 3,
+     "empty": 0.191,
+     "flags": [
+      "focal 12% under 15%",
+      "4 compete (max 3)"
+     ],
+     "reported": []
+    }
+   ],
+   "images": {
+    "low": [],
+    "pasted": [],
+    "unknown": [],
+    "repeated": [],
+    "lcp": {
+     "img": "img NAWI. Nahuel Mosse, Buen",
+     "lazy": false,
+     "visibleT0": true
+    },
+    "sizes": [
+     {
+      "img": "img ClubNahuelMosse, moving",
+      "file": 800,
+      "shown": 114
+     },
+     {
+      "img": "img cebador-landing, moving",
+      "file": 800,
+      "shown": 114
+     },
+     {
+      "img": "img Portfolio, moving",
+      "file": 800,
+      "shown": 114
+     }
+    ],
+    "broken": [],
+    "altShown": []
+   },
+   "sweep": {
+    "checked": 18,
+    "dead": []
+   },
+   "canvas": [],
+   "scrub": null,
+   "layout": {
+    "hero": {
+     "n": 18,
+     "span": 0.877,
+     "widest": 0.877
+    },
+    "sections": []
+   },
+   "product": null
+  }
+ },
+ "console": [
+  {
+   "width": "390x844",
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  }
+ ],
+ "captures": [
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\1012x900\\load-0000ms.png",
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\1012x900\\load-0600ms.png",
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\1012x900\\load-2000ms.png",
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\390x844\\load-0000ms.png",
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\390x844\\load-0600ms.png",
+  "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\390x844\\load-2000ms.png"
+ ],
+ "load": {
+  "waves": [],
+  "gapsMs": [],
+  "totalMs": 0,
+  "rules": [
+   {
+    "rule": "load waves",
+    "value": 0,
+    "range": "2-3",
+    "pass": false
+   },
+   {
+    "rule": "load wave gap (ms)",
+    "value": "-",
+    "range": "200-300",
+    "pass": false
+   },
+   {
+    "rule": "load total (ms)",
+    "value": 0,
+    "range": "900-2000",
+    "pass": false
+   }
+  ]
+ },
+ "motion": {
+  "report": "D:\\projects\\NahuelMosse-profile\\specs\\NM-1-widgets-together\\rondas\\r3\\motion\\report.json",
+  "staggerMs": 0
+ }
+}

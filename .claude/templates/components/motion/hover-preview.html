@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vista previa de factura · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./hover-preview.css">
+<style>
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  th, td { padding: var(--space-3) var(--space-4); text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { color: var(--text-soft); font-weight: var(--weight-medium); font-size: var(--text-xs); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .inv { padding: 0; border: 0; border-bottom: 1px dashed var(--text-faint); background: none; color: var(--text); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; }
+  .inv:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  .state { padding: 1px var(--space-2); border-radius: var(--radius-full); background: var(--surface-sunken); font-size: var(--text-xs); }
+  .scroll { overflow-x: auto; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Vista previa de factura</h1>
+      <p class="mu-demo__note">Al apoyar el mouse sobre el número de una factura aparece su ficha, que sigue al puntero a lo largo del número y se inclina unos grados con la velocidad. Al pasar de un número a otro la ficha se desliza y cambia el contenido sin cerrarse. Con el teclado se abre al enfocar el número y Esc la cierra. En pantallas táctiles no aparece: la fila ya tiene su enlace.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-table">
+    <h2 class="mu-demo__label" id="s-table">Facturas del mes</h2>
+    <div class="scroll">
+      <table id="invoices">
+        <thead><tr><th scope="col">Número</th><th scope="col">Cliente</th><th scope="col">Vence</th><th scope="col" class="num">Total</th><th scope="col">Estado</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './hover-preview.js';
+  themeSwitch();
+  const rows = [
+    { number: 'A-0004-00001284', client: 'Estudio Quiroga', issued: '2026-10-01', due: '2026-10-31', status: 'Emitida', tone: '', lines: [{ label: 'Honorarios de septiembre', amount: 150000 }, { label: 'IVA 21 %', amount: 31500 }], total: 181500 },
+    { number: 'A-0004-00001283', client: 'Transportes Cuyo', issued: '2026-09-28', due: '2026-10-28', status: 'Pagada', tone: 'success', lines: [{ label: 'Fletes del mes', amount: 420000 }, { label: 'IVA 21 %', amount: 88200 }], total: 508200 },
+    { number: 'A-0004-00001279', client: 'Taller Morán', issued: '2026-09-02', due: '2026-09-30', status: 'Vencida', tone: 'danger', lines: [{ label: 'Servicio mensual', amount: 96000 }, { label: 'Repuestos', amount: 34200 }, { label: 'IVA 21 %', amount: 27342 }], total: 157542 },
+    { number: 'A-0004-00001276', client: 'Ferretería Alvear', issued: '2026-08-30', due: '2026-09-29', status: 'Vencida', tone: 'warning', lines: [{ label: 'Cuenta corriente', amount: 152400 }], total: 184404 },
+    { number: 'B-0004-00000912', client: 'Librería Del Sur', issued: '2026-10-05', due: '2026-11-04', status: 'Borrador', tone: '', lines: [{ label: 'Suministros', amount: 92300 }], total: 92300 },
+    { number: 'A-0004-00001270', client: 'Bodega Los Álamos', issued: '2026-08-12', due: '2026-09-11', status: 'Pagada', tone: 'success', lines: [{ label: 'Asesoría contable', amount: 210000 }, { label: 'IVA 21 %', amount: 44100 }], total: 254100 },
+  ];
+  const fmt = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
+  const body = document.querySelector('#invoices tbody');
+  for (const r of rows) {
+    const tr = document.createElement('tr');
+    const cells = [document.createElement('td'), document.createElement('td'), document.createElement('td'), document.createElement('td'), document.createElement('td')];
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'inv';
+    b.textContent = r.number;
+    b.dataset.preview = JSON.stringify({ ...r, issuedLabel: 'Emisión', dueLabel: 'Vencimiento', totalLabel: 'Total', currency: 'ARS' });
+    cells[0].append(b);
+    cells[1].textContent = r.client;
+    cells[2].textContent = new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' }).format(Date.parse(`${r.due}T00:00:00Z`));
+    cells[3].textContent = fmt.format(r.total);
+    cells[3].className = 'num';
+    const s = document.createElement('span');
+    s.className = 'state';
+    s.textContent = r.status;
+    cells[4].append(s);
+    tr.append(...cells);
+    body.append(tr);
+  }
+  mount(document.getElementById('invoices'), {});
+</script>
+</body>
+</html>

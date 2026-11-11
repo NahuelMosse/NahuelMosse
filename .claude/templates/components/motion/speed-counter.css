@@ -1,0 +1,7 @@
+/* Speed counter: a figure that counts with a directional blur proportional to its speed. */
+:root { --speed-counter-tracking: 0.02em; }
+
+.speed-counter { position: relative; display: inline-block; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: var(--speed-counter-tracking); }
+.speed-counter__spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.speed-counter__digits { display: inline-block; white-space: nowrap; }
+.speed-counter__filter { position: absolute; width: 0; height: 0; pointer-events: none; }
