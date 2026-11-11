@@ -5,8 +5,6 @@ on:
   schedule:
     - cron: "17 6 * * *"
   workflow_dispatch: {}
-  push:
-    branches: [profile-revamp]
 
 permissions:
   contents: write
