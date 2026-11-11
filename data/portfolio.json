@@ -3,7 +3,7 @@
     "kind": "checkout",
     "ref": "portfolio-present-d@1ec152d",
     "payloadVersion": "2.0.0",
-    "syncedAt": "2026-11-11T02:32:35.772Z"
+    "syncedAt": "2026-11-11T02:37:06.171Z"
   },
   "site": {
     "url": "https://nawi.dev"
@@ -11,6 +11,7 @@
   "identity": {
     "mark": "NAWI",
     "professionalName": "Nahuel Mosse",
+    "greeting": "I'm Nawi.",
     "promise": "I design, build and lead digital products, and I put AI to work for them.",
     "role": "Technical Lead · Technical Project Manager",
     "base": "Buenos Aires",

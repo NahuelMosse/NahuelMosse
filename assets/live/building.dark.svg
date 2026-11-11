@@ -10,7 +10,7 @@
 <circle cx="30" cy="34" r="6" fill="#d2231b"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
 <text x="46" y="39" fill="#d2231b" font-size="13" letter-spacing="3">CURRENTLY BUILDING</text>
 <g class="u"><text x="24" y="84" fill="#ede4d0" font-size="30">ClubNahuelMosse</text><text x="24" y="112" fill="#9a9283" font-size="14">A Flutter app with a REST API for booking sports courts.</text>
-<text x="24" y="168" fill="#9a9283" font-size="12" letter-spacing="1">JavaScript · last push just now</text></g>
+<text x="24" y="168" fill="#9a9283" font-size="12" letter-spacing="1">JavaScript · last push 1 h ago</text></g>
 <line x1="720" y1="28" x2="720" y2="166" stroke="#ede4d0" stroke-opacity="0.16"/>
 <g class="u" style="animation-delay:.2s"><text x="746" y="58" fill="#9a9283" font-size="12" letter-spacing="2">LATEST REVIEWABLE WORK</text>
 <text x="746" y="92" fill="#ede4d0" font-size="18">Pull request opened</text>

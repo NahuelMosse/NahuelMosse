@@ -163,25 +163,35 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
   });
 }
 
+// A public repo's name, description, stars, last push and language: from the GraphQL listing, or from REST when the listing
+// doesn't have it.
+async function repoInfo(name) {
+  return repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
+}
+
+// The meta row at the foot of a 300x170 repo card: language dot and language, star count, last-push date, closing hairline.
+function metaRow(T, r) {
+  const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
+  return `<circle cx="30" cy="138" r="6" fill="${T.red}"/><text x="44" y="142" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
+<g transform="translate(150 138)">${star}</g><text x="164" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
+<text x="284" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
+${hair(T, 24, 166.5, 284, 166.5)}`;
+}
+
 // Featured repo cards, three to a row: the text under each repo's animated preview (assets/previews/, built by
 // build_previews.py): name, English description, language, stars and last push.
 for (const name of FEATURED) {
-  const r = repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
+  const r = await repoInfo(name);
   if (!r) continue;
   const text = describe(name) || r.description || "";
   const lines = wrap(text, 33);
   if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-  emit(`repo-${name}`, 300, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
-    const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
-    return `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
+  emit(`repo-${name}`, 300, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) =>
+    `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
 <text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">REPOSITORY</text>
 <text x="24" y="62" fill="${T.fg}" font-size="19">${esc(r.name)}</text>
 ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-<circle cx="30" cy="138" r="6" fill="${T.red}"/><text x="44" y="142" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
-<g transform="translate(150 138)">${star}</g><text x="164" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
-<text x="284" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
-${hair(T, 24, 166.5, 284, 166.5)}`;
-  });
+${metaRow(T, r)}`);
 }
 
 // npm: all-time downloads of the dev-kit tools since each was published, as a rolling counter, the last 7 days, each
@@ -213,16 +223,17 @@ ${hair(T, 24, 166.5, 284, 166.5)}`;
   const total = pkgs.reduce((a, k) => a + k.total, 0);
   const week = pkgs.reduce((a, k) => a + lastWeek(k), 0);
   // The tools' own cards, three to a row under the projects: each is both an npm package and a Claude Code skill; name and
-  // what it does in two lines. Their downloads are in the npm card below.
+  // what it does in two lines, and the same meta row as the repo cards. Their downloads are in the npm card below.
   for (const k of pkgs) {
+    const r = await repoInfo(k.p);
     const lines = wrap(describe(k.p) || "", 33);
     if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-    emit(`tool-${k.p}`, 300, 130, `${k.p}, an npm package and a Claude Code skill: ${describe(k.p) || ""}`, (T) =>
+    emit(`tool-${k.p}`, 300, r ? 170 : 130, `${k.p}, an npm package and a Claude Code skill: ${describe(k.p) || ""}${r ? ` ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}` : ""}`, (T) =>
       `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
 <text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="1.6">NPM PACKAGE · CLAUDE CODE SKILL</text>
 <text x="24" y="62" fill="${T.fg}" font-size="19">${esc(k.p)}</text>
 ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-${hair(T, 24, 126.5, 284, 126.5)}`);
+${r ? metaRow(T, r) : hair(T, 24, 126.5, 284, 126.5)}`);
   }
   const W = 1100, H = 400;
   const label = `npm downloads of the dev-kit tools since publication: ${fmt(total)} in total, ${fmt(week)} in the last 7 days. `
