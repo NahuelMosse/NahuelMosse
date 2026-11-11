@@ -14,16 +14,6 @@ hero:
     - Still writing code
   status: Technical Lead · Kovix Consulting
   location: Buenos Aires, Argentina
-terminal:
-  title: nawi@buenos-aires
-  prompt: "$"
-  commands:
-    - command: whoami
-      output: ["Technical Lead · Kovix Consulting"]
-    - command: cat next.txt
-      output: ["Technical Project Manager"]
-    - command: ls clients/
-      output: ["smart-warehousing  grupo-st  visma"]
 timeline:
   title: Record
   milestones:
@@ -39,14 +29,6 @@ timeline:
     - year: "2026"
       title: Technical Lead
       subtitle: 3 client engagements
-stats:
-  - github: merged-prs
-    label: merged PRs
-  - github: repos
-    label: public repos
-  - value: "4+"
-    label: years shipping
-    color: amber
 buttons:
   - label: Portfolio
     icon: vercel
@@ -57,7 +39,3 @@ buttons:
   - label: Email
     icon: gmail
     url: mailto:nahuelgamail@gmail.com
-footer:
-  kicker: OFF DUTY
-  lines:
-    - CS2 · Rocket League · chess · Formula 1

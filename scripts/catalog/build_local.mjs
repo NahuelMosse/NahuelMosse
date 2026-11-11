@@ -1,5 +1,5 @@
-// Builds the catalog's hand-made SVGs: the typing terminal hero, the neofetch card, the stack icon row and the chess
-// board preview. Run with `node scripts/catalog/build_local.mjs`; it needs network access for the Simple Icons paths.
+// Builds the catalog's hand-made SVGs: the typing terminal hero and the stack icon row.
+// Run with `node scripts/catalog/build_local.mjs`; it needs network access for the Simple Icons paths.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,41 +58,6 @@ ${body}
   writeFileSync(join(out, "hero-typing.svg"), svg);
 }
 
-// Neofetch-style card: an ASCII mark on the left, key/value facts on the right.
-function neofetch() {
-  const art = [
-    "██     ██",
-    "███    ██",
-    "████   ██",
-    "██ ██  ██",
-    "██  ██ ██",
-    "██   ████",
-    "██    ███",
-    "██     ██",
-  ];
-  const facts = [
-    ["nawi", "@github"],
-    ["role", "Technical Lead · Kovix Consulting"],
-    ["next", "Technical Project Manager"],
-    ["clients", "Smart Warehousing · Grupo ST · Visma"],
-    ["since", "11/2022 · 4+ years"],
-    ["stack", "Node · NestJS · TS · React · Flutter"],
-    ["ai", "Claude Code multi-agent · SDD"],
-    ["study", "Analista en Informática · UM 2025"],
-    ["", "Ing. en Informática · 4th year"],
-    ["lang", "es native · en C2"],
-  ];
-  const W = 1000, H = 350;
-  const artTxt = art.map((l, i) => `<text x="48" y="${78 + i * 30}" fill="${RED}" font-size="30" xml:space="preserve">${esc(l)}</text>`).join("");
-  const rows = facts.map(([k, v], i) => i === 0
-    ? `<text x="380" y="62" font-size="20"><tspan fill="${RED}">${k}</tspan><tspan fill="${BONE}">${v}</tspan></text><rect x="380" y="74" width="170" height="2" fill="${DIM}"/>`
-    : `<text x="380" y="${80 + i * 24}" font-size="18"><tspan fill="${RED}">${k.padEnd(8, " ")}</tspan><tspan fill="${BONE}"> ${esc(v)}</tspan></text>`).join("");
-  const swatches = [INK, "#3a3732", DIM, BONE, RED, "#7d1510"].map((c, i) => `<rect x="${380 + i * 34}" y="${H - 36}" width="30" height="14" fill="${c}" stroke="#3a3732"/>`).join("");
-  writeFileSync(join(out, "neofetch.svg"), `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${facts.map((f) => f.join(": ")).join(". ")}">
-<style>${fontFace}text{font-family:CP,"Courier New",monospace;white-space:pre}</style>
-<rect width="${W}" height="${H}" fill="${INK}"/>${artTxt}${rows}${swatches}</svg>`);
-}
-
 // Stack row: Simple Icons paths drawn in bone on ink tiles, labelled in Courier.
 async function stack() {
   const items = [
@@ -123,32 +88,5 @@ async function stack() {
   return got.length;
 }
 
-// Chess preview: the board an issue-driven community game would render, in the noir palette.
-function chess() {
-  const fen = "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R";
-  const glyph = { k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
-  const s = 52, pad = 34, W = s * 8 + pad * 2;
-  let cells = "";
-  fen.split("/").forEach((row, r) => {
-    let c = 0;
-    for (const ch of row) {
-      if (/\d/.test(ch)) { c += +ch; continue; }
-      const white = ch === ch.toUpperCase();
-      cells += `<text x="${pad + c * s + s / 2}" y="${pad + r * s + s * 0.74}" text-anchor="middle" font-size="40" fill="${white ? BONE : RED}" stroke="${INK}" stroke-width="1">${glyph[ch.toLowerCase()]}</text>`;
-      c++;
-    }
-  });
-  let squares = "";
-  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++)
-    squares += `<rect x="${pad + c * s}" y="${pad + r * s}" width="${s}" height="${s}" fill="${(r + c) % 2 ? "#1d1b18" : "#3a3732"}"/>`;
-  const files = "abcdefgh".split("").map((f, i) => `<text x="${pad + i * s + s / 2}" y="${W - 10}" text-anchor="middle" font-size="13" fill="${DIM}">${f}</text>`).join("");
-  const ranks = [8, 7, 6, 5, 4, 3, 2, 1].map((n, i) => `<text x="14" y="${pad + i * s + s / 2 + 5}" font-size="13" fill="${DIM}">${n}</text>`).join("");
-  writeFileSync(join(out, "chess-preview.svg"), `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${W}" viewBox="0 0 ${W} ${W}" role="img" aria-label="Community chess board preview">
-<style>${fontFace}text{font-family:CP,"Courier New",monospace}text[font-size="40"]{font-family:"Segoe UI Symbol","DejaVu Sans","Noto Sans Symbols 2",serif}</style>
-<rect width="${W}" height="${W}" fill="${INK}"/>${squares}${cells}${files}${ranks}</svg>`);
-}
-
 hero();
-neofetch();
 console.log("stack icons:", await stack());
-chess();
