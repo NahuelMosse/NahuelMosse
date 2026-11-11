@@ -1,0 +1,40 @@
+/* Toolbar dynamic. The values of the component, derived from the set's tokens. */
+:root {
+  --toolbar-dynamic-open-width: min(300px, calc(100vw - 32px));
+  --toolbar-dynamic-radius: var(--radius);
+  --toolbar-dynamic-surface: var(--surface-raised);
+  --toolbar-dynamic-pad: var(--space-2);
+  --toolbar-dynamic-button: 36px;
+}
+
+/* The surface is the ::before: the width changes at once and the surface travels to it with transform. */
+.tbd { position: relative; isolation: isolate; display: inline-block; max-width: 100%; border-radius: var(--toolbar-dynamic-radius); }
+.tbd::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--toolbar-dynamic-surface); border-radius: inherit; box-shadow: 0 0 0 1px var(--border), var(--shadow-2); transform-origin: 0 0; }
+.tbd__box { width: max-content; max-width: 100%; overflow: hidden; border-radius: inherit; }
+.tbd[data-state="open"] .tbd__box { width: var(--toolbar-dynamic-open-width); }
+.tbd__row { display: flex; align-items: center; gap: var(--space-2); padding: var(--toolbar-dynamic-pad); }
+.tbd__row[hidden] { display: none; }
+
+.tbd__btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--toolbar-dynamic-button); height: var(--toolbar-dynamic-button);
+  padding: 0; color: var(--text-soft); cursor: pointer; user-select: none; background: transparent; border: 0; border-radius: var(--radius-control);
+  transition: background-color var(--duration-fast), color var(--duration-fast), transform var(--duration-instant) var(--ease-out);
+}
+.tbd__btn:hover:not(:disabled) { background: var(--surface-hover); color: var(--text); }
+.tbd__btn:active:not(:disabled) { transform: scale(0.98); }
+.tbd__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.tbd__btn:disabled { cursor: default; opacity: 0.5; }
+.tbd__btn .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.tbd__input {
+  flex: 1; min-width: 0; height: var(--toolbar-dynamic-button); padding: 0 var(--space-2); font: inherit; font-size: var(--text-control); color: var(--text);
+  background: transparent; border: 0; border-radius: var(--radius-control); box-shadow: 0 0 0 1px var(--border);
+  transition: box-shadow var(--duration-fast);
+}
+.tbd__input::placeholder { color: var(--text-faint); }
+.tbd__input:focus-visible { outline: 2px solid transparent; box-shadow: 0 0 0 1px var(--control-border); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tbd__btn, .tbd__input { transition-duration: 120ms; }
+  .tbd__btn:active:not(:disabled) { transform: none; }
+}

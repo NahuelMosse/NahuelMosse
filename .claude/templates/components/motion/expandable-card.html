@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjeta expandible · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ac-demo.css">
+<link rel="stylesheet" href="./expandable-card.css">
+</head>
+<body class="ui">
+<main class="ac-demo">
+  <header class="ac-demo__head">
+    <div>
+      <h1 class="ac-demo__title">Tarjeta expandible</h1>
+      <p class="ac-demo__note">Clientes. Tocá una tarjeta y se abre en su ficha: la imagen, el título y la descripción viajan a su lugar. En móvil la ficha ocupa toda la pantalla; Escape, el botón o un toque afuera la cierran.</p>
+    </div>
+    <div class="ac-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-ac-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-ac-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="ac-demo__section" aria-labelledby="s-clients">
+    <h2 class="ac-demo__label" id="s-clients">Clientes activos</h2>
+    <div class="ac-demo__stage">
+      <ul id="clients" data-motion="expandable-card" data-close-label="Cerrar ficha" aria-label="Clientes"></ul>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch, hueOf, initials } from './ac-demo.js';
+  themeSwitch();
+  const clients = [
+    ['Ferretería Alvear', 'Herramientas y materiales', ['Ferretería Alvear compra materiales para obra a tres proveedores de Ledger y paga siempre por transferencia. Su contacto es Lucía Alvear, que aprueba las facturas los lunes.', 'Condición de pago: 30 días fecha de factura. Recibe las facturas por correo y pide el comprobante de retenciones junto con cada cobro. Tiene un acuerdo de descuento por pago anticipado que se aplica solo cuando la transferencia entra antes del vencimiento.']],
+    ['Estudio Quiroga', 'Servicios contables', ['El estudio factura honorarios mensuales a sus clientes a través de Ledger y concilia sus cobros todas las semanas. Lo atiende Matías Quiroga.', 'Condición de pago: contado. Prefiere recordatorios por correo tres días antes del vencimiento y no usa débito automático.']],
+    ['Café Palermo', 'Gastronomía', ['Cadena de tres locales que compra insumos con una factura por local. Cada sucursal tiene su propio responsable de pagos.', 'Condición de pago: 15 días. Tiene una nota de crédito pendiente por mercadería devuelta en la última entrega.']],
+    ['Transportes Cuyo', 'Logística y distribución', ['Flota propia de camiones con servicio de carga entre provincias. Factura por viaje y una vez por mes consolida el resumen para el cliente.', 'Condición de pago: 45 días. Los pagos llegan en lotes y casi siempre requieren conciliación manual de varias facturas contra una sola transferencia.']],
+  ];
+  const host = document.getElementById('clients');
+  for (const [name, kind, paragraphs] of clients) {
+    const li = document.createElement('li');
+    li.dataset.card = '';
+    li.dataset.ctaText = 'Ver cliente';
+    li.dataset.ctaHref = `#cliente-${name.toLowerCase().replace(/\W+/g, '-')}`;
+    li.innerHTML = '<div class="ac-xc__media" data-part="media"><span class="ac-xc__mono" aria-hidden="true"></span></div><div class="ac-xc__text"><h3 data-part="title"><button type="button" class="ac-xc__trigger"></button></h3><p data-part="description"></p></div><template data-part="detail"></template>';
+    li.querySelector('[data-part=media]').style.setProperty('--h', hueOf(name));
+    li.querySelector('.ac-xc__mono').textContent = initials(name);
+    li.querySelector('.ac-xc__trigger').textContent = name;
+    li.querySelector('[data-part=description]').textContent = kind;
+    const tpl = li.querySelector('template');
+    for (const t of paragraphs) { const p = document.createElement('p'); p.textContent = t; tpl.content.append(p); }
+    host.append(li);
+  }
+  await import('./expandable-card.js');
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* Apple activity card (Kokonut UI): concentric rings with their figures beside them. */
+:root {
+  --mu-rings-scale: 1;
+  --mu-rings-stage: 180px;
+  --mu-rings-track: color-mix(in oklab, var(--text) 8%, transparent);
+  --mu-rings-shadow: drop-shadow(0 0 6px oklch(0% 0 0 / 0.15));
+  --mu-rings-pad: var(--space-6);
+  --mu-rings-radius: 24px;
+  --mu-rings-lift: 0.12;
+}
+:root[data-theme="dark"] { --mu-rings-track: oklch(100% 0 0 / 0.07); }
+
+.mu-rings { display: flex; flex-direction: column; align-items: center; gap: var(--space-6); width: 100%; max-width: 48rem; margin-inline: auto; padding: var(--mu-rings-pad); border-radius: var(--mu-rings-radius); color: var(--text); }
+.mu-rings__title { margin: 0; font-size: 1.5rem; font-weight: var(--weight-medium); line-height: 1.3; }
+.mu-rings__body { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-5) var(--space-6); }
+.mu-rings__stage { position: relative; flex: none; width: var(--mu-rings-stage); height: var(--mu-rings-stage); margin: calc(10px * var(--mu-rings-scale)); }
+.mu-rings__ring { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.mu-rings__svg { display: block; flex: none; width: calc(var(--size) * var(--mu-rings-scale) * 1px); height: calc(var(--size) * var(--mu-rings-scale) * 1px); transform: rotate(-90deg); }
+.mu-rings__track { stroke: var(--mu-rings-track); }
+.mu-rings__arc { filter: var(--mu-rings-shadow); }
+.mu-rings__ring { --_c: var(--accent); }
+.mu-rings__ring[data-tone="success"], .mu-rings__item[data-tone="success"] { --_c: var(--success); }
+.mu-rings__ring[data-tone="warning"], .mu-rings__item[data-tone="warning"] { --_c: var(--warning); }
+.mu-rings__ring[data-tone="info"], .mu-rings__item[data-tone="info"] { --_c: var(--info); }
+.mu-rings__ring[data-tone="danger"], .mu-rings__item[data-tone="danger"] { --_c: var(--danger); }
+.mu-rings__from { stop-color: var(--_c); }
+.mu-rings__to { stop-color: oklch(from var(--_c) calc(l + var(--mu-rings-lift)) c h); }
+
+.mu-rings__info { display: flex; flex-direction: column; gap: var(--space-5); margin: 0; }
+.mu-rings__item { --_c: var(--accent); display: flex; flex-direction: column; margin: 0; }
+.mu-rings__label { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-md); font-weight: var(--weight-medium); color: var(--text-soft); }
+.mu-rings__label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--_c); }
+.mu-rings__figure { margin: 0; font-size: 1.5rem; font-weight: var(--weight-strong); line-height: 1.3; font-variant-numeric: tabular-nums; }
+.mu-rings__unit { margin-left: 4px; font-size: var(--text-lg); font-weight: var(--weight-medium); color: var(--text-soft); }

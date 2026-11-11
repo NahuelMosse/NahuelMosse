@@ -1,0 +1,6 @@
+/* Text loop (Motion Primitives): one phrase in flow, the leaving one positioned over it while it fades. */
+.mu-text-loop { position: relative; display: inline-block; white-space: nowrap; vertical-align: bottom; }
+.mu-text-loop__item { display: inline-block; }
+
+/* Reduced motion: the script swaps the phrase with no travel or fade. */
+@media (prefers-reduced-motion: reduce) { .mu-text-loop__item { transition: none; } }

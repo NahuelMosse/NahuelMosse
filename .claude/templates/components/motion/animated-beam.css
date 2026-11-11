@@ -1,0 +1,41 @@
+/* Animated beam (Magic UI): lines of light that run between nodes. */
+:root {
+  --mu-beam-from: var(--beam-from, var(--accent));
+  --mu-beam-to: var(--beam-to, var(--accent-text));
+  --mu-beam-path: var(--n-9);
+  --mu-beam-node: 48px;
+  --mu-beam-hub: 64px;
+  --mu-beam-node-bg: var(--surface-raised);
+  --mu-beam-node-border: var(--border-strong);
+  --mu-beam-node-shadow: 0 0 20px -12px oklch(0% 0 0 / 0.8);
+  --mu-beam-gap: calc(var(--space-5) + var(--space-4));
+}
+:root[data-theme="dark"], :root[data-register="showcase"] {
+  --mu-beam-node-shadow: 0 0 20px -12px oklch(100% 0 0 / 0.5);
+  --mu-beam-from: color-mix(in oklab, var(--beam-from, var(--accent)) 70%, white);
+}
+
+.mu-beam { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 300px; padding: 40px; overflow: hidden; }
+.mu-beam__svg { position: absolute; top: 0; left: 0; pointer-events: none; transform: translateZ(0); }
+.mu-beam__track { stroke: var(--mu-beam-path); stroke-width: 2px; stroke-opacity: 0.2; }
+.mu-beam__light { stroke-width: 2px; stroke-opacity: 1; }
+.mu-beam__from { stop-color: var(--mu-beam-from); }
+.mu-beam__to { stop-color: var(--mu-beam-to); }
+
+.mu-beam__layout { display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: var(--mu-beam-gap); width: 100%; max-width: 32rem; height: 100%; }
+.mu-beam__col { display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); }
+.mu-beam__cell { position: relative; display: flex; align-items: center; justify-content: center; }
+.mu-beam__node { position: relative; z-index: 10; display: flex; flex: none; align-items: center; justify-content: center; width: var(--mu-beam-node); height: var(--mu-beam-node); padding: 12px; border: 2px solid var(--mu-beam-node-border); border-radius: 50%; background: var(--mu-beam-node-bg); color: var(--text); box-shadow: var(--mu-beam-node-shadow); }
+.mu-beam__node--hub { width: var(--mu-beam-hub); height: var(--mu-beam-hub); }
+.mu-beam__node svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.mu-beam__node--hub { color: var(--accent-text); }
+/* The nodes arrive one after another each time the diagram is drawn, and their names with them. */
+.mu-beam__cell:has(> .mu-beam__name) .mu-beam__node { animation: mark-in var(--motion-pop) both; animation-delay: calc(var(--stagger) * var(--n, 0)); }
+.mu-beam__cell:has(> .mu-beam__name) .mu-beam__name { animation: fade-from var(--ms-260) var(--ease-out) both; animation-delay: calc(var(--stagger) * var(--n, 0) + 80ms); }
+/* The name of each node hangs under it and takes no room, so the beams still start at the center of the circle. */
+.mu-beam__name { position: absolute; top: 100%; left: 50%; z-index: 10; margin-top: 4px; transform: translateX(-50%); font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text-soft); white-space: nowrap; pointer-events: none; }
+
+@media (max-width: 420px) { .mu-beam { padding: 24px 16px; } .mu-beam__layout { gap: var(--space-4); } }
+@media (prefers-reduced-motion: reduce) {
+  .mu-beam__cell:has(> .mu-beam__name) .mu-beam__node, .mu-beam__cell:has(> .mu-beam__name) .mu-beam__name { animation: fade-from 140ms linear both; animation-delay: 0ms; }
+}

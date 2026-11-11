@@ -1,0 +1,1260 @@
+/* Reference component set. Every component has all its states and its motion. Movement only on
+   transform, opacity, filter and clip-path (color, background and border do not trigger layout);
+   never `transition: all`; enter and exit both ease-out, exit shorter; springs only where there is
+   physics, critically damped. Hover only with a fine pointer. Overlays live in the top layer.
+   Reduced motion keeps feedback and turns displacement and scale into a fade: fewer and gentler,
+   never zero.
+   Product register: one primary button per view; secondary and ghost are neutral; navigation (tabs,
+   the segmented control, the menu highlight) is neutral; the accent is the primary action, the focus
+   ring, the value of a control, the selection of data and the product mark. Colors and durations
+   come from tokens.css; this file never writes one. A page links tokens.css, primitives.css, effects.css and
+   life.css before this file, each with its own <link> so they load in parallel. */
+
+/* ── App shell: a sidebar, a sticky top bar with the breadcrumb, a centered content column.
+   Under 860 px the sidebar becomes a strip of tabs above the top bar. ── */
+.app { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100dvh; }
+.app__main { min-width: 0; display: flex; flex-direction: column; }
+.sidebar { position: sticky; top: 0; height: 100dvh; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-3); background: var(--surface); border-right: 1px solid var(--border-subtle); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-2); border-radius: var(--radius-control); color: var(--text); font-size: var(--text-lg); font-weight: var(--weight-strong); letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; }
+.brand__mark { position: relative; width: 20px; height: 20px; border-radius: 6px; background: var(--accent); box-shadow: var(--shadow-primary); transition: transform var(--motion-release); }
+.brand__mark::after { content: ""; position: absolute; inset: 6px; border-radius: 2px; background: var(--on-accent); }
+.brand:active .brand__mark { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.nav { --animated-background-fill: var(--surface-active); position: relative; isolation: isolate; display: grid; gap: 2px; }
+.nav__label { padding: var(--space-3) var(--space-2) var(--space-1); font-size: var(--text-xs); color: var(--text-faint); }
+.nav__item { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--space-2); height: var(--control-md); padding: 0 var(--space-2); border-radius: var(--radius-control); color: var(--text-soft); font-size: var(--text-md); font-weight: var(--weight-regular); text-decoration: none; transition: background-color var(--motion-hover), color var(--motion-hover), transform var(--motion-release); }
+.nav__item .icon { color: var(--text-faint); transition: color var(--motion-hover); }
+.nav__item:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+/* Hover is a fill of the item itself, the same pill (same radius, same inset) the sliding highlight draws under the page
+   you are on, one step lighter; it fades in and out with the pointer, and the current item never takes it. */
+@media (hover: hover) and (pointer: fine) { .nav__item:not([aria-current="page"]):hover { background: var(--surface-hover); } .nav__item:hover { color: var(--text); } .nav__item:hover .icon { color: var(--text-soft); } }
+/* The page you are on: a fill, a heavier label and the accent on its icon. No bar: the fill is a pill
+   that travels from item to item, and hover is only the lighter fill, so the two never read alike. */
+.nav__item[aria-current="page"] { background: var(--surface-active); color: var(--text); font-weight: var(--weight-medium); }
+.nav__item[aria-current="page"] .icon { color: var(--accent-text); }
+/* With the sliding highlight the item itself stays transparent: the background is the highlight. */
+.nav[data-hl] .nav__item[aria-current="page"] { background: none; }
+.nav__count { margin-left: auto; font-size: var(--text-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+#user-profile { width: 100%; margin-top: auto; }
+#user-profile .pd, #user-profile .pd__wrap { display: block; width: 100%; }
+#user-profile .pd__trigger { width: 100%; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); }
+/* The trigger fills the sidebar, so there is no margin to the right of it for the bend: it would sit on the ring. The open state is the trigger's own stronger border. */
+#user-profile .pd__bend { display: none; }
+#user-profile .pd__wrap[data-open] .pd__trigger { border-color: var(--control-border); background: var(--surface-hover); }
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); height: var(--topbar); padding-inline: var(--gutter); background: color-mix(in oklab, var(--bg) 94%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); transition: background-color var(--motion-hover); }
+/* Once the page scrolls, content passes under the bar: it is the surface, opaque, with its hairline. */
+.topbar[data-scrolled] { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.topbar__lead { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+/* The menu button exists only where the sidebar is gone (see 640 px below); `.btn` alone would win the display. */
+.btn.nav-toggle { display: none; }
+.menu__item[aria-current="page"] { font-weight: var(--weight-strong); }
+.topbar__actions { display: flex; align-items: center; gap: var(--space-2); }
+.breadcrumb { min-width: 0; }
+.breadcrumb ol { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--text-soft); }
+.breadcrumb li { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.breadcrumb li + li::before { content: "/"; margin-right: 6px; color: var(--text-faint); }
+.breadcrumb a { color: inherit; text-decoration: none; border-radius: 4px; transition: color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .breadcrumb a:hover { color: var(--text); } }
+.breadcrumb [aria-current="page"] { color: var(--text); font-weight: var(--weight-medium); }
+/* A view slides in from the side the navigation came from: the page clips that sideways travel instead of scrolling. */
+.content { padding-block: var(--space-5) var(--space-8); overflow-x: clip; }
+.view { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-content: start; }
+.view[hidden] { display: none; }
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { position: static; height: auto; flex-direction: row; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--gutter); border-right: 0; border-bottom: 1px solid var(--border-subtle); overflow-x: auto; }
+  .nav { display: flex; }
+  .nav__label, .nav__count, #user-profile { display: none; }
+  .nav__item { white-space: nowrap; }
+}
+@media (max-width: 520px) { .topbar .topbar__label { display: none; } .topbar__actions .btn--sm:not(.btn--icon) { width: var(--control-sm); padding: 0; } }
+/* A phone: the sidebar gives way to a menu button in the top bar. */
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .btn.nav-toggle { display: inline-flex; }
+  .topbar { gap: var(--space-2); }
+}
+
+/* ── Button ─────────────────────────────────────────────────────────────
+   rest → hover → focus → pressed → loading → success | error → disabled
+   primary (the one action of the view) · secondary · ghost · destructive; sizes md and sm */
+.btn {
+  --_bg: var(--btn-bg); --_fg: var(--text); --_bd: var(--btn-border); --_face: var(--btn-face);
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: var(--control-md); padding: 0 var(--space-3); border-radius: var(--radius-control);
+  background: var(--_face, none) border-box, var(--_bg) border-box; color: var(--_fg); border: 1px solid var(--_bd); box-shadow: var(--shadow-control);
+  font-size: var(--text-md); font-weight: var(--weight-medium); white-space: nowrap; cursor: pointer; user-select: none; touch-action: manipulation; text-decoration: none;
+  transition: background-color var(--motion-hover), border-color var(--motion-hover), color var(--motion-hover), box-shadow var(--motion-hover), transform var(--motion-release), translate var(--motion-release);
+}
+.btn--primary { --_bg: var(--accent); --_fg: var(--on-accent); --_bd: transparent; --_face: var(--primary-face); box-shadow: var(--shadow-primary); }
+.btn--destructive { --_fg: color-mix(in oklab, var(--danger), var(--text) 25%); }
+.btn--ghost { --_bg: transparent; --_bd: transparent; --_face: none; box-shadow: none; }
+.btn--sm { height: var(--control-sm); padding: 0 var(--space-2); font-size: var(--text-xs); }
+.btn--icon { width: var(--control-md); padding: 0; }
+.btn--icon.btn--sm { width: var(--control-sm); }
+.btn[aria-pressed="true"] { --_bg: var(--surface-active); }
+.btn[aria-pressed="true"] .icon { animation: icon-pop var(--duration-normal) var(--ease-out); }
+@keyframes icon-pop { from { transform: scale(0.9); } }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { --_bg: var(--btn-bg-hover); }
+  .btn--primary:hover:not(:disabled, [aria-disabled="true"], [data-state]) { --_bg: color-mix(in oklab, var(--accent) 90%, var(--surface)); --_bd: transparent; box-shadow: var(--shadow-primary-hover); }
+  .btn--destructive:hover { --_bg: var(--danger-soft); --_bd: color-mix(in oklab, var(--danger), transparent 60%); }
+  .btn--ghost:hover { --_bg: var(--surface-hover); --_bd: transparent; }
+  .btn:hover:not(.btn--primary, .btn--ghost, :disabled) { --_bd: var(--control-border); }
+}
+/* The halo of a field would not reach 3:1 on a button, so a button keeps the 2 px outline of the page
+   and takes the focus color on its edge. */
+.btn:focus-visible { --_bd: var(--border-focus); }
+.btn--primary:focus-visible { --_bd: transparent; }
+.btn .icon { transition: transform var(--motion-release); }
+.btn:active { transform: scale(var(--press-scale)); translate: none; transition-duration: var(--duration-instant); box-shadow: none; }
+.btn--primary:active { box-shadow: var(--shadow-primary-press); }
+.btn:active .icon { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+/* Disabled is a color, not an opacity: the fill of a hover, the faint text, no edge and no shadow. */
+.btn:disabled, .btn[aria-disabled="true"] { --_bg: var(--surface-hover); --_fg: var(--text-faint); --_bd: transparent; --_face: none; box-shadow: none; text-shadow: none; cursor: not-allowed; transform: none; }
+/* The label and every state share one grid cell, so the width is the longest of them and nothing
+   overflows while the button loads. */
+.btn:has(> .btn__state) { display: inline-grid; justify-items: center; align-items: center; }
+.btn > :is(.btn__label, .btn__state) { grid-area: 1 / 1; }
+/* A label may carry its icon: they sit on one line, centered on each other. */
+.btn .btn__label { display: inline-flex; align-items: center; gap: var(--space-2); }
+/* A label swap: the one that leaves goes up and out in 90 ms, the one that arrives comes from below in 160. */
+/* What is hidden is also `visibility: hidden`: its text leaves innerText, find in page and the tab order, and screen readers do not announce it. */
+.btn .btn__label, .btn .btn__state { transition: opacity var(--motion-swap-out), transform var(--motion-swap-out), visibility var(--motion-swap-out); }
+.btn:not([data-state]) .btn__label { transition: opacity var(--motion-swap-in), transform var(--motion-swap-in), visibility var(--motion-swap-in); }
+.btn .btn__state { display: flex; align-items: center; justify-content: center; gap: var(--space-2); opacity: 0; visibility: hidden; transform: translateY(var(--swap-y)); pointer-events: none; }
+.btn[data-state] .btn__label { opacity: 0; visibility: hidden; transform: translateY(calc(var(--swap-y) * -1)); }
+.btn[data-state="loading"], .btn[aria-busy="true"] { cursor: progress; }
+.btn[data-state="loading"] .btn__state--loading, .btn[data-state="success"] .btn__state--success, .btn[data-state="error"] .btn__state--error { opacity: 1; visibility: visible; transform: none; transition: opacity var(--motion-swap-in), transform var(--motion-swap-in), visibility var(--motion-swap-in); }
+/* A rotating arc: a faint ring and a round-capped arc on it (`pathLength` 100, so 72 is three
+   quarters), the whole drawing turning. */
+.spinner { width: 14px; height: 14px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; }
+.spinner__track { opacity: 0.25; }
+.spinner__arc { stroke-linecap: round; stroke-dasharray: 72 28; }
+.btn[data-state="loading"] .spinner, .spinner[data-spinning] { animation: spin var(--ms-700) linear infinite; }
+@keyframes spin { to { transform: rotate(1turn); } }
+.check-draw path { stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset var(--duration-slow) var(--ease-out) var(--ms-60); }
+.btn[data-state="success"] .check-draw path { stroke-dashoffset: 0; }
+/* Success is a morph, not a swap: the fill eases to the success tone, the check draws, the button
+   settles from a slightly pressed size. */
+.btn[data-state="success"] { --_face: none; text-shadow: none; box-shadow: none; --_bg: var(--success-soft); --_fg: color-mix(in oklab, var(--success), var(--text) 55%); --_bd: transparent; transition-duration: var(--duration-slow); animation: settle var(--duration-slow) var(--spring); }
+@keyframes settle { from { transform: scale(0.96); } }
+/* Error is the danger tone, soft: its fill, its edge and its text; the action reads again as one to retry. */
+.btn[data-state="error"] { --_face: none; text-shadow: none; box-shadow: none; --_bg: var(--danger-soft); --_fg: color-mix(in oklab, var(--danger), var(--text) 25%); --_bd: color-mix(in oklab, var(--danger) 45%, transparent); animation: nudge var(--ms-280) var(--ease-out); }
+@keyframes nudge { 20% { transform: translateX(-3px); } 40% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(1px); } }
+.btn--lg { height: var(--control-lg); padding: 0 var(--space-4); font-size: var(--text-md); border-radius: calc(var(--radius-control) + 2px); }
+/* A shortcut inside a button reads as part of it: no frame of its own, the label's color one step down. */
+.btn kbd.key { height: 18px; min-width: 18px; margin-right: -4px; padding: 0 4px; border-color: var(--border-subtle); background: none; color: var(--text-faint); }
+.btn--primary kbd.key { border-color: color-mix(in oklab, var(--on-accent) 30%, transparent); color: color-mix(in oklab, var(--on-accent) 80%, transparent); }
+/* A group: the buttons touch, the corners outside stay round, the seams are one hairline. */
+.btn-group { display: inline-flex; isolation: isolate; border-radius: var(--radius-control); box-shadow: var(--shadow-control); }
+.btn-group > .btn { box-shadow: none; }
+.btn-group > .btn:not(:first-child) { margin-left: -1px; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.btn-group > .btn:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.btn-group > .btn:is(:hover, :focus-visible, [aria-expanded="true"]) { z-index: 1; }
+.btn-group > .btn[aria-expanded="true"] { --_bg: var(--surface-active); }
+/* Copy: the two icons share a cell; the copy turns out as the check draws in, and the label says so. */
+.btn__swap { display: inline-grid; flex: none; }
+.btn__swap > .icon { grid-area: 1 / 1; transition: opacity var(--motion-swap-in), scale var(--motion-swap-in), rotate var(--motion-swap-in); }
+.btn__swap > .icon + .icon { opacity: 0; scale: 0.5; rotate: -45deg; color: var(--success); }
+.btn__swap > .icon + .icon path { stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset var(--duration-slow) var(--ease-out) var(--ms-60); }
+.btn[data-copied] .btn__swap > .icon:first-child { opacity: 0; scale: 0.5; rotate: 45deg; }
+.btn[data-copied] .btn__swap > .icon + .icon { opacity: 1; scale: 1; rotate: none; }
+.btn[data-copied] .btn__swap > .icon + .icon path { stroke-dashoffset: 0; }
+/* Hold to confirm: the fill grows from the left while the button is held and drains when it is let go; full, it acts. */
+.btn--hold { overflow: hidden; }
+.btn__hold { position: absolute; inset: 0; z-index: -1; background: var(--danger-soft); transform: scaleX(0); transform-origin: left; transition: transform var(--ms-320) var(--ease-out); pointer-events: none; }
+.btn--hold[data-holding] .btn__hold { transform: scaleX(1); transition: transform var(--hold-duration, var(--ms-1200)) linear; }
+.btn--hold[data-holding] { --_bd: color-mix(in oklab, var(--danger) 45%, transparent); }
+.btn--hold[data-held] { animation: nudge var(--ms-280) var(--ease-out); }
+
+/* ── Badge / status: neutral by default; the tone says the data, text keeps 4.5:1. The tone is also a
+   hairline ring at 18 %; changing tone eases the colors and pulses the dot once. ── */
+.badge { --_tone: var(--text-soft); display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 7px; border-radius: var(--radius-full); background: var(--surface-hover); color: var(--text-soft); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--_tone) 18%, transparent); font-size: var(--text-xs); font-weight: var(--weight-medium); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--_tone); opacity: 0.9; }
+.badge[data-tone="success"] { --_tone: var(--success); background: var(--success-soft); color: color-mix(in oklab, var(--success), var(--text) 55%); }
+.badge[data-tone="danger"] { --_tone: var(--danger); background: var(--danger-soft); color: color-mix(in oklab, var(--danger), var(--text) 45%); }
+.badge[data-tone="warning"] { --_tone: var(--warning); background: var(--warning-soft); color: color-mix(in oklab, var(--warning), var(--text) 60%); }
+.badge[data-tone="info"] { --_tone: var(--info); background: var(--info-soft); color: color-mix(in oklab, var(--info), var(--text) 55%); }
+.badge[data-plain]::before { display: none; }
+.badge, .badge::before { transition: background-color var(--duration-normal) ease, color var(--duration-normal) ease, box-shadow var(--duration-normal) ease; }
+.badge[data-pulse]::before { animation: dot-pulse var(--motion-draw); }
+@keyframes dot-pulse { 40% { transform: scale(1.6); } }
+kbd.key { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-sunken); font-family: var(--font); font-size: var(--text-xs); color: var(--text-soft); }
+
+/* ── Notice: inline, in the flow; role=status for what went well, role=alert for what failed ── */
+.notice { --_tone: var(--text-soft); display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-control); border: 1px solid color-mix(in oklab, var(--_tone), transparent 70%); background: color-mix(in oklab, var(--_tone), var(--surface-raised) 90%); box-shadow: var(--card-hairline), var(--highlight); font-size: var(--text-sm); animation: rise var(--ms-260) var(--ease-out) both; transition: opacity var(--motion-reveal-out), transform var(--motion-reveal-out); }
+/* A notice leaves the way it came, shorter: it fades and settles up 4 px; the ones below close the gap with a FLIP. */
+.notice[data-leaving] { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+.notice:has(> .notice__close) { padding-right: var(--space-2); }
+.notice__close { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin: -4px 0 -4px auto; border: 0; border-radius: var(--radius-item); background: none; color: color-mix(in oklab, var(--_tone), var(--text) 30%); opacity: 0.7; cursor: pointer; transition: opacity var(--motion-hover), background-color var(--motion-hover), transform var(--motion-release); }
+@media (hover: hover) and (pointer: fine) { .notice__close:hover { opacity: 1; background: color-mix(in oklab, var(--_tone) 14%, transparent); } }
+.notice__close:focus-visible { opacity: 1; outline: 2px solid var(--focus); outline-offset: 0; }
+.notice__close:active { opacity: 1; transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.notice[data-tone="success"] { --_tone: var(--success); }
+.notice[data-tone="danger"] { --_tone: var(--danger); }
+.notice[data-tone="warning"] { --_tone: var(--warning); }
+.notice[data-tone="info"] { --_tone: var(--info); }
+/* The semantic icon sits in a tinted circle: 14 px of drawing with 5 px around it. */
+.notice__icon { box-sizing: content-box; width: 14px; height: 14px; padding: 5px; margin-top: -1px; border-radius: 50%; flex: none; color: color-mix(in oklab, var(--_tone), var(--text) 30%); background: color-mix(in oklab, var(--_tone) 16%, transparent); }
+.notice__body { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.notice__title { font-weight: var(--weight-strong); }
+
+/* ── Field ──────────────────────────────────────────────────────────────
+   empty → hover → focus → typing → valid | invalid → saving → saved
+   Every field has the same three rows: the label, the control and a help row (the help on the left, the counter
+   on the right; an error takes the help's place in that row). The rows are 6 px apart and fields 20 px apart,
+   so a form keeps one rhythm whatever a field carries. The error fades in and rises a little and the control
+   shakes once. */
+.field { position: relative; display: grid; }
+.field__label { margin-bottom: 6px; font-size: var(--text-sm); font-weight: var(--weight-medium); line-height: 16px; color: var(--text); }
+.field__control { position: relative; display: flex; align-items: center; }
+/* One focus style on a text field: the border takes the focus color and a 3 px halo of it grows around it
+   in 150 ms; the outline of every other control never appears here. */
+.input, .select, .textarea {
+  width: 100%; height: var(--control-field); padding: 0 var(--space-3); border-radius: var(--radius-control);
+  background: var(--field-bg); border: 1px solid var(--control-border); box-shadow: var(--shadow-field); font-size: var(--text-field);
+  transition: border-color var(--motion-field), box-shadow var(--motion-field), background-color var(--motion-field);
+}
+.textarea { height: auto; min-height: 80px; padding: var(--space-2) var(--space-3); resize: vertical; line-height: 1.5; }
+@media (hover: hover) and (pointer: fine) { .input:hover, .select:hover, .textarea:hover { border-color: var(--control-border-hover); background: var(--field-bg-hover); } }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible { outline: none; border-color: var(--border-focus); background: var(--surface-raised); box-shadow: var(--shadow-field-focus); }
+/* The field the person is in lifts its icon a step, so the eye finds where it is typing. */
+.field__control > .icon:first-child, .search > .icon { transition: color var(--motion-field); }
+.field:has(:focus-visible) .field__control > .icon:first-child, .search:has(.input:focus-visible) > .icon { color: var(--text-soft); }
+.input:disabled, .select:disabled, .textarea:disabled { cursor: not-allowed; background: var(--surface-sunken); border-color: var(--border); color: var(--text-faint); box-shadow: none; }
+/* Read-only is a value, not a field: the same height and baseline, no border, no fill, no halo. */
+.input[readonly], .textarea[readonly] { padding-inline: 0; border-color: transparent; background: none; box-shadow: none; color: var(--text); cursor: default; }
+.input::placeholder, .textarea::placeholder { color: var(--text-faint); }
+.field__control > .icon:first-child { position: absolute; left: 12px; color: var(--text-faint); pointer-events: none; }
+.field__control > .icon:first-child + .input { padding-left: 36px; }
+.input[type="search"]::-webkit-search-cancel-button { display: none; }
+.field__clear { position: absolute; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--surface-hover); color: var(--text-soft); display: grid; place-items: center; cursor: pointer; opacity: 0; transform: scale(0.6) rotate(-90deg); pointer-events: none; transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
+:is(.field__control, .search):has(.input:not(:placeholder-shown)) .field__clear { opacity: 1; transform: none; pointer-events: auto; transition: opacity var(--duration-fast) var(--ease-out), transform var(--motion-pop), background-color var(--motion-hover), color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .field__clear:hover { background: var(--surface-active); color: var(--text); } }
+:is(.field__control, .search):has(.input:not(:placeholder-shown)) .field__clear:active { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.field__clear:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* Invalid: the edge and the halo are the danger color, with the focus or without it; the focused one adds the focus ring, so
+   it is told from an invalid field nobody is on (WCAG 2.4.7). */
+.field[data-state="invalid"] :is(.input, .textarea, .select), .field[data-state="invalid"] :is(.input, .textarea, .select):hover { border-color: var(--danger); box-shadow: var(--shadow-field), 0 0 0 3px var(--danger-soft); }
+.field[data-state="invalid"] :is(.input, .textarea, .select):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.field[data-state="invalid"] .field__control { animation: shake var(--ms-300) var(--ease-out); }
+@keyframes shake { 20% { transform: translateX(-3px); } 40% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(1px); } }
+.field[data-state="valid"] .input, .field[data-state="saving"] .input, .field[data-state="saved"] .input { padding-right: 36px; }
+.field__icon { position: absolute; right: 12px; width: 16px; height: 16px; opacity: 0; transform: scale(0.85); transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-normal) var(--ease-out); pointer-events: none; }
+.field[data-state="valid"] .field__icon--valid, .field[data-state="saved"] .field__icon--valid, .field[data-state="saving"] .field__icon--saving { opacity: 1; transform: none; }
+.field__icon--valid { color: var(--success); }
+.field__icon--saving { color: var(--text-faint); }
+.field__foot, .field__message { margin-top: 6px; font-size: var(--text-xs); line-height: 16px; }
+.field__foot:empty { display: none; }
+.field__foot { display: flex; justify-content: space-between; gap: var(--space-3); color: var(--text-soft); }
+.field__foot > * { transition: opacity var(--duration-fast) var(--ease-out), visibility var(--duration-fast); }
+.field[data-state="invalid"] .field__foot > :not(.field__counter) { opacity: 0; visibility: hidden; }
+.field__counter { margin-left: auto; font-variant-numeric: tabular-nums; transition: color var(--motion-hover); }
+.field__counter[data-near] { color: color-mix(in oklab, var(--danger), var(--text) 25%); }
+/* The message never moves the page: it takes the help row. A field that can say an error and has no help keeps that
+   row empty (6 px + 16 px) under its control, so the message is as far from the next label as any other field's help. */
+.field__message { position: absolute; left: 0; right: 0; bottom: 0; display: grid; pointer-events: none; }
+.field:has(> .field__message):not(:has(> .field__foot:not(:empty))) { padding-bottom: 22px; }
+/* In a form grid every field keeps that row, so the labels of all rows are one rhythm apart whatever each field can say. */
+.form-grid > .field:not(:has(> .field__foot:not(:empty))) { padding-bottom: 22px; }
+.form-grid:has(> .field) { row-gap: var(--space-3); }
+.field__error { font-size: var(--text-xs); color: color-mix(in oklab, var(--danger), var(--text) 25%); opacity: 0; visibility: hidden; transform: translateY(-3px); transition: opacity var(--duration-fast) var(--ease-out), transform var(--motion-pop), visibility var(--duration-fast); }
+.field__error > span { display: flex; align-items: center; gap: 6px; min-height: 16px; }
+.field__error > span:not(:empty)::before { content: ""; flex: none; width: 14px; height: 14px; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM7.25 4.5h1.5v4.5h-1.5Zm0 6h1.5v1.5h-1.5Z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.field[data-state="invalid"] .field__error { opacity: 1; visibility: visible; transform: none; }
+:is(.comp, .stack, .form-grid):has(> .field) { gap: var(--field-gap) var(--space-4); }
+:is(.comp, .stack):has(> .field) { --gap: var(--field-gap); gap: var(--field-gap); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4) var(--space-4); align-items: start; }
+.form-grid > .span-all { grid-column: 1 / -1; }
+
+/* Search field: an input with its icon and a clear button, no label line; the label is
+   `aria-label`. For a toolbar, where the label line of a field would add height. */
+.search { position: relative; display: flex; align-items: center; width: var(--search-width, 240px); max-width: 100%; }
+.search > .icon { position: absolute; left: 12px; color: var(--text-faint); pointer-events: none; }
+.search .input { padding-left: 36px; padding-right: 36px; }
+
+/* Inline-editable value: reads as text, edits in place, saves on Enter or blur, Escape cancels. */
+.editable { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--control-sm); padding: 0 6px; margin: 0 -6px; border-radius: var(--radius-control); cursor: text; transition: background-color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .editable:hover { background: var(--surface-hover); } }
+.editable input { width: 100%; height: var(--control-sm); padding: 0 6px; margin: 0 -6px; border: 1px solid var(--border-focus); border-radius: var(--radius-control); background: var(--field-bg); box-shadow: 0 0 0 3px var(--focus-soft); outline: none; }
+.editable[data-state="saving"] { color: var(--text-faint); }
+.editable__status { font-size: var(--text-xs); color: var(--success); opacity: 0; visibility: hidden; transform: translateX(-4px); transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-normal) var(--ease-out), visibility var(--duration-fast); }
+.editable[data-state="saved"] .editable__status { opacity: 1; visibility: visible; transform: none; }
+
+/* ── Checkbox and radio: the mark draws itself; checked is the accent, the value of the control ── */
+.checkbox, .radio { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 24px; cursor: pointer; user-select: none; }
+.checkbox[data-bare] { gap: 0; padding: 3px; margin: -3px; }
+.checkbox input, .radio input { position: absolute; opacity: 0; pointer-events: none; }
+.checkbox__box, .radio__dot { width: 18px; height: 18px; border: 1px solid var(--control-border); background: var(--field-bg); box-shadow: var(--shadow-control); display: grid; place-items: center; transition: background-color var(--motion-ring), border-color var(--motion-ring), box-shadow var(--motion-ring), transform var(--motion-release); }
+.checkbox__box { border-radius: calc(var(--radius-item) - 2px); }
+/* A radio is a 16 px ring: chosen, its border is the accent and an 8 px dot of the accent springs in at its centre. The
+   label is 14 px, the dot sits on the middle of its first line, and a description can sit under the label. */
+.radio { align-items: flex-start; padding-block: 2px; font-size: var(--text-md); line-height: 20px; }
+.radio__dot { flex: none; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; }
+.radio__dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform var(--motion-pop); }
+.radio__text { display: grid; }
+.radio__desc { color: var(--text-soft); font-size: var(--text-sm); line-height: 18px; }
+.checkbox__box svg { width: 12px; height: 12px; color: var(--on-accent); stroke-width: 2.5px; }
+.checkbox__box path { stroke-dasharray: 16; stroke-dashoffset: 16; transition: stroke-dashoffset var(--motion-thumb); }
+.checkbox__box .dash { opacity: 0; }
+.checkbox:active .checkbox__box, .radio:active .radio__dot { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.radio input:checked + .radio__dot { background: var(--field-bg); border: 2px solid var(--accent); box-shadow: var(--shadow-control); }
+.radio-group { display: grid; gap: var(--space-1); }
+.checkbox input:checked + .checkbox__box, .checkbox input:indeterminate + .checkbox__box { background: var(--accent); border-color: var(--accent); box-shadow: var(--shadow-check); transition: background-color var(--motion-check), border-color var(--motion-check), box-shadow var(--motion-check), transform var(--motion-release); }
+.checkbox input:checked + .checkbox__box .tick { stroke-dashoffset: 0; transition-delay: var(--ms-40); }
+.checkbox input:indeterminate + .checkbox__box .dash { opacity: 1; stroke-dashoffset: 0; }
+.checkbox input:indeterminate + .checkbox__box .tick { stroke-dashoffset: 16; }
+.radio input:checked + .radio__dot::after { transform: none; }
+/* Checking pops the box from .85 to 1 on a spring; the page marks the box that was just checked, so what
+   was already checked when the page arrived does not pop. */
+.checkbox__box[data-pop] { animation: check-pop var(--motion-thumb) var(--pop-delay, 0ms) backwards; }
+@keyframes check-pop { from { transform: scale(0.85); } }
+.checkbox input:focus-visible + .checkbox__box { outline: 2px solid var(--focus); outline-offset: 2px; }
+.radio input:focus-visible + .radio__dot { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px var(--focus-soft); }
+.radio input:checked:focus-visible + .radio__dot { border-color: var(--accent); }
+.checkbox:has(input:disabled), .radio:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+@media (hover: hover) and (pointer: fine) { .checkbox:hover .checkbox__box, .radio:hover .radio__dot { border-color: var(--control-border-hover); } .checkbox:hover input:checked + .checkbox__box, .radio:hover input:checked + .radio__dot { border-color: var(--accent); } }
+
+/* ── Switch: the knob has physics; pressing stretches it toward where it goes ── */
+.switch { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 24px; cursor: pointer; }
+.switch input { position: absolute; opacity: 0; pointer-events: none; }
+/* The track is a light fill and the knob is white with a 1 px ring that holds 3:1 against it: the knob is the
+   edge of the control (WCAG 1.4.11), so the track needs no heavy outline. The accent fills the track from
+   where the knob is, a circle that grows (260 ms in, 180 out); the knob arrives on a springy pop. */
+.switch__track { position: relative; width: 34px; height: 20px; flex: none; border-radius: var(--radius-full); background: var(--track); transition: background-color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .switch:hover input:not(:checked, :disabled) + .switch__track { background: var(--track-hover); } }
+.switch__track::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--accent); clip-path: circle(0 at 10px 50%); transition: clip-path var(--motion-switch-off); }
+.switch input:checked + .switch__track::before { clip-path: circle(150% at 24px 50%); transition: clip-path var(--motion-switch-on); }
+.switch__knob { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: var(--shadow-knob); transform-origin: left center; transition: translate var(--motion-pop), scale var(--duration-fast) var(--ease-out) var(--ms-60); }
+.switch:active .switch__knob { scale: 1.15 1; transition: translate var(--motion-pop), scale var(--duration-fast) var(--ease-out); }
+.switch input:checked + .switch__track .switch__knob { translate: 14px 0; transform-origin: right center; }
+.switch input:focus-visible + .switch__track { outline: 2px solid var(--focus); outline-offset: 2px; }
+.switch:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Slider: the switch's material — a 4 px light track, the accent up to the value, a white 16 px thumb with
+   its ring that grows while it is held ── */
+.slider { --p: 0; position: relative; display: block; width: 100%; height: 24px; container-type: inline-size; cursor: pointer; touch-action: none; user-select: none; }
+.slider__track { position: absolute; left: 0; right: 0; top: 10px; height: 4px; border-radius: var(--radius-full); background: var(--track); }
+.slider__fill { position: absolute; inset: 0; border-radius: inherit; background: var(--accent); clip-path: inset(0 calc(100% - (var(--p) * (100% - 16px) + 8px)) 0 0); transition: clip-path var(--duration-fast) var(--ease-out); }
+.slider__thumb { position: absolute; left: 0; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: var(--shadow-knob); translate: calc(var(--p) * (100cqw - 16px)) 0; transition: translate var(--duration-fast) var(--ease-out), scale var(--duration-normal) var(--spring), box-shadow var(--motion-ring); }
+.slider[data-dragging] .slider__fill, .slider[data-dragging] .slider__thumb { transition-property: scale, box-shadow; }
+.slider[data-dragging] .slider__thumb { scale: 1.15; }
+.slider:focus-visible .slider__thumb { box-shadow: var(--shadow-knob), 0 0 0 3px var(--focus-soft); }
+
+/* ── Segmented control and tabs: one indicator slides; it moves with transform only ──
+   The selected option is a neutral raised thumb: it never uses the accent, which is for the primary
+   action and the value of a control. Radio buttons (role=radiogroup) or links (aria-current) both
+   work; links have no sliding indicator, the option itself fills. */
+.segmented { --hl: var(--n-5); --_option: calc(var(--control-md) - 2px); position: relative; isolation: isolate; display: inline-flex; justify-self: start; padding: 3px; gap: 2px; height: calc(var(--control-md) + 4px); border-radius: var(--radius-control); background: var(--segmented-track); }
+.segmented__option { position: relative; z-index: 1; display: inline-flex; align-items: center; height: var(--_option); padding: 0 var(--space-3); border: 0; background: none; border-radius: calc(var(--radius-control) - 3px); color: var(--text-soft); font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; text-decoration: none; cursor: pointer; transition: color var(--motion-hover), background-color var(--motion-hover), transform var(--motion-release); }
+@media (hover: hover) and (pointer: fine) { .segmented__option:hover { color: var(--text); } }
+.segmented__option:disabled { color: var(--text-faint); cursor: not-allowed; }
+.segmented__option[aria-checked="true"], .segmented__option[aria-current]:not([aria-current="false"]) { color: var(--text); }
+.segmented:not(:has(.segmented__indicator)) .segmented__option:is([aria-checked="true"], [aria-current]:not([aria-current="false"])) { background: var(--segmented-thumb); box-shadow: var(--shadow-thumb); }
+.segmented__option:active, .tabs__tab:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+/* Width 100 px scaled to the option: the indicator never animates layout. */
+.segmented__indicator { position: absolute; z-index: 0; top: 3px; left: 0; width: 100px; height: var(--_option); border-radius: calc(var(--radius-control) - 3px); background: var(--segmented-thumb); box-shadow: var(--shadow-thumb); transform-origin: left center; transition: transform var(--motion-indicator); }
+.tabs { position: relative; isolation: isolate; display: flex; gap: var(--space-4); border-bottom: 1px solid var(--border); }
+.tabs__tab { position: relative; z-index: 1; height: 38px; padding: 0 2px; border: 0; border-radius: var(--radius-control); background: none; color: var(--text-soft); font-weight: var(--weight-medium); cursor: pointer; transition: color var(--motion-hover), transform var(--motion-release); }
+.tabs__tab[aria-selected="true"] { color: var(--text); }
+@media (hover: hover) and (pointer: fine) { .tabs__tab:hover { color: var(--text); } }
+.tabs__indicator { position: absolute; bottom: -1px; left: 0; width: 100px; height: 2px; border-radius: 2px 2px 0 0; background: var(--text); transform-origin: left center; transition: transform var(--motion-indicator); }
+/* In dark the 2 px line is a light on a dark ground: a hairline of its own color keeps it from thinning out. */
+:root:is([data-theme="dark"], [data-register="showcase"]) .tabs__indicator { box-shadow: 0 0 0 0.5px var(--text); }
+.tabs__tab:disabled { color: var(--text-faint); cursor: not-allowed; }
+.tabs__panel { padding-top: var(--space-4); }
+
+/* ── Highlight: one background that slides to the item under the pointer (and, for the sidebar, a
+   second one that rests under the selected item). A 100 × 100 element moved and scaled by the JS;
+   the transform runs on the spring, the corners are compensated so the radius stays the item's. The
+   same pill lights the active item of a menu, a list or the palette, for the pointer and the keyboard
+   alike: it appears in place when the panel opens and slides from there; two keyboard steps within
+   80 ms ask for a shorter slide; a danger item tints it danger; the keyboard adds a thin ring. ── */
+.hl { position: absolute; z-index: 0; top: 0; left: 0; width: 100px; height: 100px; background: var(--hl, var(--surface-hover)); pointer-events: none; opacity: 0; transform: scale(0); transform-origin: 0 0; transition: transform var(--motion-slide-flush), border-radius var(--motion-slide-flush), opacity var(--duration-fast) ease; }
+.hl[data-on] { opacity: 1; }
+.hl[data-instant] { transition-property: opacity; }
+:is(.menu, .listbox, .combobox__list, .palette__list) > .hl { --hl: var(--hl-bg); transition: transform var(--motion-pill-flush), border-radius var(--motion-pill-flush), opacity var(--ms-100) ease, background-color var(--motion-hover); }
+:is(.menu, .listbox, .combobox__list, .palette__list) > .hl[data-fast] { transition: transform var(--motion-pill-fast-flush), border-radius var(--motion-pill-fast-flush), opacity var(--ms-100) ease, background-color var(--motion-hover); }
+:is(.menu, .listbox, .combobox__list, .palette__list) > .hl[data-tone="danger"] { --hl: var(--hl-danger); }
+:is(.menu, .listbox, .combobox__list, .palette__list) > .hl[data-instant] { transition-property: opacity; }
+/* The ring of the keyboard is on the item, not on the pill: the pill is stretched by a transform, and a
+   thin edge on it would stretch with it. */
+:is(.menu, .listbox, .combobox__list)[data-modality="keyboard"] [data-active], .palette__list[data-modality="keyboard"] .palette__item[aria-selected="true"] { box-shadow: inset 0 0 0 1px var(--hl-ring); }
+
+/* ── Toolbar: title and count on the left, controls right-aligned. It lays itself out by its own width, not the
+   window's (a sidebar and a split take some of it), in three steps: one line; the controls on a line under the
+   title, the search taking the first one, the filters after it and the actions —the refresh and the primary
+   action, one group— at the right edge; and on a phone the actions on a line of their own. A toolbar with
+   filters (`.toolbar__filters`) takes the second step; one without keeps its line as long as it fits. ── */
+.toolbar { container: toolbar / inline-size; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-4); }
+.toolbar__heading { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+.toolbar__title { font-size: var(--text-title); font-weight: var(--weight-strong); letter-spacing: var(--tracking-title); line-height: 1.3; }
+.toolbar__count { font-size: var(--text-sm); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.toolbar__controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-2); margin-left: auto; min-width: 0; }
+.toolbar__filters, .toolbar__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.toolbar__actions { flex-wrap: nowrap; }
+@container toolbar (width < 920px) {
+  .toolbar__controls:has(.toolbar__filters) { width: 100%; margin-left: 0; justify-content: flex-start; }
+  .toolbar__controls:has(.toolbar__filters) > .search { flex: 1 1 100%; }
+  .toolbar__actions { margin-left: auto; }
+}
+@container toolbar (width < 560px) {
+  .toolbar__controls { width: 100%; margin-left: 0; justify-content: flex-start; }
+  .toolbar__controls > .search { flex: 1 0 100%; width: 100%; }
+  /* The primary action closes the toolbar on its own full-width line, however many controls wrap above it. */
+  .toolbar__controls > .btn--primary { order: 99; flex: 1 0 100%; }
+  .toolbar__actions { order: 99; flex: 1 0 100%; margin-left: 0; }
+  .toolbar__actions > .btn--primary { flex: 1; }
+}
+/* Unsaved changes: said next to the action that saves them. */
+.dirty { position: relative; display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-sm); color: var(--text-soft); animation: rise var(--ms-160) var(--ease-out) both; }
+.dirty:empty { display: none; }
+.dirty::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--warning); }
+/* The dot says it once: a ring of its own leaves it when the message arrives. */
+.dirty::after { content: ""; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--warning); pointer-events: none; animation: ping var(--motion-ping) 1 both; }
+
+/* ── Tooltip: top layer; 400 ms of intent before the first one. While warm it answers at once, keeps
+   its place in the air and slides to the new anchor (the JS writes the slide), with the text
+   cross-fading. ── */
+.tooltip { position: fixed; inset: auto; margin: 0; padding: 5px 8px; border: 0; border-radius: var(--radius-item); background: var(--surface-inverse); color: var(--text-inverse); font-size: var(--text-xs); font-weight: var(--weight-medium); white-space: nowrap; box-shadow: var(--shadow-2); overflow: visible; pointer-events: none; opacity: 0; transform: translateY(var(--_dy, 4px)) scale(var(--press-scale-sm)); transform-origin: var(--_origin, bottom center); transition: opacity var(--motion-tooltip-exit), transform var(--motion-tooltip-exit), overlay var(--motion-tooltip-exit) allow-discrete, display var(--motion-tooltip-exit) allow-discrete; }
+.tooltip:popover-open { opacity: 1; transform: none; transition: opacity var(--motion-tooltip-enter), transform var(--motion-tooltip-move), overlay var(--motion-tooltip-enter) allow-discrete, display var(--motion-tooltip-enter) allow-discrete; }
+@starting-style { .tooltip:popover-open { opacity: 0; transform: translateY(var(--_dy, 4px)) scale(var(--press-scale-sm)); } }
+@starting-style { .tooltip[data-warm]:popover-open { opacity: 1; transform: none; } }
+.tooltip kbd.key { margin-left: 6px; border-color: transparent; border-radius: calc(var(--radius-item) - 4px); background: color-mix(in oklab, var(--text-inverse) 16%, transparent); color: inherit; }
+
+/* ── Floating panels: one surface. The menu, the select's list, the combobox's list, the date picker,
+   the popover and the hover card share the overlay fill, a ring instead of a border, 4 px of padding
+   and 32 px items. The menu, popover and hover card grow from the side they come from, fading in 140 ms
+   and moving in 200; a list is revealed by a clip from its edge; a submenu slides out of its item. ── */
+.menu, .popover, .listbox, .combobox__list, .hovercard { position: fixed; inset: auto; margin: 0; min-width: 200px; max-width: calc(100vw - 16px); padding: 4px; isolation: isolate; border: 0; outline: 1px solid transparent; border-radius: var(--radius); background: var(--surface-overlay); box-shadow: var(--shadow-overlay), var(--overlay-edge); color: var(--text); overflow: visible; transform-origin: var(--_origin, top left); }
+:is(.menu, .popover, .hovercard) { opacity: 0; transform: scale(0.98); transition: opacity var(--motion-popover-exit), transform var(--motion-popover-exit), overlay var(--motion-popover-exit) allow-discrete, display var(--motion-popover-exit) allow-discrete; }
+:is(.menu, .popover, .hovercard):popover-open { opacity: 1; transform: none; transition: opacity var(--motion-popover-fade), transform var(--motion-popover-move), overlay var(--motion-popover-fade) allow-discrete, display var(--motion-popover-fade) allow-discrete; }
+@starting-style { :is(.menu, .popover, .hovercard):popover-open { opacity: 0; transform: scale(0.96) translateY(var(--_sy, -4px)); } }
+.hovercard:popover-open { transition: opacity var(--motion-popover-fade), transform var(--motion-hovercard-enter), overlay var(--motion-popover-fade) allow-discrete, display var(--motion-popover-fade) allow-discrete; }
+.hovercard { transition: opacity var(--motion-hovercard-exit), transform var(--motion-hovercard-exit), overlay var(--motion-hovercard-exit) allow-discrete, display var(--motion-hovercard-exit) allow-discrete; }
+@starting-style { .hovercard:popover-open { opacity: 0; transform: scale(0.96) translateY(var(--_sy, 4px)); } }
+.menu[data-sub] { transform: none; transition: opacity var(--motion-sub-exit), overlay var(--motion-sub-exit) allow-discrete, display var(--motion-sub-exit) allow-discrete; }
+.menu[data-sub]:popover-open { transition: opacity var(--motion-sub-enter), transform var(--motion-sub-enter), overlay var(--motion-sub-enter) allow-discrete, display var(--motion-sub-enter) allow-discrete; }
+@starting-style { .menu[data-sub]:popover-open { opacity: 0; transform: translateX(-6px) scale(0.97); } }
+/* A list of options grows from its trigger: 0.96 to 1 with a fade in 140 ms, and leaves faster. */
+:is(.listbox, .combobox__list) { opacity: 0; transform: scale(0.96); transition: opacity var(--motion-list-exit), transform var(--motion-list-exit), overlay var(--motion-list-exit) allow-discrete, display var(--motion-list-exit) allow-discrete; }
+:is(.listbox, .combobox__list):popover-open { opacity: 1; transform: none; transition: opacity var(--motion-popover-fade), transform var(--motion-popover-fade), overlay var(--motion-popover-fade) allow-discrete, display var(--motion-popover-fade) allow-discrete; }
+@starting-style { :is(.listbox, .combobox__list):popover-open { opacity: 0; transform: scale(0.96); } }
+.popover { min-width: 264px; padding: var(--space-3); }
+/* A popover names itself in a title over a hairline, and the groups of its content are told apart by one. */
+.popover__title { margin: 0 0 var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-subtle); font-size: var(--text-sm); font-weight: var(--weight-strong); color: var(--text); }
+.popover > .stack > .stack + .stack { padding-top: var(--space-3); border-top: 1px solid var(--border-subtle); }
+.hovercard { width: 288px; padding: var(--space-3) var(--space-4); }
+/* What scrolls inside a panel shows it: a soft shadow on the edge that has more beyond it. */
+:is(.menu, .listbox, .combobox__list, .palette__list) { --_sf: var(--surface-overlay); max-height: min(360px, calc(100dvh - 16px)); overflow-y: auto; overscroll-behavior: contain; scroll-padding: 4px; background:
+  linear-gradient(var(--_sf) 30%, transparent) top / 100% 16px no-repeat local,
+  linear-gradient(transparent, var(--_sf) 70%) bottom / 100% 16px no-repeat local,
+  radial-gradient(farthest-side at 50% 0, color-mix(in oklab, var(--text) 18%, transparent), transparent) top / 100% 8px no-repeat scroll,
+  radial-gradient(farthest-side at 50% 100%, color-mix(in oklab, var(--text) 18%, transparent), transparent) bottom / 100% 8px no-repeat scroll,
+  var(--_sf); }
+/* On a short screen the palette keeps its search in view and its list is what gives: the box is held inside
+   the window under its 12vh margin, and the list scrolls in what is left. */
+.palette[open] { display: flex; flex-direction: column; max-height: calc(100dvh - 12vh - var(--space-4)); }
+.palette__list { flex: 0 1 auto; min-height: 0; max-height: 360px; }
+.palette__search { flex: none; }
+/* An item of any of them: 32 px; the pill under it is the highlight, for the pointer and the keyboard
+   alike. A check marks the chosen one. */
+:is(.menu__item, .listbox__option, .combobox__option) { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--space-2); width: 100%; min-height: 32px; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-item); background: none; text-align: left; cursor: pointer; color: var(--text); font-size: var(--text-md); text-decoration: none; }
+:is(.menu__item, .listbox__option, .combobox__option):focus-visible { outline: none; }
+/* A panel takes the focus when it opens, but it is the active item that shows it: the panel itself
+   draws no ring, and a select's trigger keeps its own while the list is open. */
+:is(.menu, .popover, .listbox, .combobox__list, .hovercard):focus-visible { outline: 1px solid transparent; }
+:is(.menu__item, .listbox__option, .combobox__option)[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.menu__item > .icon { color: var(--text-faint); }
+.menu__item kbd.key, .menu__item > .icon:last-child:not(:first-child) { margin-left: auto; }
+/* A shortcut in a menu is text, not a key cap: the cap is for the palette's footer. */
+.menu__item kbd.key { min-width: 0; height: auto; padding: 0; border: 0; background: none; font-size: var(--text-xs); letter-spacing: 0.1em; color: var(--text-faint); }
+.menu__item--danger { color: color-mix(in oklab, var(--danger), var(--text) 25%); }
+.menu__item--danger > .icon { color: inherit; }
+.menu__check { opacity: 0; transform: scale(0.6); color: var(--text); transition: opacity var(--duration-fast) ease, transform var(--duration-normal) var(--ease-out); }
+.menu__item[aria-checked="true"] > .menu__check { opacity: 1; transform: none; }
+:is(.listbox__check, .combobox__check) { margin-left: auto; flex: none; color: var(--text); opacity: 0; }
+:is(.listbox__option, .combobox__option)[aria-selected="true"] > :is(.listbox__check, .combobox__check), .combobox__option--create > .combobox__check { opacity: 1; }
+:is(.menu__label, .listbox__label) { padding: 6px var(--space-2) 4px; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text-faint); }
+:is(.menu__sep, .listbox__sep) { height: 1px; margin: 4px -4px; background: var(--border); }
+.menu__dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--text-faint); }
+.menu__dot[data-tone="success"] { background: var(--success); }
+.menu__dot[data-tone="danger"] { background: var(--danger); }
+.menu__dot[data-tone="info"] { background: var(--info); }
+
+/* ── Select: a button that reads like an input and opens a listbox; the chevron turns while open ── */
+.select { appearance: none; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding-right: var(--space-3); text-align: left; cursor: pointer; }
+.select__value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select__value[data-placeholder] { color: var(--text-faint); }
+.select__chevron { flex: none; color: var(--text-faint); transition: transform var(--motion-chevron); }
+.select[aria-expanded="true"] .select__chevron { transform: rotate(180deg); }
+/* Every trigger that drops something turns its chevron the same way, a button or a port alike. */
+[aria-haspopup]:not([role^="menuitem"]) .icon:is([data-icon="chevron"], :has(> use[href="#i-chevron"])) { transition: transform var(--motion-chevron); }
+[aria-haspopup][aria-expanded="true"]:not([role^="menuitem"]) .icon:is([data-icon="chevron"], :has(> use[href="#i-chevron"])) { transform: rotate(180deg); }
+.select[aria-expanded="true"] { border-color: var(--border-focus); background: var(--surface-raised); box-shadow: var(--shadow-field-focus); }
+.listbox { min-width: 0; }
+/* A range filter in a toolbar keeps one width, the empty one and the chosen one alike. */
+.btn[data-datepicker][data-mode="range"] { min-width: 10rem; }
+
+/* ── Date picker: a calendar in a popover. Days are 34 px; the days of the neighbouring months show in
+   faint; today is a fill; the chosen day is the accent; a range is a band tinted with it. ── */
+.datepicker { width: 320px; padding: var(--space-3); }
+.datepicker__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
+.datepicker__title { font-size: var(--text-sm); font-weight: var(--weight-strong); }
+.datepicker__title::first-letter { text-transform: uppercase; }
+.datepicker__grid { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 2px; text-align: center; }
+.datepicker__grid th { height: 28px; padding: 0; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text-faint); text-transform: capitalize; }
+.datepicker__grid td { position: relative; height: var(--day); padding: 0; transition: background-color var(--duration-normal) ease; }
+.datepicker__day { display: grid; place-items: center; width: var(--day); height: var(--day); margin: 0 auto; border: 0; border-radius: var(--radius-item); background: none; color: var(--text); font-size: var(--text-sm); font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color var(--motion-hover), color var(--motion-hover), transform var(--motion-release); }
+@media (hover: hover) and (pointer: fine) { .datepicker__day:hover { background: var(--hl-bg); } }
+.datepicker__day:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+.datepicker__day:focus-visible { outline-offset: -2px; }
+.datepicker__day[data-outside] { color: var(--text-faint); }
+.datepicker__day[data-today] { background: var(--hl-bg); font-weight: var(--weight-strong); }
+.datepicker__grid td[aria-selected="true"] > .datepicker__day { background: var(--accent); color: var(--on-accent); animation: day-pop var(--duration-normal) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .datepicker__grid td[aria-selected="true"] > .datepicker__day:hover { background: var(--accent-hover); } }
+@keyframes day-pop { from { transform: scale(0.9); } }
+.datepicker__grid td[data-in-range] { background: var(--range-tint); }
+.datepicker__grid td[data-range-start] { background: linear-gradient(90deg, transparent 50%, var(--range-tint) 50%); }
+.datepicker__grid td[data-range-end] { background: linear-gradient(90deg, var(--range-tint) 50%, transparent 50%); }
+.datepicker__grid[data-slide] { animation: month-slide var(--ms-180) var(--ease-out); }
+@keyframes month-slide { from { opacity: 0; transform: translateX(calc(var(--_dir, 1) * 12px)); } }
+/* The footer both pickers share: the four periods in two columns, Clear across the bottom. It is a grid,
+   so no label ever pushes past the panel. */
+.datepicker__foot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; margin-top: var(--space-2); padding: 6px 0 0; border-top: 1px solid var(--border-subtle); }
+.datepicker__presets { display: contents; }
+.datepicker__foot .btn { min-width: 0; justify-content: flex-start; overflow: hidden; text-overflow: ellipsis; }
+/* The period the picker holds is the pressed one: a fill, and a check at the end that pops in. */
+.datepicker__foot .btn[aria-pressed="true"]::after { content: ""; flex: none; width: 12px; height: 12px; margin-left: auto; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E") center / contain no-repeat; animation: pop-in var(--motion-pop) both; }
+.datepicker__foot [data-clear] { grid-column: 1 / -1; }
+
+/* ── Command palette: enters fast (it is used a hundred times a day); the highlight pill follows the
+   pointer and the arrows; filtering moves the results with FLIP and fades the new ones in; the search
+   has no ring, the caret is the focus ── */
+.palette { width: min(560px, calc(100vw - 32px)); margin: 12vh auto auto; padding: 0; border: 0; outline: 1px solid transparent; border-radius: var(--radius-lg); background: var(--surface-overlay); color: var(--text); box-shadow: var(--shadow-modal), var(--overlay-edge); overflow: hidden; opacity: 1; transform: none; transition: opacity var(--motion-palette-fade), transform var(--motion-palette-fade), overlay var(--motion-palette-fade) allow-discrete, display var(--motion-palette-fade) allow-discrete; }
+.palette:not([open]) { opacity: 0; transform: scale(0.98); }
+.palette[open] { transition: opacity var(--motion-palette-fade), transform var(--motion-palette-move), overlay var(--motion-palette-move) allow-discrete, display var(--motion-palette-move) allow-discrete; }
+@starting-style { .palette[open] { opacity: 0; transform: scale(0.97) translateY(-8px); } }
+.palette::backdrop { background: var(--scrim); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 1; transition: opacity var(--motion-palette-scrim), backdrop-filter var(--motion-palette-scrim), overlay var(--motion-palette-scrim) allow-discrete, display var(--motion-palette-scrim) allow-discrete; }
+.palette:not([open])::backdrop { opacity: 0; backdrop-filter: blur(0px); }
+@starting-style { .palette[open]::backdrop { opacity: 0; backdrop-filter: blur(0px); } }
+.palette__search { display: flex; align-items: center; gap: var(--space-2); height: 52px; padding: 0 var(--space-4); border-bottom: 1px solid var(--border); }
+.palette__search input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; outline: none; font-size: var(--text-lg); text-overflow: ellipsis; }
+.palette__crumbs { display: flex; gap: 4px; }
+.palette__crumb { display: inline-flex; align-items: center; height: 22px; padding: 0 var(--space-2); border-radius: var(--radius-full); background: var(--surface-active); color: var(--text-soft); font-size: var(--text-xs); font-weight: var(--weight-medium); white-space: nowrap; animation: crumb-in var(--duration-normal) var(--ease-out); }
+@keyframes crumb-in { from { opacity: 0; transform: scale(0.9); } }
+.palette__list { position: relative; padding: 6px; scroll-padding: 6px; }
+.palette__group { padding: 8px 10px 4px; font-size: var(--text-xs); color: var(--text-faint); }
+.palette__item { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--space-3); height: 40px; padding: 0 10px; border-radius: calc(var(--radius-lg) - 6px); cursor: pointer; }
+.palette__item.is-new { animation: item-in var(--duration-normal) var(--ease-out) both; }
+@keyframes item-in { from { opacity: 0; transform: translateY(3px); } }
+.palette__icon { display: grid; color: var(--text-soft); }
+.palette__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.palette__meta { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-xs); color: var(--text-faint); }
+.palette__amount { margin-left: auto; font-size: var(--text-sm); color: var(--text-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.palette__item > :is(kbd.key, .palette__more) { margin-left: auto; }
+.palette__amount + :is(kbd.key, .palette__more) { margin-left: var(--space-2); }
+.palette__more { color: var(--text-faint); }
+.palette__empty { padding: var(--space-6); text-align: center; color: var(--text-faint); }
+.palette__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border-subtle); background: var(--surface-sunken); font-size: var(--text-xs); color: var(--text-faint); }
+/* A hint is a pair, the keys and their word: when the line is short the pairs wrap, never the pair. */
+.palette__foot > span { white-space: nowrap; }
+.palette__foot kbd.key { margin-right: 4px; }
+
+/* ── Combobox: an input whose list is a floating panel; the chevron turns while it is open. The label
+   of an option is one inline run, so the spaces around the highlighted match survive. ── */
+.combobox { position: relative; }
+.combobox > .input { padding-right: 36px; }
+.combobox__toggle { position: absolute; right: 6px; top: 6px; display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: var(--radius-item); background: none; color: var(--text-faint); cursor: pointer; transition: background-color var(--motion-hover), color var(--motion-hover), transform var(--motion-release); }
+@media (hover: hover) and (pointer: fine) { .combobox__toggle:hover { background: var(--hl-bg); color: var(--text-soft); } }
+.combobox__toggle:active { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.combobox__toggle .icon { transition: transform var(--motion-chevron); }
+.combobox[data-open] .combobox__toggle .icon { transform: rotate(180deg); }
+.combobox__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: pre-wrap; }
+.combobox__option mark { background: none; color: var(--text); font-weight: var(--weight-strong); }
+
+/* ── Dialog and drawer. The dialog enters from .96 and 8 px below, its scrim fading and blurring in; it
+   leaves shorter. The drawer floats 8 px from the edges and comes from its side. ── */
+.dialog { width: min(480px, calc(100vw - 32px)); padding: 0; border: 0; outline: 1px solid transparent; border-radius: var(--radius-lg); background: var(--surface-overlay); color: var(--text); box-shadow: var(--shadow-modal), var(--overlay-edge); opacity: 1; transform: none; transform-origin: var(--_origin, center); transition: opacity var(--motion-dialog-exit), transform var(--motion-dialog-exit), overlay var(--motion-dialog-exit) allow-discrete, display var(--motion-dialog-exit) allow-discrete; }
+/* Header, body, footer: the title with its description and its X, the content, the actions. */
+.dialog__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-5) var(--space-3) 0 var(--space-5); }
+.dialog__head > .btn { margin: -2px -4px 0 0; }
+/* The X of a dialog or a drawer turns a quarter under the pointer (the Morphing Dialog's close). */
+.dialog__head > .btn .icon { transition: rotate var(--motion-chevron); }
+@media (hover: hover) and (pointer: fine) { .dialog__head > .btn:hover .icon { rotate: 90deg; } }
+.dialog__desc { margin-top: 4px; font-size: var(--text-sm); color: var(--text-soft); text-wrap: pretty; }
+.dialog__body { padding: var(--space-4) var(--space-5) var(--space-5); }
+.dialog__foot [hidden] { display: none; }
+.dialog__spacer { flex: 1; }
+/* The steps of a form in a dialog (the Transition Panel port): the dialog is the card, so the panel lends nothing of its own. */
+.dialog .tpanel { width: auto; border-radius: 0; }
+.dialog .tpanel::before { content: none; }
+.dialog .tpanel__viewport { padding: 0; }
+.dialog .tpanel__step { padding: var(--space-4) var(--space-5) var(--space-5); }
+/* A dialog that holds steps draws its surface in its ::before, so the steps can make it follow their height. */
+.dialog:has(.tpanel) { isolation: isolate; background: none; box-shadow: none; }
+.dialog:has(.tpanel)::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--surface-overlay); box-shadow: var(--shadow-modal), var(--overlay-edge); transform-origin: 0 0; }
+.dialog__foot { display: flex; justify-content: flex-end; gap: var(--space-2); padding: var(--space-3) var(--space-5); border-top: 1px solid var(--border-subtle); background: var(--surface-sunken); }
+.dialog form { margin: 0; }
+.dialog:not([open]) { opacity: 0; transform: scale(0.98); }
+.dialog[open] { transition: opacity var(--motion-dialog-fade), transform var(--motion-dialog-enter), overlay var(--motion-dialog-enter) allow-discrete, display var(--motion-dialog-enter) allow-discrete; }
+/* A dialog that morphs back into its card stays rendered, whole, while the JS shrinks and fades it: the
+   CSS transitions only keep it in the top layer, so nothing else fades it a second time. */
+.dialog[data-morph]:not([open]) { opacity: 1; transform: none; transition: overlay var(--ms-260) allow-discrete, display var(--ms-260) allow-discrete; }
+@starting-style { .dialog[open] { opacity: 0; transform: scale(0.96) translateY(8px); } }
+.dialog::backdrop { background: var(--scrim); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 1; transition: opacity var(--motion-scrim), backdrop-filter var(--motion-scrim), overlay var(--motion-scrim) allow-discrete, display var(--motion-scrim) allow-discrete; }
+.dialog:not([open])::backdrop { opacity: 0; backdrop-filter: blur(0px); }
+@starting-style { .dialog[open]::backdrop { opacity: 0; backdrop-filter: blur(0px); } }
+.drawer { margin: var(--space-2) var(--space-2) var(--space-2) auto; height: calc(100dvh - 2 * var(--space-2)); max-height: none; width: min(420px, calc(100vw - 2 * var(--space-2))); border-radius: var(--radius-drawer); opacity: 1; transition: transform var(--motion-drawer-exit), overlay var(--motion-drawer-exit) allow-discrete, display var(--motion-drawer-exit) allow-discrete; }
+.drawer[open] { display: flex; flex-direction: column; }
+.drawer form:not(.dialog__foot) { display: contents; }
+.drawer .dialog__body { flex: 1; overflow: auto; }
+.drawer:not([open]) { opacity: 1; transform: translateX(calc(100% + var(--space-2))); }
+.drawer[open] { transition: transform var(--motion-drawer-enter), overlay var(--motion-drawer-enter) allow-discrete, display var(--motion-drawer-enter) allow-discrete; }
+@starting-style { .drawer[open] { opacity: 1; transform: translateX(calc(100% + var(--space-2))); } }
+.drawer::backdrop { transition: opacity var(--motion-drawer-scrim), backdrop-filter var(--motion-drawer-scrim), overlay var(--motion-drawer-scrim) allow-discrete, display var(--motion-drawer-scrim) allow-discrete; }
+
+/* ── Peek: a detail panel that grows from the row that opened it. The JS animates it from the
+   row's box with transform and opacity. Inside a `.split` (from 1100 px) it is a column beside the
+   table: the table gives up its low-priority columns and nothing is covered; narrower, or without a
+   split, it floats over the page. ── */
+.split { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+.split > .table-card { min-width: 0; }
+/* The timeline view of the invoices: a line down the left, a dot on it in the tone of each status. */
+.timeline { position: relative; display: flex; flex-direction: column; gap: 0; margin: 0; padding: var(--space-3) var(--space-4); list-style: none; }
+.timeline::before { content: ""; position: absolute; top: var(--space-4); bottom: var(--space-4); left: calc(var(--space-4) + 4px); width: 1px; background: var(--border); }
+.timeline__item { --_halo: var(--surface-raised); position: relative; isolation: isolate; display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto auto; align-items: center; gap: var(--space-3); padding: var(--space-3) 0 var(--space-3) var(--space-5); font-size: var(--text-sm); }
+.timeline__item + .timeline__item { border-top: 1px solid var(--border-subtle); }
+/* The row lights under the pointer and the keyboard (the table's hover, bleeding 8 px past the line's padding) and the dot
+   of its status grows a little; the dot's halo takes the lit fill so the line never shows through it. */
+.timeline__item::before { content: ""; position: absolute; inset: 0 calc(var(--space-2) * -1); z-index: -1; border-radius: var(--radius-item); background: var(--row-hover); opacity: 0; pointer-events: none; transition: opacity var(--motion-hover), transform var(--motion-release); }
+.timeline__dot { position: absolute; left: 0; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--text-faint); box-shadow: 0 0 0 3px var(--_halo); transition: box-shadow var(--motion-hover), transform var(--motion-release); }
+.timeline__item[data-status="paid"] .timeline__dot { background: var(--success); }
+.timeline__item[data-status="sent"] .timeline__dot { background: var(--info); }
+.timeline__item[data-status="overdue"] .timeline__dot { background: var(--danger); }
+.timeline__date { color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.timeline__what { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timeline__amount { font-variant-numeric: tabular-nums; text-align: right; }
+/* An invoice opens its detail: the button is the label, and its ::after stretches over the whole row. */
+.timeline__open { display: block; max-width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timeline__open::after { content: ""; position: absolute; inset: 0 calc(var(--space-2) * -1); }
+.timeline__open:focus-visible { outline: none; }
+.timeline__item:has(.timeline__open:focus-visible) { --_halo: color-mix(in oklab, var(--surface-raised), var(--text) 4%); }
+.timeline__item:has(.timeline__open:focus-visible)::before { opacity: 1; box-shadow: inset 0 0 0 2px var(--focus); }
+.timeline__item:has(.timeline__open:focus-visible) .timeline__dot { transform: scale(1.25); }
+.timeline__item:has(.timeline__open):active::before { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+@media (hover: hover) and (pointer: fine) {
+  .timeline__item:has(.timeline__open):hover { --_halo: color-mix(in oklab, var(--surface-raised), var(--text) 4%); }
+  .timeline__item:has(.timeline__open):hover::before { opacity: 1; }
+  .timeline__item:has(.timeline__open):hover .timeline__dot { transform: scale(1.25); }
+}
+/* Arriving: the rows are uncovered one after another, 20 ms apart, and an overdue dot pings once. */
+.timeline__item[data-entering] { animation: row-reveal var(--motion-row-in) calc(min(var(--i, 0), var(--stagger-cap)) * var(--stagger)) both; }
+.timeline__item[data-entering][data-status="overdue"] .timeline__dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--danger); pointer-events: none; animation: ping var(--motion-ping) calc(var(--ms-260) + min(var(--i, 0), var(--stagger-cap)) * var(--stagger)) 1 both; }
+/* Today: a line across the timeline, between what is behind and what is ahead, in the accent that marks where you are. */
+.timeline__today { position: relative; display: flex; align-items: center; gap: var(--space-2); height: var(--space-5); padding-left: var(--space-5); color: var(--accent-text); font-size: var(--text-xs); font-weight: var(--weight-strong); }
+.timeline__today::before { content: ""; position: absolute; left: 0; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--surface-raised); }
+.timeline__today::after { content: ""; flex: 1; height: 1px; background: color-mix(in oklab, var(--accent) 40%, transparent); transform-origin: left; }
+.timeline__today[data-entering]::after { animation: timeline-rule var(--motion-draw) var(--ms-120) both; }
+@keyframes timeline-rule { from { transform: scaleX(0); } }
+@media (max-width: 640px) { .timeline__item { grid-template-columns: minmax(0, 1fr) auto; } .timeline__date { grid-column: 1 / -1; } .timeline__what { grid-column: 1; } }
+.table:is([data-compact], [data-narrow]) { min-width: var(--table-min-compact, 0px); }
+.table :is(th, td, col)[data-low-hidden] { display: none; }
+.peek { position: fixed; z-index: 15; top: calc(var(--topbar) + var(--space-3)); right: var(--space-3); bottom: var(--space-3); display: flex; flex-direction: column; width: min(400px, calc(100vw - 24px)); overflow: hidden; border-radius: var(--radius-lg); background: var(--surface-overlay); border: 1px solid var(--border); box-shadow: var(--shadow-3); transform-origin: 0 0; }
+.peek[hidden] { display: none; }
+.peek__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-3); }
+.peek__body { flex: 1; overflow: auto; padding: 0 var(--space-4) var(--space-4); }
+.peek__foot { display: flex; justify-content: flex-end; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-top: 1px solid var(--border-subtle); }
+.peek__nav { display: flex; align-items: center; gap: 2px; }
+/* The invoice as a card with two faces (the Flip Card port): the figure in front, the items and the terms behind. */
+.invoice-flip { --flip-card-w: 100%; --flip-card-h: 176px; }
+.invoice-flip__number { color: var(--text-soft); font-size: var(--text-xs); letter-spacing: 0.02em; }
+.invoice-flip__client { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+.invoice-flip__total { font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-2xl); font-variant-numeric: tabular-nums; }
+.invoice-flip__items { display: grid; gap: var(--space-1); width: 100%; margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); }
+.invoice-flip__items li { display: flex; justify-content: space-between; gap: var(--space-3); }
+.invoice-flip__items li span:last-child { color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.invoice-flip__meta { width: 100%; margin: 0; color: var(--text-soft); font-size: var(--text-xs); text-align: left; }
+.detail-copy { flex: none; }
+.peek__position { padding-inline: var(--space-1); font-size: var(--text-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+@media (min-width: 1100px) {
+  .split[data-open] { grid-template-columns: minmax(0, 1fr) var(--peek-width, 360px); }
+  .split > .peek { position: sticky; inset: auto; top: calc(var(--topbar) + var(--space-3)); z-index: 2; width: auto; max-height: calc(100dvh - var(--topbar) - var(--space-5)); }
+}
+@media (max-width: 640px) { .peek { inset: var(--space-3) 0 0 0; width: auto; border-radius: var(--radius-lg) var(--radius-lg) 0 0; } }
+.dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: 0; font-size: var(--text-sm); }
+.dl dt { color: var(--text-soft); }
+.dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── Toasts (Sonner's stack): top layer; the newest in front, the older ones behind it overlapping
+   and a little smaller (the JS writes --y and --s per toast); the stack opens into a column under
+   the pointer or the focus. The close button is always top right. The error is a soft danger surface.
+   One with an action carries a bar that drains the time left to undo, over a faint rail, and pauses
+   with the stack. A toast rises from its own edge in 400 ms. ── */
+/* The stack sits above whatever else lives at the bottom edge: with the selection bar open it lifts by
+   the bar's height and its gap (they share the bottom inset), and drops back when the bar leaves. */
+:root { --stack-lift: 0px; }
+:root:has(.selection-bar[data-open]) { --stack-lift: calc(var(--selection-bar-height, 38px) + var(--space-5) + var(--space-3) - var(--space-4)); }
+.toasts { position: fixed; inset: auto var(--space-4) var(--space-4) auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible; width: min(380px, calc(100vw - 32px)); height: 0; color: var(--text); translate: 0 calc(var(--stack-lift) * -1); transition: translate var(--motion-toast); }
+/* The stack steps aside before the bar rises: with a toast up, the bar waits 100 ms, so no frame has a
+   toast over a bar that can already be pressed. */
+:root:has(.toasts > .toast:not([data-leaving])) .selection-bar[data-open] { transition-delay: var(--ms-100); }
+.toast { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 44px var(--space-3) var(--space-4); border: 0; outline: 1px solid transparent; border-radius: var(--radius); overflow: hidden; background: var(--surface-overlay); box-shadow: var(--shadow-overlay), var(--overlay-edge); color: var(--text); font-size: var(--text-sm); font-weight: var(--weight-medium); touch-action: pan-y; transform-origin: bottom center; transform: translateY(var(--y, 0px)) scale(var(--s, 1)); animation: toast-in var(--motion-toast-in) backwards; transition: opacity var(--motion-toast), transform var(--motion-slide), translate var(--motion-slide); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(100%); } }
+.toast > * { transition: opacity var(--duration-fast) ease, visibility var(--duration-fast); }
+.toasts:not([data-expanded]) .toast:not([data-front]) { max-height: var(--_front); }
+.toasts:not([data-expanded]) .toast:not([data-front]) > * { opacity: 0; visibility: hidden; }
+.toast[data-hidden] { opacity: 0; visibility: hidden; pointer-events: none; }
+.toast[data-leaving] { opacity: 0; pointer-events: none; transform: translateY(calc(var(--y, 0px) + 10px)) scale(var(--s, 1)); transition-duration: var(--motion-toast-out); }
+.toast[data-dragging] { transition: none; cursor: grabbing; user-select: none; }
+.toast[data-tone="error"] { --_ring: color-mix(in oklab, var(--danger) 32%, transparent); background: color-mix(in oklab, var(--danger) 9%, var(--surface-overlay)); border-color: var(--_ring); box-shadow: 0 0 0 1px var(--_ring), var(--shadow-overlay), var(--overlay-edge); color: color-mix(in oklab, var(--danger), var(--text) 60%); }
+.toast__icon { box-sizing: content-box; width: 14px; height: 14px; padding: 4px; border-radius: 50%; flex: none; }
+.toast[data-tone="success"] .toast__icon { color: color-mix(in oklab, var(--success), var(--text) 30%); background: color-mix(in oklab, var(--success) 16%, transparent); }
+.toast[data-tone="error"] .toast__icon { color: color-mix(in oklab, var(--danger), var(--text) 30%); background: color-mix(in oklab, var(--danger) 16%, transparent); animation: nudge var(--ms-280) var(--ease-out); }
+.toast__text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+/* With a description the text is two lines: the title as before and, under it, what the title does not say. */
+.toast__title { display: block; }
+.toast__desc { display: block; margin-top: 2px; color: var(--text-soft); font-weight: var(--weight-regular); }
+.toast[data-tone="error"] .toast__desc { color: inherit; opacity: 0.85; }
+/* The action sits in a slot whose width folds open and shut when the toast is updated in place. */
+.toast__action-slot { display: inline-flex; flex: none; }
+.toast:has(.toast__timer)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: currentColor; opacity: 0.08; pointer-events: none; }
+.toast__timer { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: currentColor; opacity: 0.3; transform-origin: left; animation: drain var(--_t, var(--ms-5000)) linear forwards; }
+@keyframes drain { to { transform: scaleX(0); } }
+.toasts[data-expanded] .toast__timer, .toast:is(:hover, :focus-within) .toast__timer { animation-play-state: paused; }
+.toast__action { height: 28px; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-item); background: var(--surface-hover); color: inherit; font-weight: var(--weight-strong); cursor: pointer; transition: background-color var(--motion-hover), transform var(--motion-release); }
+.toast__action:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+.toast__close { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border: 0; border-radius: var(--radius-item); background: none; color: inherit; opacity: 0.7; cursor: pointer; display: grid; place-items: center; transition: opacity var(--motion-hover), background-color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .toast__action:hover { background: var(--surface-active); } .toast__close:hover { opacity: 1; background: var(--surface-hover); } }
+
+/* ── Skeleton, progress, spinner, ring ── */
+/* A skeleton has the shape of what it stands for: a circle where an avatar goes, lines where text goes (the row of
+   `skeletonList`: a 28 px circle and two lines at 60 % and 40 %). It is a fill, not a field: the ring is drawn only on a
+   dark ground, where the fill alone does not read. */
+.skeleton { position: relative; overflow: hidden; border-radius: var(--radius-item); background: var(--skeleton); box-shadow: inset 0 0 0 1px var(--skeleton-ring); }
+.skeleton--avatar { flex: none; width: 28px; height: 28px; border-radius: 50%; }
+.skeleton-row { display: flex; align-items: center; gap: var(--space-3); }
+.skeleton-lines { display: grid; flex: 1; gap: var(--space-1); min-width: 0; }
+.skeleton-lines > .skeleton { height: 12px; width: var(--w1, 60%); }
+.skeleton-lines > .skeleton + .skeleton { height: 10px; width: var(--w2, 40%); }
+.skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--sheen), transparent); transform: translateX(-100%); animation: sheen var(--ms-1500) var(--ease-in-out) infinite; }
+@keyframes sheen { to { transform: translateX(100%); } }
+/* `skeletonOf`: the markup that will arrive, laid out as it will be with its text and its marks unseen; its frame (the
+   rules between rows, the borders of a card) stays. Over it, a bone on each line of text and on each mark. The band
+   is as wide as the whole skeleton and each bone shows the part passing over its own place, so one light crosses it all. */
+.skeleton-of { position: relative; color: transparent; pointer-events: none; user-select: none; }
+.skeleton-of :not(.skeleton) { color: transparent !important; -webkit-text-fill-color: transparent; text-shadow: none; text-decoration-color: transparent; animation: none !important; transition: none !important; }
+.skeleton-of :not(.skeleton)::before, .skeleton-of :not(.skeleton)::after, .skeleton-of [data-bone-mark] { visibility: hidden; }
+.skeleton-of__bones { position: absolute; inset: 0; }
+.skeleton-of__bones > .skeleton { position: absolute; }
+.skeleton[data-bone]::after { right: auto; left: calc(var(--x) * -1); width: var(--bones-w); background: linear-gradient(100deg, transparent 30%, var(--sheen) 50%, transparent 70%); }.swap-in { animation: swap-in var(--duration-normal) var(--ease-out); }
+@keyframes swap-in { from { opacity: 0; filter: blur(2px); } }
+.progress { height: 6px; border-radius: var(--radius-full); background: var(--surface-hover); box-shadow: inset 0 1px 1px color-mix(in oklab, var(--scrim) 30%, transparent); overflow: hidden; }
+.progress__bar { height: 100%; width: 100%; border-radius: inherit; background: var(--accent); box-shadow: var(--shadow-check); transform-origin: left; transform: scaleX(var(--value, 0)); transition: transform var(--motion-data); }
+.progress[data-indeterminate] .progress__bar { width: 40%; animation: indeterminate var(--ms-1200) var(--ease-in-out) infinite; }
+@keyframes indeterminate { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.ring { --_size: 88px; position: relative; display: inline-grid; place-items: center; width: var(--_size); height: var(--_size); color: var(--accent); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 1px 4px color-mix(in oklab, var(--accent) 22%, transparent)); }
+.ring__track, .ring__bar { fill: none; stroke-width: 3.2; }
+.ring__track { stroke: var(--surface-active); }
+.ring__bar { stroke: currentColor; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: calc(100 - var(--drawn, 0)); transition: stroke-dashoffset var(--motion-data); }
+.ring[data-drawn] { --drawn: var(--value); }
+.ring__label { position: relative; color: var(--text); font-size: var(--text-lg); }
+
+/* ── Card: border and depth evolve, never an 8 px lift; the contour is the card's own edge and a hairline
+   under it; a card inside a card takes the nested fill ── */
+.card { position: relative; padding: var(--space-4); border-radius: var(--radius); background: var(--material), var(--surface-raised); background-clip: padding-box; border: 1px solid var(--border); box-shadow: var(--card-hairline), var(--highlight), var(--shadow-1); transition: border-color var(--motion-hover), box-shadow var(--duration-normal) var(--ease-out), background-color var(--motion-hover), transform var(--motion-release); }
+:is(.surface, .card) .card { background: var(--material), var(--surface-nested); background-clip: padding-box; }
+.card[data-interactive], .card[data-dialog] { cursor: pointer; }
+button.card { width: 100%; text-align: left; font: inherit; color: inherit; }
+/* A card lit by the Magic Card port keeps its content in a box of its own: the stack of the card moves there. */
+.card.mu-magic.stack > .mu-magic__content { display: flex; flex-direction: column; gap: var(--gap, var(--space-2)); }
+@media (hover: hover) and (pointer: fine) { .card[data-interactive]:hover { border-color: var(--border-strong); box-shadow: var(--card-hairline), var(--shadow-2); } }
+.card[data-interactive]:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+.card[aria-pressed="true"], .card[aria-current="true"] { border-color: var(--text-soft); box-shadow: 0 0 0 3px var(--surface-active), var(--shadow-1); }
+
+/* ── Figure and the summary strip: the value on top, the change beside it, the chart below ── */
+.figure { display: grid; gap: 2px; min-width: 0; }
+.figure__label { font-size: var(--text-sm); color: var(--text-soft); }
+.figure__value { font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-2xl); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.figure__delta { display: inline-flex; align-items: center; gap: 4px; width: fit-content; padding: 2px 6px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; white-space: nowrap; transition: color var(--motion-hover), background-color var(--motion-hover); }
+/* The tone says whether the change is good, the trend only its direction; without a tone, up is good. */
+.figure__delta { color: var(--text-soft); background: var(--surface-hover); }
+.figure__delta:not([data-tone])[data-trend="up"], .figure__delta[data-tone="success"] { color: color-mix(in oklab, var(--success), var(--text) 55%); background: var(--success-soft); }
+.figure__delta:not([data-tone])[data-trend="down"], .figure__delta[data-tone="danger"] { color: color-mix(in oklab, var(--danger), var(--text) 45%); background: var(--danger-soft); }
+.summary { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: var(--space-4); }
+.summary .chart { --chart-h: 88px; }
+/* The KPI band: equal tiles, each a label, a value and a foot (the change and its trend line). The band
+   owns three rows and every tile is a subgrid of them, so the labels share one row, the figures another
+   (32 px, one baseline) and the feet a third: a label that wraps, a change that is longer or a narrower
+   tile moves the figure of all three together, never of one. The figure is always the text color: the tone
+   lives in the badge. */
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto 32px 1fr; }
+.kpi { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: var(--space-2); min-width: 0; padding: var(--space-5); }
+.kpi + .kpi { border-left: 1px solid var(--border-subtle); }
+.kpi .figure__label { line-height: 20px; }
+.kpi .figure__value { line-height: 32px; height: 32px; }
+.kpi .figure__delta { animation: delta-in var(--duration-normal) var(--ease-out) var(--ms-380) backwards; }
+@keyframes delta-in { from { opacity: 0; transform: translateY(4px); } }
+.kpi__foot { display: flex; align-items: center; justify-content: space-between; align-self: end; gap: var(--space-2); min-width: 0; height: 24px; }
+/* The line gives way to the chip when the tile is narrow («sin cambios» on a phone), down to 40 px. */
+.kpi__foot .spark { flex: 0 1 72px; min-width: 40px; }
+/* A sparkline takes the tone of its figure's change, muted: success, danger, or neutral when nothing moved.
+   The line is drawn once, a beat after the figure rolls; a flat series or fewer than three points is the
+   line alone. */
+.spark { flex: none; width: 72px; height: 24px; overflow: visible; color: var(--text-faint); }
+.spark__line { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: var(--_len, 1000); stroke-dashoffset: var(--_len, 1000); transition: stroke-dashoffset var(--motion-draw) var(--ms-120), d var(--motion-data); }
+.spark[data-drawn] .spark__line { stroke-dashoffset: 0; }
+.spark__area { transition: d var(--motion-data), opacity var(--duration-normal) ease; }
+.spark[data-line-only] .spark__area { opacity: 0; }
+.spark[data-tone="success"] { color: color-mix(in oklab, var(--success) 85%, var(--text-faint)); }
+.spark[data-tone="danger"] { color: color-mix(in oklab, var(--danger) 85%, var(--text-faint)); }
+.panel-title { display: flex; align-items: center; gap: var(--space-2); min-height: 20px; margin-bottom: var(--space-2); font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--text-soft); }
+/* The band and the chart share a row only where the band's three tiles can hold their figure: from a content
+   width of about 920 px (a 1217 px window with the sidebar); under it they stack. */
+@media (max-width: 1216px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+/* A phone: the three tiles are one compact strip that scrolls and snaps tile by tile, fading out at the
+   right edge, so the figures take a sliver of the first screen and the list starts above the fold. */
+@media (max-width: 640px) {
+  .kpis { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 188px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, var(--surface-inverse) calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, var(--surface-inverse) calc(100% - 24px), transparent); }
+  .kpis::-webkit-scrollbar { display: none; }
+  .kpi { padding: var(--space-3) var(--space-4); scroll-snap-align: start; }
+}
+
+
+/* ── Charts: the axes are HTML text at the type scale (a label never scales with the drawing); the
+   plot is a box 152 px tall with 8 px above and below so the first and last tick sit on its edges.
+   The crosshair and the dot move with transform; the line, the current bar and the bar being read are
+   the accent; the other bars are a tint of it and step back to .55 while one is read. A bar is a column
+   as tall as its plot, clipped to its value, so new data moves the clip and never rebuilds the bars. ── */
+.chart { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: var(--chart-h, 152px) auto; column-gap: var(--space-2); width: 100%; user-select: none; touch-action: pan-y; }
+.chart__axis { font-size: var(--text-xs); line-height: 16px; color: var(--text-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chart__y { grid-column: 1; grid-row: 1; display: flex; flex-direction: column-reverse; justify-content: space-between; text-align: right; }
+.chart__plot { position: relative; grid-column: 2; grid-row: 1; }
+.chart__x { position: relative; grid-column: 2; grid-row: 2; height: 20px; }
+.chart__x > .chart__axis { position: absolute; top: 4px; left: var(--p); transform: translateX(-50%); }
+.chart__x > .chart__axis[data-edge="start"] { transform: none; }
+.chart__x > .chart__axis[data-edge="end"] { transform: translateX(-100%); }
+.chart__x--bars { display: flex; gap: 12px; }
+.chart__x--bars > .chart__axis { position: static; flex: 1; margin-top: 4px; text-align: center; transform: none; }
+.chart__svg { position: absolute; left: 0; top: 8px; display: block; overflow: visible; }
+.chart__grid line { stroke: var(--border-subtle); stroke-width: 1; }
+.chart__line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+/* The current month: a solid point on the line, always there; the dot that follows the pointer is the other one. */
+.chart__now { fill: var(--accent); stroke: var(--surface-raised); stroke-width: 2; }
+.chart[data-animate] .chart__now { opacity: 0; transition: opacity var(--duration-slow) ease var(--duration-expressive); }
+.chart[data-animate][data-drawn] .chart__now { opacity: 1; }
+/* The area is uncovered from the left in step with the line that draws its top edge. */
+.chart[data-animate] .chart__area { clip-path: inset(0 100% 0 0); transition: clip-path var(--motion-data); }
+.chart[data-animate][data-drawn] .chart__area { clip-path: inset(0); }
+.chart[data-animate] .chart__line { stroke-dasharray: var(--_len); stroke-dashoffset: var(--_len); }
+.chart[data-animate][data-drawn] .chart__line { stroke-dashoffset: 0; transition: stroke-dashoffset var(--motion-data); }
+/* The guide and the dot follow the pointer to the nearest point on the slide spring: a 1 px guide, and a 7 px dot
+   with a 2 px ring of the surface color around it. */
+.chart__cross { position: absolute; left: 0; top: 8px; bottom: 8px; width: 0; border-left: 1px solid var(--border-strong); opacity: 0; pointer-events: none; transition: opacity var(--duration-fast) ease, transform var(--motion-slide); }
+.chart__dot { position: absolute; left: 0; top: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--surface-raised); opacity: 0; pointer-events: none; transition: opacity var(--duration-fast) ease, transform var(--motion-slide); }
+.chart[data-hover] :is(.chart__cross, .chart__dot) { opacity: 1; }
+/* The reading of the point under the pointer lives in the header of the card, never over the plot: month, figure and change. */
+.chart__readout { min-width: 0; }
+.chart__readout[data-inline] { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); }
+.chart__readout[data-inline] .figure__value { font-size: var(--text-lg); letter-spacing: normal; line-height: 1.2; }
+.chart__rd-delta[hidden] { display: none; }
+.panel-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); margin-bottom: var(--space-2); }
+.panel-head .panel-title { margin-bottom: 0; }
+.chart:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-control); }
+.chart__bars { display: flex; align-items: stretch; gap: 12px; padding-block: 8px; }
+.chart__grid:has(> span) { position: absolute; inset: 8px 0; pointer-events: none; }
+.chart__grid > span { position: absolute; left: 0; right: 0; bottom: var(--p); border-top: 1px solid var(--border-subtle); }
+.chart__col { position: relative; z-index: 0; display: flex; flex: 1; min-width: 0; }
+.chart__bar { width: 100%; height: 100%; border-radius: 4px 4px 0 0; background: var(--chart-bar); clip-path: inset(calc((1 - var(--v, 0)) * 100%) 0 0 0 round 4px 4px 0 0); transition: clip-path var(--motion-data), background-color var(--duration-fast) ease, opacity var(--ms-150) ease; }
+.chart[data-animate]:not([data-drawn]) .chart__bar { clip-path: inset(100% 0 0 0 round 4px 4px 0 0); transition-delay: calc(var(--i, 0) * var(--ms-30)), 0s, 0s; }
+.chart[data-animate][data-drawn] .chart__bar { transition-delay: calc(var(--i, 0) * var(--ms-30)), 0s, 0s; }
+.chart__bar[data-current], .chart__bar[data-active] { background: var(--accent); }
+.chart[data-hover] .chart__bar:not([data-active]) { opacity: 0.55; }
+
+/* ── Table: rows answer the pointer; the current row moves with J/K and an accent bar slides to it ──
+   Fixed layout: the widths come from the `<colgroup>`, so filtering, sorting and selecting never
+   change a column. Put it in `<div class="surface table-wrap" data-pad="0">`: the wrapper scrolls and
+   the header stays. Rows are 40 px; numbers are right-aligned and tabular; the last row of a
+   filtered-out table is `tr.table__empty`, with a message and an action. A table with a
+   `.all-check` in its header is multi-select: its rows carry `.row-check` and `aria-selected`; a
+   selected row is tinted with the accent. */
+.table-wrap { --hl: var(--row-hover); position: relative; isolation: isolate; overflow: auto; max-height: var(--table-height, none); }
+.table { position: relative; z-index: 1; width: 100%; min-width: var(--table-min, 640px); table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
+.table th { position: sticky; top: 0; z-index: 1; height: 36px; padding: 0 var(--space-3); background: var(--surface-raised); text-align: left; font-size: var(--text-table-head); font-weight: var(--weight-medium); color: var(--text-soft); border-bottom: 1px solid var(--border-subtle); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table td { height: var(--row); padding: 0 var(--space-3); border-bottom: 1px solid var(--border-subtle); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: background-color var(--duration-normal) ease; }
+.table :is(th, td):first-child { padding-left: var(--space-4); }
+.table :is(th, td):last-child { padding-right: var(--space-4); }
+.table :is(th, td):has(> .checkbox[data-bare]) { padding-right: 0; }
+.table td.num, .table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.table tbody tr { cursor: pointer; outline: none; transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out); }
+/* The sliding highlight is the row hover; a selected row has its own tint, a little stronger under the pointer. */
+@media (hover: hover) and (pointer: fine) { .table-wrap[data-hl] .table tbody tr:is([aria-selected="true"], [data-open]):hover td { background: var(--selected-row-hover); } }
+.table tbody tr:is([aria-selected="true"], [data-open]) td { background: var(--selected-row); }
+.table tbody tr[aria-current="true"] td { transition: none; }
+.table tbody tr:focus-visible td { box-shadow: inset 0 1px 0 var(--focus), inset 0 -1px 0 var(--focus); }
+.table tbody tr:focus-visible td:first-child { box-shadow: inset 2px 0 0 var(--focus), inset 0 1px 0 var(--focus), inset 0 -1px 0 var(--focus); }
+.row-cursor { position: absolute; z-index: 2; top: 0; left: 0; width: 2px; height: var(--row); background: var(--accent); opacity: 0; pointer-events: none; transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease; }
+.table-wrap:focus-within > .row-cursor[data-on] { opacity: 1; }
+@media (max-width: 640px) { .row-cursor { display: none; } }
+/* A row leaves upward: a translation to the side would put it past the box's right edge, and the box would scroll for as long as it takes to go. */
+.table tbody tr[data-leaving] { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+.table td.row-actions { padding-inline: var(--space-1) var(--space-2); text-align: right; }
+.table .row-actions .icon { color: var(--text-faint); }
+.table tr:is(:hover, :focus-visible, [aria-selected="true"]) .row-actions .icon, .table .row-actions [aria-expanded="true"] .icon { color: var(--text); }
+.table tbody tr.table__empty, .table tbody tr.table__skeleton { cursor: default; }
+.table .table__empty td { height: auto; padding: var(--space-6) var(--space-4); white-space: normal; border-bottom: 0; background: none; }
+.table .table__empty .empty { border: 0; padding: 0; }
+/* A skeleton cell follows its column: the width is a share of it (--w, set per column by `skeletonRows`),
+   numbers sit on the right edge like the figures they stand for, and the checkbox column is a box. */
+.table .skeleton { height: 12px; width: var(--w, 70%); }
+.table td.num .skeleton { margin-left: auto; }
+.table .skeleton--box { width: 18px; height: 18px; border-radius: 5px; }
+.table .skeleton--end { margin-left: auto; width: 20px; }
+.table-card { position: relative; }
+.selection-bar { position: fixed; z-index: 12; bottom: var(--space-5); left: calc(50% + var(--sidebar) / 2); display: flex; align-items: center; gap: var(--space-1); padding: 5px 5px 5px var(--space-4); border-radius: var(--radius); color: var(--text-inverse); font-size: var(--text-sm); white-space: nowrap; opacity: 0; transform: translate(-50%, 24px) scale(0.96); visibility: hidden; pointer-events: none; transition: opacity var(--motion-toast), transform var(--motion-slide), visibility var(--motion-toast); }
+/* The bar's surface is its ::before, so the Toolbar Expandable inside can make it follow the height of the panel it opens. */
+.selection-bar::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--surface-inverse); box-shadow: var(--shadow-3); transform-origin: 0 0; }
+.selection-bar[data-open] { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); pointer-events: auto; }
+.selection-bar__count { display: inline-flex; align-items: center; gap: 4px; margin-right: var(--space-2); font-variant-numeric: tabular-nums; }
+.selection-bar kbd.key { margin-left: 2px; border-color: transparent; background: color-mix(in oklab, var(--text-inverse) 16%, transparent); color: inherit; }
+/* The bar is a Toolbar Expandable (a panel opens above its actions): its surface is the bar's own, inverse, so the
+   port's raised box lends it nothing and its text reads on the dark one. */
+.selection-bar .tbe { display: block; color: inherit; }
+.selection-bar .tbe__box::before { content: none; }
+.selection-bar .tbe__menu { padding: 0; gap: var(--space-1); }
+.selection-bar .tbe__btn { color: inherit; }
+.selection-bar .tbe__btn:hover, .selection-bar .tbe__btn[data-active] { background: color-mix(in oklab, var(--text-inverse) 16%, transparent); color: inherit; }
+.selection-bar .tbe__content { padding: var(--space-2) var(--space-1) 0; }
+.selection-bar .tbe__panel > p { color: color-mix(in oklab, var(--text-inverse) 78%, transparent); }
+.selection-bar .tbe__panel strong { color: inherit; }
+/* A search that is folded into its icon and still filtering says so with a dot on the icon. */
+/* The search shares a line with the segmented control and the buttons: its folded box is as tall as they are. */
+/* Opening the search lays it over the filters instead of pushing them, so the toolbar keeps its rows. */
+.invoice-search-slot { position: relative; flex: none; width: var(--control-md); height: var(--control-md); }
+#invoice-search { --toolbar-dynamic-pad: 2px; --toolbar-dynamic-button: calc(var(--control-md) - 4px); position: absolute; top: 0; left: 0; z-index: 2; max-width: none; }
+#invoice-search .tbd__box { max-width: none; }
+/* The number of an invoice is a link to it; the dotted line under it says it has a card to show. */
+.invoice-link { display: inline-flex; align-items: center; min-height: 24px; color: inherit; font-variant-numeric: tabular-nums; text-decoration: underline dotted transparent; text-underline-offset: 4px; transition: text-decoration-color var(--motion-hover), color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .invoice-link:hover { text-decoration-color: var(--text-faint); } }
+.invoice-link:focus-visible { border-radius: var(--radius-item); outline-offset: 2px; }
+.dialog__steps { padding: var(--space-2) var(--space-5) var(--space-3); }
+/* The data step lays its pairs side by side, and the Morph Select fields wear the label of a field. */
+#new-data .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field > .ar-select { display: grid; width: 100%; gap: 6px; }
+.field .ar-select__label { color: var(--text); line-height: 16px; }
+/* A voided invoice stays in the table, muted, with its figure struck through; voiding it is asked in the detail, under a line. */
+#invoices tbody tr[data-status="void"] td:not(.row-actions) { color: var(--text-faint); }
+#invoices tbody tr[data-status="void"] td.num { text-decoration: line-through; }
+.peek__void { padding-top: var(--space-3); border-top: 1px solid var(--border-subtle); }
+/* The search and the filter toolbar share a line above the table; the opened search lies over the chips. */
+.invoice-filters { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: var(--space-3); }
+.invoice-filters > .ft { --ft-radius-panel: var(--radius-lg); flex: 1; min-width: 0; min-height: 0; padding: var(--space-2) var(--space-3); transition: opacity var(--duration-fast) var(--ease-out), visibility 0s; }
+.invoice-filters .invoice-search-slot { margin-top: calc(1px + var(--space-2) + (var(--control-field) - var(--control-md)) / 2); }
+.invoice-filters #filter-due { min-height: var(--ft-height); border-radius: var(--ft-radius-control); }
+.invoice-filters .ft-actions { flex-wrap: wrap; justify-content: flex-end; }
+.invoice-filters:has(#invoice-search[data-state="open"]) > .ft { opacity: 0; visibility: hidden; transition: opacity var(--duration-fast) var(--ease-out), visibility 0s var(--duration-fast); }
+#invoice-search .tbd__box { display: block; }
+#invoice-search .tbd__btn[data-filtering]::after { content: ""; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 2px var(--toolbar-dynamic-surface); }
+.tbe__choices { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.selection-bar .tbe__action { color: inherit; box-shadow: 0 0 0 1px color-mix(in oklab, var(--text-inverse) 28%, transparent); }
+.selection-bar .tbe__action:hover { background: color-mix(in oklab, var(--text-inverse) 16%, transparent); color: inherit; }
+/* The badge that opens the status menu answers the pointer: a ring of its tone, a touch lighter (a touch brighter in dark),
+   a chevron that slides in beside it, and a press. The chevron sits outside the badge, so nothing moves. */
+.badge-btn { position: relative; display: inline-flex; align-items: center; min-height: 24px; padding: 0; border: 0; border-radius: var(--radius-full); background: none; cursor: pointer; font: inherit; transition: filter var(--motion-hover), transform var(--motion-release); }
+.badge-btn::after { content: ""; position: absolute; left: 100%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 4px; background: var(--text-faint); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") center / contain no-repeat; opacity: 0; transform: translateX(-4px); pointer-events: none; transition: opacity var(--ms-120) ease, transform var(--motion-chevron); }
+.badge-btn .badge { transition: background-color var(--duration-normal) ease, color var(--duration-normal) ease, box-shadow var(--motion-hover); }
+.badge-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.badge-btn:is(:focus-visible, [aria-expanded="true"])::after { opacity: 1; transform: none; }
+.badge-btn[aria-expanded="true"]::after { transform: rotate(180deg); }
+.badge-btn:active { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+@media (hover: hover) and (pointer: fine) {
+  .badge-btn:hover { filter: brightness(0.97); }
+  :root:is([data-theme="dark"], [data-register="showcase"]) .badge-btn:hover { filter: brightness(1.12); }
+  .badge-btn:hover .badge { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--_tone) 32%, transparent); }
+  .badge-btn:hover::after { opacity: 1; transform: none; }
+}
+/* A name in a cell reads as a link when the row is read: the underline is there and transparent, and
+   shows with the row's hover or focus. */
+.client-link { text-decoration: underline solid transparent; text-underline-offset: 3px; transition: text-decoration-color var(--duration-fast) ease; }
+.table tr:is(:hover, :focus-within) .client-link { text-decoration-color: var(--text-faint); }
+.hovercard__head { display: flex; align-items: center; gap: var(--space-3); }
+.selection-bar .btn { --_bg: transparent; --_bd: transparent; --_fg: var(--text-inverse); box-shadow: none; }
+@media (hover: hover) and (pointer: fine) { .selection-bar .btn:hover { --_bg: color-mix(in oklab, var(--text-inverse) 16%, transparent); --_bd: transparent; } }
+@media (max-width: 860px) { .selection-bar { left: 50%; } }
+/* A phone: the bar spans the screen with the count on its own line over the three actions, and the
+   keyboard hints go (there is no keyboard to hint at). */
+@media (max-width: 640px) {
+  .selection-bar { width: calc(100vw - var(--space-4)); flex-wrap: wrap; padding: var(--space-2) 5px 5px; }
+  .selection-bar .tbe__menu { flex-wrap: wrap; }
+  .selection-bar__count { flex: 1 0 100%; margin: 0 0 0 var(--space-2); }
+  .selection-bar .btn { flex: 1 1 0; }
+  .selection-bar kbd.key { display: none; }
+}
+
+/* Sortable column header: a button inside the `th`; aria-sort says the direction. */
+.th-sort { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 6px; margin: 0 -6px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; border-radius: var(--radius-item); transition: color var(--motion-hover), background-color var(--motion-hover), transform var(--motion-release); }
+/* The arrow of the sorted column arrives clearing a blur and growing to size, and turns over when the direction changes; the other columns keep it away. */
+.th-sort::after { content: ""; width: 0; height: 0; border-inline: 4px solid transparent; border-top: 5px solid currentColor; opacity: 0; scale: 0.6; filter: blur(2px); transition: opacity var(--duration-fast) ease, scale var(--motion-chevron), filter var(--duration-fast) ease, transform var(--motion-chevron); }
+th.num .th-sort::after { order: -1; }
+@media (hover: hover) and (pointer: fine) { .th-sort:hover { color: var(--text); background: var(--hl-bg); } th[aria-sort] .th-sort:hover::after { opacity: 0.45; } }
+.th-sort:active { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.th-sort:focus-visible { outline-offset: -2px; }
+th[aria-sort="ascending"] .th-sort, th[aria-sort="descending"] .th-sort { color: var(--text); }
+th[aria-sort="ascending"] .th-sort::after { opacity: 1; scale: 1; filter: none; transform: rotate(180deg); }
+th[aria-sort="descending"] .th-sort::after { opacity: 1; scale: 1; filter: none; }
+/* The column the rows are sorted by is tinted from head to foot, so the order reads as a column and not only as an arrow. */
+.table td[data-sorted] { background-color: color-mix(in oklab, var(--text) 3%, transparent); }
+.table th { transition: background-color var(--duration-normal) ease; }
+.table th[data-sorted] { background-color: color-mix(in oklab, var(--text) 3%, var(--surface-raised)); }
+@media (hover: hover) and (pointer: fine) { th[aria-sort="ascending"] .th-sort:hover::after, th[aria-sort="descending"] .th-sort:hover::after { opacity: 1; } }
+
+/* ── Table as cards: from 640 px down, a table marked `data-cards` becomes a list of cards, each cell
+   a label and its value (the label is the column header, written into `data-label`); the checkbox and
+   the row's menu button sit on the first line. ── */
+@media (max-width: 640px) {
+  .table[data-cards] { display: block; min-width: 0; }
+  .table[data-cards] :is(colgroup, thead) { display: none; }
+  .table[data-cards] tbody { display: block; }
+  .table[data-cards] tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-3); row-gap: var(--space-1); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-subtle); }
+  .table[data-cards] tbody tr:last-child { border-bottom: 0; }
+  .table[data-cards] td { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); grid-column: 1 / -1; height: auto; min-height: 24px; padding: 0 !important; border: 0; white-space: normal; overflow: visible; background: none !important; }
+  /* A card's focus is one outline on the card, inside its edge; the strokes of the table's cells and the
+     clip that would cut the ring of a checkbox, a status or the ··· button are gone. */
+  .table[data-cards] tbody tr:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+  .table[data-cards] tbody tr:focus-visible td, .table[data-cards] tbody tr:focus-visible td:first-child { box-shadow: none; }
+  .table[data-cards] td[data-label]:not([data-label=""])::before { content: attr(data-label); flex: none; font-size: var(--text-xs); color: var(--text-faint); }
+  .table[data-cards] td:has(> .checkbox[data-bare]) { grid-column: 1; grid-row: 1; justify-content: flex-start; }
+  .table[data-cards] td.row-actions { grid-column: 2; grid-row: 1; justify-content: flex-end; }
+  .table[data-cards] tbody tr.table__empty, .table[data-cards] tbody tr.table__skeleton { display: block; }
+  .table[data-cards] tbody tr[hidden] { display: none; }
+  .table[data-cards] .table__empty td { display: block; }
+  .table[data-cards] tr.table__skeleton td { display: block; padding: var(--space-1) 0 !important; }
+
+  /* `data-cards="summary"`: the columns that name their role (`th[data-cell]`) lay a card out as two
+     lines instead of label: value pairs. Line 1 is who and how much (the title at 600, the amount
+     tabular on the right); line 2 is what and when in muted text (id · date) and the status, which
+     shares the amount's edge. The checkbox and the row's menu span both lines at the sides. */
+  .table[data-cards="summary"] tbody tr { grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: var(--space-2); row-gap: 2px; }
+  .table[data-cards="summary"] td[data-cell][data-label] { min-width: 0; }
+  .table[data-cards="summary"] td[data-cell][data-label]:not([data-label=""])::before { content: none; }
+  .table[data-cards="summary"] td[data-cell="check"][data-label] { grid-column: 1; grid-row: 1 / 3; }
+  .table[data-cards="summary"] td[data-cell="title"][data-label] { display: block; grid-column: 2 / 4; grid-row: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--weight-strong); }
+  .table[data-cards="summary"] td[data-cell="amount"][data-label] { grid-column: 4; grid-row: 1; justify-content: flex-end; font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+  .table[data-cards="summary"] td[data-cell="id"][data-label], .table[data-cards="summary"] td[data-cell="due"][data-label] { grid-row: 2; justify-content: flex-start; font-size: var(--text-xs); color: var(--text-faint); }
+  .table[data-cards="summary"] td[data-cell="id"][data-label] { grid-column: 2; }
+  .table[data-cards="summary"] td[data-cell="due"][data-label] { grid-column: 3; }
+  .table[data-cards="summary"] td[data-cell="due"][data-label] { gap: var(--space-2); }
+  .table[data-cards="summary"] td[data-cell="due"][data-label]:not([data-label=""])::before { content: "·"; margin-right: 0; }
+  .table[data-cards="summary"] td[data-cell="status"][data-label] { grid-column: 4; grid-row: 2; justify-content: flex-end; }
+  .table[data-cards="summary"] td[data-cell="menu"][data-label] { grid-column: 5; grid-row: 1 / 3; justify-content: flex-end; }
+}
+
+/* ── Avatar and group: a tint from the name (the JS writes --h), a ring of the card color, 8 px of overlap ── */
+.avatar { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: oklch(var(--avatar-bg-l) var(--avatar-bg-c) var(--h, 265)); color: oklch(var(--avatar-fg-l) var(--avatar-fg-c) var(--h, 265)); font-size: var(--text-xs); font-weight: var(--weight-strong); box-shadow: 0 0 0 2px var(--surface-raised); transition: transform var(--duration-normal) var(--spring), translate var(--motion-pop); }
+.avatars { display: inline-flex; }
+.avatars { --avatar-overlap: 8px; }
+.avatars .avatar { width: 32px; height: 32px; }
+.avatars .avatar + .avatar { margin-left: calc(var(--avatar-overlap) * -1); }
+/* The initials sit in what stays visible of the circle: the next avatar covers its right 8 px (the group's `--avatar-overlap`), half of it once the group fans out, and none of the one under the pointer. */
+.avatars .avatar:not(:last-child) { padding-right: var(--avatar-overlap); transition: transform var(--duration-normal) var(--spring), translate var(--motion-pop), padding-right var(--duration-normal) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .avatars:hover .avatar { transform: translateX(calc(var(--i, 0) * 4px)); }
+  .avatars:hover .avatar:not(:last-child) { padding-right: calc(var(--avatar-overlap) / 2); }
+  /* The one under the pointer rises a little, in front of its neighbours. */
+  .avatars .avatar:hover { position: relative; z-index: 1; translate: 0 -3px; }
+  /* The initials of the one under the pointer are centred from the first frame; they ease back when it lets go. */
+  .avatars .avatar:not(:last-child):hover { padding-right: 0; transition: transform var(--duration-normal) var(--spring), translate var(--motion-pop); }
+}
+
+/* ── Empty state: what is missing, and the action that resolves it; it rises in softly ── */
+.empty { display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-6) var(--space-4); text-align: center; border: 0; border-radius: var(--radius); color: var(--text-soft); animation: rise var(--ms-260) var(--ease-out) both; }
+.empty__hint { font-size: var(--text-xs); color: var(--text-faint); }
+.empty__hint kbd.key { margin-inline: 2px; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+.empty__title { font-weight: var(--weight-strong); color: var(--text); }
+/* The mark of every empty state is the same piece: a raised tile with its icon at 20 px. When the state appears
+   (`data-live`, set by the page's JS as it comes into view) the tile pops in and the icon is drawn from left to right. */
+.empty__mark { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: var(--space-1); border-radius: var(--radius); color: var(--text-soft); background: var(--surface-hover); border: 1px solid var(--border); box-shadow: var(--shadow-control); }
+.empty__mark .icon { width: 20px; height: 20px; }
+.empty[data-live]:not([data-first-run]) .empty__mark { animation: mark-in var(--motion-pop) both; }
+.empty[data-live]:not([data-first-run]) .empty__mark .icon { animation: icon-draw var(--ms-500) var(--ease-in-out) var(--ms-120) both; }
+@keyframes icon-draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+.empty .btn { margin-top: var(--space-2); }
+.empty .btn .icon[data-icon="x"] { transition: rotate var(--motion-chevron); }
+@media (hover: hover) and (pointer: fine) { .empty .btn:hover .icon[data-icon="x"] { rotate: 90deg; } }
+
+/* ── Dragging (drag.js): a reorderable list and the cards of a board are lifted the same way. The handle
+   takes the gesture (`touch-action: none`), so a finger anywhere else keeps scrolling. A lifted item leaves
+   the flow where it was (`fixed`; drag.js writes its geometry and its translate, tilt and scale on the drag
+   spring, so none of those transition), a placeholder of its real size holds the gap, and a grabbed one —
+   by the keyboard — is raised in place. ── */
+.sortable { display: grid; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.sortable__item { display: flex; align-items: center; gap: var(--space-3); height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-control); background: var(--surface-raised); border: 1px solid var(--border); box-shadow: var(--shadow-1); transition: box-shadow var(--duration-normal) var(--ease-out), border-color var(--motion-hover), scale var(--motion-pop); }
+:is(.sortable__handle, .board__grip) { display: inline-grid; flex: none; color: var(--text-faint); cursor: grab; touch-action: none; user-select: none; padding: 6px; margin: -6px; border-radius: var(--radius-item); transition: color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) {
+  .sortable__item:hover:not([data-dragging], [data-grabbed]) { border-color: var(--border-strong); box-shadow: var(--shadow-2); }
+  .sortable__item:hover .sortable__handle, :is(.sortable__handle, .board__grip):hover { color: var(--text-soft); }
+}
+:is(.sortable__handle, .board__grip):active { color: var(--text); }
+:is(.sortable__item, .board__card)[data-dragging] { position: fixed; z-index: var(--z-drag); margin: 0; box-shadow: var(--shadow-3); border-color: var(--border-strong); cursor: grabbing; user-select: none; transition: box-shadow var(--duration-normal) var(--ease-out), border-color var(--motion-hover); }
+:is(.sortable__item, .board__card)[data-dragging] :is(.sortable__handle, .board__grip) { cursor: grabbing; }
+:is(.sortable__item, .board__card)[data-grabbed] { position: relative; z-index: 2; scale: var(--drag-lift); box-shadow: var(--shadow-3); border-color: var(--text-soft); }
+.drag-placeholder { list-style: none; border: 1px dashed var(--border-strong); border-radius: var(--radius-control); background: var(--surface-sunken); }
+:root[data-drag-active], :root[data-drag-active] * { cursor: grabbing !important; user-select: none; }
+
+/* ── Board: one column per status, a card per invoice. The columns share the width down to a minimum and then
+   the board scrolls sideways inside its own box; each column's list scrolls on its own when it is long. The
+   column under a dragged card is lit. ── */
+.board[hidden] { display: none; }
+.board__scroll { position: relative; overflow-x: auto; overscroll-behavior-x: contain; }
+.board__grid { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(var(--board-column), 1fr); gap: var(--space-3); align-items: start; }
+.board__col { display: flex; flex-direction: column; min-width: 0; padding: var(--space-2); border: 1px solid var(--border-subtle); border-radius: var(--radius); background: var(--surface-sunken); transition: background-color var(--motion-hover), box-shadow var(--motion-hover); }
+.board__col[data-over] { background: var(--surface-hover); box-shadow: inset 0 0 0 1px var(--border-strong); }
+.board__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-1) var(--space-2) var(--space-2); }
+.board__head h2 { margin: 0; font-size: var(--text-sm); font-weight: var(--weight-strong); }
+/* The count of a column is a pill that pops when what the column holds changes. */
+.board__count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-full); background: var(--surface-hover); box-shadow: inset 0 0 0 1px var(--border-subtle); font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text-soft); font-variant-numeric: tabular-nums; }
+/* A column with nothing in it keeps the shape of a card: a dashed slot, with the page's own words if it brings them. */
+.board__list:not(:has(.board__card, .drag-placeholder))::before { content: attr(data-empty); display: grid; place-items: center; min-height: calc(56px - 2 * var(--space-1)); padding: var(--space-2); border: 1px dashed var(--border-strong); border-radius: var(--radius-control); color: var(--text-faint); font-size: var(--text-xs); text-align: center; animation: rise var(--ms-260) var(--ease-out) both; }
+.board__list { display: grid; align-content: start; gap: var(--space-2); min-height: 56px; max-height: min(60vh, 560px); margin: 0; padding: var(--space-1); list-style: none; overflow-y: auto; overscroll-behavior: contain; scroll-padding: var(--space-2); }
+.board__card { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-control); background: var(--surface-raised); border: 1px solid var(--border); box-shadow: var(--shadow-1); transition: box-shadow var(--duration-normal) var(--ease-out), border-color var(--motion-hover), scale var(--motion-pop); }
+@media (hover: hover) and (pointer: fine) { .board__card:hover:not([data-dragging], [data-grabbed]) { border-color: var(--border-strong); box-shadow: var(--shadow-2); } }
+.board__card:not([data-dragging]):active { box-shadow: var(--shadow-1); }
+.board__card:has(:focus-visible), .board__card:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }.board__body { display: grid; flex: 1; gap: var(--space-1); min-width: 0; }
+.board__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.board__top strong { font-size: var(--text-sm); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+.board__client { overflow: hidden; color: var(--text-soft); font-size: var(--text-sm); text-overflow: ellipsis; white-space: nowrap; }
+.board__meta { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--text-faint); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.board__amount { color: var(--text); font-weight: var(--weight-medium); }
+
+/* ── Scroll edges: a box that scrolls sideways says which side has more. Two zero-height anchors at the top
+   of the box (written by `scrollEdges`) stay glued to its visible left and right edges while it scrolls;
+   their shadow shows on the side `data-more` names. ── */
+.scroll-edge { position: sticky; top: 0; z-index: 3; display: block; width: var(--edge-size); height: 0; pointer-events: none; }
+.scroll-edge::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: var(--scroll-h, 100%); opacity: 0; transition: opacity var(--duration-normal) ease; }
+.scroll-edge--start { left: 0; }
+.scroll-edge--end { left: calc(100% - var(--edge-size)); }
+.scroll-edge--start::after { background: linear-gradient(90deg, var(--edge-shadow), transparent); }
+.scroll-edge--end::after { background: linear-gradient(270deg, var(--edge-shadow), transparent); }
+[data-more~="start"] > .scroll-edge--start::after, [data-more~="end"] > .scroll-edge--end::after { opacity: 1; }
+
+/* ── Accordion: flat items told apart by a hairline, no box around them. The trigger is 48 px, 14 px at weight 500,
+   with a 16 px chevron that turns on a spring; its hover and its focus ring reach 8 px past the text so the text
+   stays on the column. The surfaces are ::before pseudo-elements and the panel is shown or hidden at once:
+   components.js makes them travel with transform and clip-path, so no height animates. ── */
+.accordion { position: relative; isolation: isolate; }
+.accordion::before { content: ""; position: absolute; inset: 0; z-index: -1; transform-origin: 0 0; }
+.accordion__item { position: relative; isolation: isolate; border-radius: var(--radius-control); }
+.accordion__item::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; transform-origin: 0 0; }
+.accordion__item + .accordion__item::after { content: ""; position: absolute; top: 0; left: 0; right: 0; border-top: 1px solid var(--border); pointer-events: none; }
+.accordion__trigger { display: flex; align-items: center; justify-content: space-between; width: calc(100% + 16px); height: 48px; margin-inline: -8px; padding: 0 var(--space-2); border: 0; border-radius: inherit; background: none; color: var(--text); font-size: var(--text-md); font-weight: var(--weight-medium); text-align: left; cursor: pointer; transition: background-color var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .accordion__trigger:hover { background: var(--surface-hover); } }
+.accordion__trigger:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--focus-soft); background: var(--surface-hover); }
+.accordion__trigger:focus:not(:focus-visible) { outline: none; }
+.accordion__trigger .icon { width: 16px; height: 16px; color: var(--text-faint); transition: transform var(--motion-chevron); }
+.accordion__trigger[aria-expanded="true"] .icon { transform: rotate(180deg); }
+.accordion__panel { display: none; }
+.accordion__panel:is([data-open], [data-leaving]) { display: block; }
+.accordion__panel[data-leaving] { position: absolute; left: 0; right: 0; pointer-events: none; }
+.accordion__body { padding: 0 0 var(--space-4); color: var(--text-soft); font-size: var(--text-md); line-height: 1.5; }
+
+/* ── Activity feed and settings sections ── */
+.activity__item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--border-subtle); font-size: var(--text-sm); }
+.activity__item:last-child { border-bottom: 0; }
+.activity__item > div { display: grid; gap: 2px; min-width: 0; }
+.settings-section { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: var(--space-5); padding-block: var(--space-5); border-top: 1px solid var(--border-subtle); }
+.settings-section:first-of-type { border-top: 0; padding-top: 0; }
+.settings-section__copy { display: grid; gap: var(--space-1); align-content: start; }
+@media (max-width: 760px) { .settings-section { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); } }
+.comp-grid { columns: 340px; column-gap: var(--space-4); }
+/* The filter row runs to the screen's edges and scrolls under them: the side with more fades out (a mask, so the
+   fade starts at the edge itself and not inside the padding, where a sticky shadow would sit). */
+@property --fade-s { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --fade-e { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.comp-filter { margin: 0 calc(var(--space-4) * -1) var(--space-4); padding: 2px var(--space-4); overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(90deg, transparent, black var(--fade-s), black calc(100% - var(--fade-e)), transparent); transition: --fade-s var(--duration-normal) ease, --fade-e var(--duration-normal) ease; }
+.comp-filter[data-more~="start"] { --fade-s: var(--space-6); }
+.comp-filter[data-more~="end"] { --fade-e: var(--space-6); }
+.comp-filter > .scroll-edge { display: none; }
+.comp-filter .segmented { width: max-content; }
+.comp { display: grid; gap: var(--space-4); align-content: start; min-width: 0; margin-bottom: var(--space-4); break-inside: avoid; }
+.comp-grid > .comp--wide { column-span: all; }
+.comp[hidden] { display: none; }
+.segmented[inert] { opacity: 0.5; }
+.comp__title { font-size: var(--text-sm); font-weight: var(--weight-strong); }
+.ports { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+/* A link to a port: a ring and the control shadow at rest; under the pointer the fill, a stronger ring and an arrow that
+   slides in from the left (it holds its 14 px at rest, so nothing moves); pressed, it gives a little. */
+.ports__link { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); color: var(--text); font-size: var(--text-sm); text-decoration: none; box-shadow: inset 0 0 0 1px var(--border-subtle), var(--shadow-control); transition: background-color var(--motion-hover), box-shadow var(--motion-hover), transform var(--motion-release); }
+.ports__link::after { content: ""; flex: none; align-self: center; width: 14px; height: 14px; margin-left: calc(var(--space-2) * -1); background: var(--text-soft); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4'/%3E%3C/svg%3E") center / contain no-repeat; opacity: 0; transform: translateX(-4px); transition: opacity var(--motion-hover), transform var(--motion-chevron); }
+@media (hover: hover) and (pointer: fine) { .ports__link:hover { background: var(--surface-hover); box-shadow: inset 0 0 0 1px var(--border), var(--shadow-1); } .ports__link:hover::after { opacity: 1; transform: none; } }
+@media not all and (hover: hover) { .ports__link::after { display: none; } }
+.ports__name { min-width: 0; overflow-wrap: anywhere; }
+.ports__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ports__link:focus-visible::after { opacity: 1; transform: none; }
+.ports__link:active { transform: scale(var(--press-scale)); transition-duration: var(--duration-instant); }
+.ports__library { margin-left: auto; color: var(--text-faint); font-size: var(--text-xs); }
+.comp__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.comp__label { font-size: var(--text-xs); color: var(--text-faint); }
+/* A wide card lays its sets in two columns once each row fits whole; a label sits close to its row and farther from the next set. */
+.comp--wide { container-type: inline-size; }
+.comp__sets { display: grid; gap: var(--space-5) var(--space-6); }
+@container (min-width: 58rem) { .comp__sets { grid-template-columns: max-content minmax(0, 1fr); } }
+.comp__set { display: grid; gap: var(--space-2); align-content: start; }
+
+/* Reduced motion: feedback stays as color and opacity; displacement and scale become a fade. Nothing is
+   instant: a panel that opens or a view that changes still fades in. */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active, .card[data-interactive]:active, .checkbox:active .checkbox__box, .radio:active .radio__dot, .segmented__option:active, .tabs__tab:active, .toast__action:active, .nav__item:active { transform: none; }
+  .btn:active { filter: brightness(0.94); }
+  .btn:active .icon, .btn[aria-pressed="true"] .icon { transform: none; animation: none; }
+  .btn .btn__label, .btn .btn__state, .field__icon, .editable__status, .chart__dot, .tooltip, .menu, .popover, .listbox, .combobox__list, .hovercard, .dialog, .palette, .selection-bar, .menu__check, .kpi .figure__delta { transform: none !important; }
+  .listbox, .combobox__list { clip-path: none !important; }
+  .toast, .toast[data-leaving] { transform: translateY(var(--y, 0px)) !important; animation: fade-in var(--motion-fade-reduced) backwards; }
+  .toast[data-tone="error"] .toast__icon { animation: none; }
+  @keyframes fade-in { from { opacity: 0; } }
+  .chart[data-animate] .chart__area { clip-path: none; opacity: 0; transition: opacity var(--motion-fade-reduced); }
+  .chart[data-animate][data-drawn] .chart__area { opacity: 1; }
+  .chart__cross, .chart__dot { transition: opacity var(--duration-fast) ease; }
+  .selection-bar { translate: -50% 0; }
+  .switch:active .switch__knob, .slider[data-dragging] .slider__thumb { scale: 1; }
+  :is(.sortable__item, .board__card)[data-grabbed] { scale: none; }
+  .scroll-edge::after, .comp-filter { transition: none; }
+  .btn[data-state="error"] { animation: none; }
+  .field[data-state="invalid"] .field__control { animation: none; }
+  .skeleton { animation: none; }
+  .progress[data-indeterminate] .progress__bar { animation: none; width: 100%; opacity: 0.45; }
+  .avatars:hover .avatar { transform: none; }
+  .avatars:hover .avatar:not(:last-child) { padding-right: var(--avatar-overlap); }
+  .avatars .avatar:not(:last-child):hover { padding-right: 0; }
+  .drawer:not([open]), .drawer[open] { transition-property: opacity; }
+  .accordion__panel { transition: none; }
+  .dialog[data-morph]:not([open]) { opacity: 0; transition: opacity var(--motion-fade-reduced), overlay var(--motion-fade-reduced) allow-discrete, display var(--motion-fade-reduced) allow-discrete; }
+  .accordion__trigger .icon { transition: none; }
+  .empty, .palette__item.is-new, .palette__crumb, .btn[data-state="success"], .datepicker__grid[data-slide], .datepicker__grid td[aria-selected="true"] > .datepicker__day, .badge[data-pulse]::before { animation: none; }
+  .checkbox__box[data-pop] { animation: none; }
+  .skeleton::after { animation: none; display: none; }
+  .hl { transition: opacity var(--duration-fast) ease; }
+  :is(.menu, .listbox, .combobox__list, .palette__list) > .hl, :is(.menu, .listbox, .combobox__list, .palette__list) > .hl[data-fast] { transition: opacity var(--duration-fast) ease; }
+  .tooltip { scale: none !important; }
+  .table tbody tr, .table tbody tr[data-leaving] { transform: none; }
+  .row-cursor { transition: opacity var(--duration-fast) ease; }
+  .toast__timer { animation: none; transform: none; }
+  .chart__bar { transition: opacity var(--ms-150) ease; }
+  .spark__line { transition: none; stroke-dashoffset: 0; }
+  .notice { animation: fade-from var(--motion-fade-reduced) both; }
+  .notice[data-leaving], .notice__close:active { transform: none; }
+  .dirty { animation: fade-from var(--motion-fade-reduced) both; }
+  .dirty::after, .timeline__item[data-entering][data-status="overdue"] .timeline__dot::after, .timeline__today[data-entering]::after { display: none; animation: none; }
+  .timeline__item[data-entering] { animation: fade-from var(--motion-fade-reduced) both; }
+  .timeline__item:has(.timeline__open):active::before, .timeline__item:has(.timeline__open):hover .timeline__dot, .timeline__item:has(.timeline__open:focus-visible) .timeline__dot { transform: none; }
+  .badge-btn:active, .th-sort:active, .ports__link:active, .combobox__toggle:active, .datepicker__day:active, .brand:active .brand__mark { transform: none; }
+  .badge-btn::after, .ports__link::after { transform: none; }
+  .empty[data-live]:not([data-first-run]) .empty__mark, .empty[data-live]:not([data-first-run]) .empty__mark .icon, .datepicker__foot .btn[aria-pressed="true"]::after, .board__list:not(:has(.board__card, .drag-placeholder))::before { animation: none; }
+  .empty .btn:hover .icon[data-icon="x"], .dialog__head > .btn:hover .icon { rotate: none; }
+}
+@media (prefers-reduced-transparency: reduce) { .dialog::backdrop, .palette::backdrop, .drawer::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; } .topbar { backdrop-filter: none; -webkit-backdrop-filter: none; } }
+@media (prefers-contrast: more) { :root { --border: var(--n-9); --border-subtle: var(--n-8); --border-strong: var(--n-11); } }
+/* While the theme changes, nothing transitions: everything switches in the same frame. */
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }

@@ -1,0 +1,67 @@
+/* Line chart (Arc, MIT): series toggles, a plot with a right-hand value axis, the date axis beneath, a crosshair and a
+   tooltip that follows it. Sizes and colours are the set's; the shapes and the rhythm are Arc's. */
+:root {
+  --lc-axis-w: 48px;
+  --lc-axis-h: 26px;
+  --lc-line: 2px;
+}
+
+.lc { display: grid; gap: var(--space-4); min-width: 0; margin: 0; font-family: var(--font); letter-spacing: -0.01em; color: var(--text); }
+/* Series toggles: a plain line swatch beside each name. A hidden series keeps its place, its swatch empties and its name steps back. */
+.lc-legend { display: flex; flex-wrap: wrap; gap: 2px 4px; min-width: 0; margin-inline: -8px; }
+.lc-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 10px 0 8px; font: inherit; font-size: var(--text-sm); line-height: 1.4; color: var(--text-soft); cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-full); -webkit-tap-highlight-color: transparent; transition: color var(--arc-fast) var(--arc-ease-standard), background-color var(--arc-fast) var(--arc-ease-standard), transform var(--arc-instant) var(--arc-ease-standard); }
+.lc-toggle:active { transform: scale(0.97); }
+.lc-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.lc-toggle[aria-pressed="false"] { color: var(--text-faint); }
+.lc-toggle-label { white-space: nowrap; transition: opacity var(--arc-fast) var(--arc-ease-standard); }
+.lc-toggle[aria-pressed="false"] .lc-toggle-label { text-decoration: line-through; text-decoration-color: color-mix(in oklab, currentColor 55%, transparent); opacity: 0.72; }
+.lc-swatch { position: relative; flex: none; width: 14px; height: 10px; }
+.lc-swatch::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 2.5px; background: var(--series); border-radius: 2px; transform: translateY(-50%) scaleX(1); transform-origin: left; transition: transform var(--arc-standard) var(--spring), opacity var(--arc-fast) var(--arc-ease-standard); }
+.lc-swatch[data-dashed]::before { background: repeating-linear-gradient(to right, var(--series) 0 4px, transparent 4px 7px); }
+.lc-toggle[aria-pressed="false"] .lc-swatch::before { opacity: 0.45; transform: translateY(-50%) scaleX(0.35); }
+@media (hover: hover) and (pointer: fine) { .lc-toggle:hover { color: var(--text); background: color-mix(in oklab, var(--text) 5%, transparent); } }
+
+.lc-chart { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--lc-axis-w); grid-template-rows: auto var(--lc-axis-h); min-width: 0; }
+/* height 'fill': the chart grows into the box it is given and its plot takes the rows the legend and the axis leave. */
+.lc[data-fill] { flex: 1; grid-template-rows: auto minmax(0, 1fr); }
+.lc[data-fill] .lc-legend[hidden] + .lc-chart { grid-row: 1 / -1; }
+.lc[data-fill] .lc-chart { grid-template-rows: minmax(0, 1fr) var(--lc-axis-h); }
+.lc-plot { position: relative; grid-area: 1 / 1; min-width: 0; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.lc-plot:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+.lc-svg { display: block; overflow: visible; }
+.lc-gridline { stroke: var(--border-strong); stroke-width: 1; shape-rendering: crispEdges; }
+.lc-baseline { stroke: var(--control-border); stroke-width: 1; shape-rendering: crispEdges; opacity: 0.6; }
+.lc-crosshair { stroke: var(--control-border); stroke-width: 1; shape-rendering: crispEdges; opacity: 0; transition: opacity var(--arc-instant) var(--arc-ease-standard); }
+.lc-chart[data-scrubbing] .lc-crosshair { opacity: 0.7; }
+.lc-series { transition: opacity var(--arc-standard) var(--arc-ease-standard); }
+.lc-chart[data-loading] .lc-series { opacity: 0.32; animation: lc-breathe 1.4s var(--arc-ease-in-out) infinite alternate; }
+.lc-line { fill: none; stroke: var(--series); stroke-width: var(--lc-line); stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--arc-standard) var(--arc-ease-standard); }
+.lc-line[data-dashed] { stroke-dasharray: 4 5; stroke-width: 1.75; }
+.lc-area { fill: color-mix(in oklab, var(--series) 12%, transparent); stroke: none; }
+.lc-dot { fill: var(--series); stroke: var(--surface-raised); stroke-width: 2; opacity: 0; transition: opacity var(--arc-instant) var(--arc-ease-standard); }
+.lc-chart[data-scrubbing] .lc-dot:not([data-hidden]) { opacity: 1; }
+
+/* The tooltip floats over the plot, so it is the one layer here with a shadow. Springs carry its position; opacity and a small scale bring it in. */
+.lc-tooltip { position: absolute; top: 0; left: 0; z-index: 1; display: grid; gap: 4px; min-width: 140px; max-width: min(220px, 100%); padding: 10px 12px; background: var(--surface-overlay); border-radius: 14px; box-shadow: var(--shadow-overlay); opacity: 0; scale: 0.96; pointer-events: none; transition: opacity var(--arc-fast) var(--arc-ease-standard), scale var(--arc-fast) var(--arc-ease-standard); }
+.lc-chart[data-scrubbing] .lc-tooltip { opacity: 1; scale: 1; }
+.lc-tip-title { margin: 0 0 2px; font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; color: var(--text-soft); white-space: nowrap; }
+.lc-tip-row { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; font-size: var(--text-sm); line-height: 1.4; }
+.lc-tip-swatch { flex: none; width: 10px; height: 2.5px; background: var(--series); border-radius: 2px; }
+.lc-tip-swatch[data-dashed] { background: repeating-linear-gradient(to right, var(--series) 0 3px, transparent 3px 5px); }
+.lc-tip-name { flex: 1; min-width: 0; overflow: hidden; color: var(--text-soft); text-overflow: ellipsis; white-space: nowrap; }
+.lc-tip-value { flex: none; margin-left: 8px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }
+
+.lc-message[hidden], .lc-legend[hidden] { display: none; }
+.lc-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-size: var(--text-sm); color: var(--text-faint); pointer-events: none; }
+.lc-gutter { position: relative; grid-area: 1 / 2; min-width: 0; }
+.lc-tick { position: absolute; top: 0; left: 10px; display: block; height: 0; white-space: nowrap; pointer-events: none; }
+.lc-tick-text { display: block; font-size: var(--text-xs); line-height: 1; font-variant-numeric: tabular-nums; color: var(--text-faint); transform: translateY(-50%); }
+.lc-axis { position: relative; grid-area: 2 / 1; min-width: 0; }
+.lc-axis-label { position: absolute; top: 8px; font-size: var(--text-xs); line-height: 1; font-variant-numeric: tabular-nums; color: var(--text-faint); white-space: nowrap; }
+
+@keyframes lc-breathe { from { opacity: 0.22; } to { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) {
+  .lc-toggle, .lc-swatch::before, .lc-line, .lc-crosshair, .lc-dot, .lc-series { transition: none; }
+  .lc-tooltip { scale: 1; transition: opacity var(--arc-instant) linear; }
+  .lc-chart[data-loading] .lc-series { animation: none; }
+}

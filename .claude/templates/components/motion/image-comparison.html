@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparar imágenes · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./image-comparison.css">
+<style>
+  .compare { max-width: 560px; aspect-ratio: 16 / 10; border: 1px solid var(--border); border-radius: var(--radius); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Comparar imágenes</h1>
+      <p class="mu-demo__note">Dos versiones de una misma factura a ambos lados de un divisor. Se arrastra con mouse o con el dedo y se mueve con las flechas, Inicio y Fin. Lo que sigue al puntero sin arrastrar solo funciona donde hay mouse.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Arrastrar</h2>
+    <div class="compare" data-motion="image-comparison" data-label="Borrador contra emitida">
+      <img alt="Factura emitida" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100'%3E%3Crect width='160' height='100' fill='%23e6f4ef'/%3E%3Crect x='14' y='14' width='70' height='8' rx='3' fill='%232fb6a8'/%3E%3Crect x='14' y='34' width='132' height='6' rx='3' fill='%2399c9bf'/%3E%3Crect x='14' y='48' width='132' height='6' rx='3' fill='%2399c9bf'/%3E%3Crect x='14' y='62' width='90' height='6' rx='3' fill='%2399c9bf'/%3E%3Crect x='96' y='78' width='50' height='10' rx='4' fill='%232fb6a8'/%3E%3C/svg%3E">
+      <img alt="Factura en borrador" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100'%3E%3Crect width='160' height='100' fill='%23f1f0f5'/%3E%3Crect x='14' y='14' width='70' height='8' rx='3' fill='%23b3adc9'/%3E%3Crect x='14' y='34' width='132' height='6' rx='3' fill='%23d4d0e2'/%3E%3Crect x='14' y='48' width='132' height='6' rx='3' fill='%23d4d0e2'/%3E%3Crect x='14' y='62' width='90' height='6' rx='3' fill='%23d4d0e2'/%3E%3Crect x='96' y='78' width='50' height='10' rx='4' fill='%23b3adc9'/%3E%3C/svg%3E">
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-b">
+    <h2 class="mu-demo__label" id="s-b">Sigue al puntero (con mouse)</h2>
+    <div class="compare" data-motion="image-comparison" data-enable-hover="true" data-label="Borrador contra emitida, con el puntero">
+      <img alt="Factura emitida" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100'%3E%3Crect width='160' height='100' fill='%23fdf0dc'/%3E%3Crect x='14' y='14' width='70' height='8' rx='3' fill='%23f4b740'/%3E%3Crect x='14' y='34' width='132' height='6' rx='3' fill='%23e8cf9d'/%3E%3Crect x='14' y='48' width='132' height='6' rx='3' fill='%23e8cf9d'/%3E%3Crect x='96' y='78' width='50' height='10' rx='4' fill='%23f4b740'/%3E%3C/svg%3E">
+      <img alt="Factura anulada" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100'%3E%3Crect width='160' height='100' fill='%23f6e3e6'/%3E%3Crect x='14' y='14' width='70' height='8' rx='3' fill='%23e5566d'/%3E%3Crect x='14' y='34' width='132' height='6' rx='3' fill='%23e8b4bd'/%3E%3Crect x='14' y='48' width='132' height='6' rx='3' fill='%23e8b4bd'/%3E%3Crect x='96' y='78' width='50' height='10' rx='4' fill='%23e5566d'/%3E%3C/svg%3E">
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './image-comparison.js';
+  themeSwitch();
+</script>
+</body>
+</html>

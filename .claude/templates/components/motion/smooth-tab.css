@@ -1,0 +1,52 @@
+/* Smooth tab: a 200 px card with sliding content over a 400 px bar of four tabs and a spring pill. */
+:root {
+  --smooth-tab-bar-width: 400px;
+  --smooth-tab-card-height: 200px;
+  --smooth-tab-accent: var(--accent);
+  --smooth-tab-info: color-mix(in oklab, var(--info), black 14%);
+  --smooth-tab-success: color-mix(in oklab, var(--success), black 20%);
+  --smooth-tab-danger: color-mix(in oklab, var(--danger), black 8%);
+}
+:root[data-theme="dark"] {
+  --smooth-tab-info: color-mix(in oklab, var(--info), black 28%);
+  --smooth-tab-success: color-mix(in oklab, var(--success), black 32%);
+  --smooth-tab-danger: color-mix(in oklab, var(--danger), black 22%);
+  --smooth-tab-accent: color-mix(in oklab, var(--accent), black 12%);
+}
+
+.st { --st-tone: var(--smooth-tab-accent); display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: var(--smooth-tab-bar-width); margin-inline: auto; font-family: var(--font); color: var(--text); }
+.st *, .st *::before, .st *::after { box-sizing: border-box; }
+.st[data-tone="info"], .st__panel[data-tone="info"] { --st-tone: var(--smooth-tab-info); }
+.st[data-tone="success"], .st__panel[data-tone="success"] { --st-tone: var(--smooth-tab-success); }
+.st[data-tone="danger"], .st__panel[data-tone="danger"] { --st-tone: var(--smooth-tab-danger); }
+.st[data-tone="accent"], .st__panel[data-tone="accent"] { --st-tone: var(--smooth-tab-accent); }
+
+.st__card { position: relative; height: var(--smooth-tab-card-height); border-radius: var(--radius-control); background: var(--surface-raised); border: 1px solid var(--border-strong); box-shadow: var(--card-hairline), var(--shadow-1); }
+.st__clip { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+.st__panel { position: absolute; inset: 0; background: var(--surface-raised); backface-visibility: hidden; }
+.st__panel[hidden] { display: none; }
+.st__panel:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; border-radius: inherit; }
+.st__art { position: absolute; inset: 0; overflow: hidden; }
+.st__wave { position: absolute; bottom: 0; left: 0; width: 100%; height: 8rem; fill: var(--st-tone); stroke: var(--st-tone); stroke-width: 1; }
+.st__wave-a { opacity: 0.15; }
+.st__wave-b { opacity: 0.1; transform: translateY(10px); }
+.st__wave path { animation: st-drift 5s linear infinite; }
+@keyframes st-drift { 50% { transform: translateX(10px); } }
+.st[data-offscreen] .st__wave path, :root[data-tab-hidden] .st__wave path { animation-play-state: paused; }
+.st__copy { position: relative; display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 24px; }
+.st__title { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-title); line-height: 1.3; color: var(--text); }
+.st__desc { margin: 0; max-width: 90%; font-size: var(--text-md); line-height: 1.6; color: var(--text-soft); }
+
+.st__tabs { position: relative; padding: 4px 0; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface-raised); box-shadow: var(--card-hairline), var(--shadow-1); }
+.st__pill { position: absolute; z-index: 1; top: 0; left: 0; width: 100px; height: 100px; border-radius: 8px; background: var(--st-tone); box-shadow: var(--shadow-check); transform-origin: 0 0; transition: background-color 300ms var(--ease-out); pointer-events: none; }
+.st__grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(var(--st-cols, 4), minmax(0, 1fr)); gap: 4px; }
+.st__tab { position: relative; display: flex; align-items: center; justify-content: center; padding: 6px 8px; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--text-soft); font: inherit; font-size: var(--text-md); font-weight: var(--weight-medium); cursor: pointer; min-width: 0; transition: color 300ms var(--ease-out), background-color var(--motion-hover), transform var(--motion-press); }
+.st__tab-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) { .st__tab[aria-selected="false"]:hover { background: var(--surface-hover); color: var(--text); } }
+.st__tab[aria-selected="true"] { color: var(--on-accent); }
+.st__tab:active { transform: scale(var(--press-scale)); }
+.st__tab:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .st__wave path { animation: none; }
+  .st__pill, .st__tab { transition-duration: 120ms; }
+}

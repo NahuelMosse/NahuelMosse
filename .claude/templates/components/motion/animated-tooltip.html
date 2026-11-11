@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltip animado · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ac-demo.css">
+<link rel="stylesheet" href="./animated-tooltip.css">
+<style>
+  .stage-tip { padding-top: calc(var(--space-8) + var(--space-4)); }
+  .case { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; padding: var(--space-4) var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .case__title { margin: 0; font-size: var(--text-md); font-weight: var(--weight-strong); }
+  .case__meta { margin: 2px 0 0; font-size: var(--text-sm); color: var(--text-soft); }
+</style>
+</head>
+<body class="ui">
+<main class="ac-demo">
+  <header class="ac-demo__head">
+    <div>
+      <h1 class="ac-demo__title">Tooltip animado</h1>
+      <p class="ac-demo__note">Equipo asignado a una cuenta. El tooltip sale con un resorte rebotón y se inclina y se desliza con el puntero; con teclado aparece derecho.</p>
+    </div>
+    <div class="ac-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-ac-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-ac-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="ac-demo__section" aria-labelledby="s-team">
+    <h2 class="ac-demo__label" id="s-team">Equipo asignado · cuenta Ferretería Alvear</h2>
+    <div class="ac-demo__stage ac-demo__stage--center stage-tip" id="stage-team">
+      <div id="team" data-motion="animated-tooltip" role="group" aria-label="Equipo asignado"></div>
+    </div>
+  </section>
+
+  <section class="ac-demo__section" aria-labelledby="s-row">
+    <h2 class="ac-demo__label" id="s-row">En una fila de la cartera</h2>
+    <div class="ac-demo__stage" id="stage-row" style="padding-top: var(--space-8)">
+      <div class="case">
+        <div>
+          <p class="case__title">Cartera de cobranzas · Zona Norte</p>
+          <p class="case__meta">Tres personas se reparten los vencimientos del mes.</p>
+        </div>
+        <div id="small" role="group" aria-label="Responsables de cobranzas"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch, hueOf, initials } from './ac-demo.js';
+  themeSwitch();
+  const people = [
+    ['Julia Ferrari', 'Cobranzas'],
+    ['Matías Quiroga', 'Cuentas a cobrar'],
+    ['Paula Benítez', 'Facturación'],
+    ['Nicolás Roldán', 'Conciliación'],
+    ['Camila Duarte', 'Atención a clientes'],
+    ['Sergio Almada', 'Administración'],
+  ];
+  const fill = (host, list) => {
+    for (const [name, role] of list) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ac-tip__item';
+      b.dataset.name = name;
+      b.dataset.role = role;
+      b.innerHTML = '<span class="ac-tip__face"></span>';
+      const face = b.firstElementChild;
+      face.style.setProperty('--h', hueOf(name));
+      face.textContent = initials(name);
+      host.append(b);
+    }
+  };
+  const team = document.getElementById('team');
+  fill(team, people);
+  const small = document.getElementById('small');
+  fill(small, people.slice(0, 3));
+  // Importing the module mounts #team (it carries data-motion); the second row is mounted by hand.
+  const { mount } = await import('./animated-tooltip.js');
+  mount(small);
+</script>
+</body>
+</html>

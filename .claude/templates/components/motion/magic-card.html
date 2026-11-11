@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjeta con luz · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./magic-card.css">
+<style>
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); }
+  .sheet__head { padding: var(--space-4); border-bottom: 1px solid var(--border); }
+  .sheet__head h3 { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .sheet__head p { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: var(--text-soft); }
+  .sheet__body { display: grid; gap: var(--space-4); padding: var(--space-4); }
+  .sheet__foot { padding: var(--space-4); border-top: 1px solid var(--border); }
+  .field { display: grid; gap: var(--space-2); }
+  .field label { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+  .field input { height: var(--control-md); padding: 0 var(--space-3); border: 1px solid var(--control-border); border-radius: var(--radius-control); background: var(--field-bg); color: var(--text); font: inherit; }
+  .sheet__go { width: 100%; height: var(--control-md); border: 0; border-radius: var(--radius-control); background: var(--accent); color: var(--on-accent); font: inherit; font-weight: var(--weight-medium); cursor: pointer; box-shadow: var(--shadow-primary); }
+  .stat { padding: var(--space-5); display: grid; gap: var(--space-1); }
+  .stat strong { font-size: var(--text-2xl); font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Tarjeta con luz</h1>
+      <p class="mu-demo__note">El borde y una luz interior siguen al puntero. Pasá el mouse por las tarjetas; al salir la luz se apaga en 300 ms. El modo orbe usa un círculo desenfocado con resorte. Con movimiento reducido la luz queda donde entró el puntero.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-gradient">
+    <h2 class="mu-demo__label" id="s-gradient">Modo gradiente · el de la demo original, con un formulario</h2>
+    <div class="cards">
+      <div class="mu-demo__stage--bare" style="max-width: 24rem">
+        <div id="login" data-motion="magic-card">
+          <div class="sheet__head"><h3>Nueva factura</h3><p>Elegí el cliente y el importe para emitirla</p></div>
+          <div class="sheet__body">
+            <div class="field"><label for="client">Cliente</label><input id="client" type="text" placeholder="Ferretería Alvear"></div>
+            <div class="field"><label for="amount">Importe</label><input id="amount" type="text" inputmode="numeric" placeholder="$ 184.500"></div>
+          </div>
+          <div class="sheet__foot"><button type="button" class="sheet__go">Emitir factura</button></div>
+        </div>
+      </div>
+      <div data-motion="magic-card" data-mode="gradient">
+        <div class="stat"><strong>$ 3.400.000</strong><span>cobrado este mes, 68 % de la meta</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-orb">
+    <h2 class="mu-demo__label" id="s-orb">Modo orbe · un círculo desenfocado con resorte (rigidez 250, amortiguación 30)</h2>
+    <div class="cards">
+      <div id="orb" data-motion="magic-card" data-mode="orb" style="min-height: 180px">
+        <div class="stat"><strong>12</strong><span>facturas vencidas esperando un recordatorio</span></div>
+      </div>
+      <div id="orb-small" data-motion="magic-card" data-mode="orb" style="min-height: 180px">
+        <div class="stat"><strong>41</strong><span>clientes con cuenta corriente al día</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  await import('./magic-card.js');
+</script>
+</body>
+</html>

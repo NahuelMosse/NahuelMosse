@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anillos de cobranza · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./apple-activity-card.css">
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Anillos de cobranza</h1>
+      <p class="mu-demo__note">Tres anillos concéntricos: los de afuera llegan primero, cada arco se dibuja en 1,8 segundos y las cifras entran por la derecha. El arco es lo cobrado sobre la meta.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-rings">
+    <h2 class="mu-demo__label" id="s-rings">Cobranza de octubre</h2>
+    <div class="mu-demo__stage">
+      <div id="rings" data-motion="apple-activity-card" data-title="Cobranza de octubre"
+        data-rings='[{"label":"COBRADAS","current":38,"target":52,"unit":"FAC"},{"label":"CLIENTES AL DÍA","current":24,"target":30,"unit":"CLI"},{"label":"CONCILIADOS","current":6,"target":12,"unit":"PAGOS"}]'></div>
+    </div>
+    <div class="mu-demo__row"><button type="button" class="btn-demo" id="replay">Volver a dibujar</button></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-two">
+    <h2 class="mu-demo__label" id="s-two">Con dos anillos y tonos propios · sin título</h2>
+    <div class="mu-demo__stage">
+      <div id="two" aria-label="Cobranza en dos anillos"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const { mount } = await import('./apple-activity-card.js');
+  const rings = mount(document.getElementById('rings'), {});
+  document.getElementById('replay').addEventListener('click', () => rings.replay());
+  mount(document.getElementById('two'), { rings: [{ label: 'VENCIDAS', current: 4, target: 20, unit: 'FAC', tone: 'danger' }, { label: 'EN TÉRMINO', current: 16, target: 20, unit: 'FAC', tone: 'success' }] });
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Cargando</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./kk-loader.css">
+<style>.demo { max-width: 1040px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: var(--space-5); align-items: start; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Indicador de carga</h1><p class="text-soft">Para una espera larga que ocupa toda la vista: importar un extracto, conciliar o armar un reporte. Tres tamaños.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <div class="demo__grid">
+    <section class="surface" aria-label="Chico"><div data-motion="kk-loader" data-size="sm" data-title="Cargando facturas…" data-subtitle="Un momento"></div></section>
+    <section class="surface" aria-label="Mediano"><div id="md" data-motion="kk-loader"></div></section>
+    <section class="surface" aria-label="Grande"><div data-motion="kk-loader" data-size="lg" data-title="Armando el reporte de IVA" data-subtitle="Reunimos todos los comprobantes del período"></div></section>
+  </div>
+</main>
+<script type="module">
+  import './kk-loader.js';
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

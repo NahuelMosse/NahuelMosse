@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diálogo apilado · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./dialog-stack.css">
+<style>
+  .field { display: grid; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-soft); }
+  .field input, .field textarea { font: inherit; padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--surface-raised); color: var(--text); }
+  .field small { font-size: var(--text-xs); }
+  .go { height: 44px; border: 0; border-radius: var(--radius-control); background: var(--accent); color: var(--on-accent); font: inherit; font-weight: var(--weight-medium); cursor: pointer; }
+  .link { border: 0; background: none; color: var(--text-soft); font: inherit; font-size: var(--text-sm); cursor: pointer; min-height: 44px; }
+  .steps { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-4); }
+  .steps li { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--text-sm); }
+  .steps svg { flex: none; width: 32px; height: 32px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--surface-sunken); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Diálogo apilado</h1>
+      <p class="mu-demo__note">Un modal con varias tarjetas: la de adelante responde y las anteriores asoman detrás, más chicas y apagadas. Escape vuelve una tarjeta; en la primera, cierra. Con movimiento reducido solo hay fundido.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Enviar una factura</h2>
+    <div class="mu-demo__row" id="host"><button type="button" class="btn-demo" data-stack-trigger>Enviar factura por mail</button></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './dialog-stack.js';
+  themeSwitch();
+  const icon = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+  mount(document.getElementById('host'), {
+    stack: [
+      { id: 'send', title: 'Enviar factura', content: `
+        <label class="field">Mail del cliente<input type="email" value="administracion@estudioquiroga.example"><small>Separá varios mails con comas.</small></label>
+        <label class="field">Mensaje<textarea rows="4">Hola, te adjuntamos la factura A-0004-00001284.</textarea></label>
+        <button type="button" class="go" data-stack="close">Enviar</button>
+        <button type="button" class="link" data-stack="next">¿Cómo funciona?</button>` },
+      { id: 'how', title: 'Cómo funciona', content: `
+        <h4 style="margin:0;font-size:var(--text-lg)">Tres pasos</h4>
+        <ol class="steps">
+          <li>${icon('M3.5 7l8.5 6 8.5-6M3 5h18v14H3z')}<span>Mandamos el PDF y el enlace de pago al mail del cliente.</span></li>
+          <li>${icon('M6 3.5h8l4 4V20.5H6zM9 12h6M9 15.5h6')}<span>El cliente ve la factura y elige cómo pagarla.</span></li>
+          <li>${icon('M8.5 12.2l2.4 2.4 4.6-5M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17z')}<span>El cobro se concilia solo con el banco.</span></li>
+        </ol>
+        <button type="button" class="go" data-stack="back">Entendido</button>` },
+    ],
+  });
+</script>
+</body>
+</html>

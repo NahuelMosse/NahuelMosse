@@ -1,0 +1,33 @@
+/* Hover preview: a floating invoice card that follows the pointer along its trigger. */
+:root {
+  --hover-preview-width: 288px;
+  --hover-preview-radius: var(--radius);
+  --hover-preview-bg: var(--surface-overlay);
+  --hover-preview-shadow: var(--shadow-overlay);
+  --hover-preview-z: 70;
+}
+
+.hover-preview { position: fixed; top: 0; left: 0; z-index: var(--hover-preview-z); width: var(--hover-preview-width); max-width: calc(100vw - 16px); will-change: transform; }
+.hover-preview[data-state="closed"] { visibility: hidden; pointer-events: none; }
+.hover-preview[data-side="bottom"] { transform-origin: 50% 0; }
+.hover-preview[data-side="top"] { transform-origin: 50% 100%; }
+.hover-preview[data-side="right"] { transform-origin: 0 50%; }
+.hover-preview[data-side="left"] { transform-origin: 100% 50%; }
+.hover-preview__panel { overflow: hidden; border-radius: var(--hover-preview-radius); background: var(--hover-preview-bg); box-shadow: var(--hover-preview-shadow); color: var(--text); }
+.hover-preview__body { position: relative; padding: var(--space-4); }
+
+.hover-preview__invoice { display: grid; gap: var(--space-3); font-size: var(--text-sm); }
+.hover-preview__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.hover-preview__number { font-weight: var(--weight-strong); font-variant-numeric: tabular-nums; }
+.hover-preview__status { padding: 1px var(--space-2); border-radius: var(--radius-full); background: var(--surface-sunken); color: var(--text-soft); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+.hover-preview__status[data-tone="success"] { background: var(--success-soft); color: var(--text); }
+.hover-preview__status[data-tone="warning"] { background: var(--warning-soft); color: var(--text); }
+.hover-preview__status[data-tone="danger"] { background: var(--danger-soft); color: var(--text); }
+.hover-preview__client { margin: 0; color: var(--text-soft); }
+.hover-preview__dates { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin: 0; }
+.hover-preview__dates dt { color: var(--text-faint); font-size: var(--text-xs); }
+.hover-preview__dates dd { margin: 0; font-variant-numeric: tabular-nums; }
+.hover-preview__lines { display: grid; gap: var(--space-1); margin: 0; padding: var(--space-3) 0 0; border-top: 1px solid var(--border); list-style: none; color: var(--text-soft); }
+.hover-preview__lines li { display: flex; justify-content: space-between; gap: var(--space-3); }
+.hover-preview__amount { font-variant-numeric: tabular-nums; }
+.hover-preview__total { display: flex; justify-content: space-between; gap: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--border); }

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imán · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./magnetic.css">
+<style>
+  .send { display: inline-flex; align-items: center; height: var(--control-md); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); background: var(--accent); color: var(--on-accent); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-medium); cursor: pointer; }
+  .send:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .zone { display: flex; align-items: center; justify-content: center; gap: var(--space-4); min-height: 180px; border: 1px dashed var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Imán</h1>
+      <p class="mu-demo__note">El botón se acerca al puntero cuando está cerca y vuelve con un resorte. Solo lo mueve un mouse: en pantallas táctiles y con movimiento reducido se queda quieto y se toca igual.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Sobre el propio botón</h2>
+    <div class="zone"><span data-motion="magnetic"><button type="button" class="send">Emitir factura</button></span></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-b">
+    <h2 class="mu-demo__label" id="s-b">En toda la zona, más fuerte</h2>
+    <div class="zone">
+      <span data-motion="magnetic" data-action-area="parent" data-intensity="0.9" data-range="220"><button type="button" class="send">Cobrar</button></span>
+      <span data-motion="magnetic" data-action-area="parent" data-intensity="0.9" data-range="220"><button type="button" class="btn-demo">Enviar recordatorio</button></span>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './magnetic.js';
+  themeSwitch();
+</script>
+</body>
+</html>

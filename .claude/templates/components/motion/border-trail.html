@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Borde con destello · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./border-trail.css">
+<style>
+  .card { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); max-width: 420px; }
+  .card h3 { margin: 0 0 var(--space-1); font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .card p { margin: 0; color: var(--text-soft); font-size: var(--text-sm); }
+  .pill { height: var(--control-md); padding: 0 var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--surface-raised); color: var(--text); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+  .pill:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Borde con destello</h1>
+      <p class="mu-demo__note">Un punto de luz recorre el borde y nunca entra: una máscara deja solo el aro. Se detiene fuera de pantalla y, con movimiento reducido, queda quieto en la esquina.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-a">
+    <h2 class="mu-demo__label" id="s-a">Factura destacada</h2>
+    <div class="card" data-motion="border-trail" data-size="80">
+      <h3>A-0004-00001284 · Estudio Quiroga</h3>
+      <p>Vence el 30 de octubre · $ 482.300,00</p>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-b">
+    <h2 class="mu-demo__label" id="s-b">Botón, vuelta más lenta</h2>
+    <div class="mu-demo__row"><button type="button" class="pill" data-motion="border-trail" data-size="40" data-duration="8">Emitir factura</button></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './border-trail.js';
+  themeSwitch();
+</script>
+</body>
+</html>

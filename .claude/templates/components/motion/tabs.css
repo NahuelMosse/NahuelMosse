@@ -1,0 +1,63 @@
+/* Animated tabs (Animate UI): a list on the segmented track with one sliding highlight, and contents on a
+   track that slides. The highlight is a 100 px wide node moved and scaled with transform by tabs.js. */
+:root {
+  --tabs-gap: var(--space-2);
+  --tabs-list-height: calc(var(--control-md) + 4px);
+  --tabs-list-pad: 3px;
+  --tabs-list-radius: var(--radius-control);
+  --tabs-track: var(--segmented-track);
+  --tabs-pill: var(--segmented-thumb);
+  --tabs-pill-shadow: var(--shadow-thumb);
+  --tabs-pill-edge: transparent;
+  --tabs-text: var(--text-soft);
+  --tabs-text-active: var(--text);
+  --tabs-color-time: 500ms;
+  --tabs-bleed: var(--space-2);
+  --tabs-blur: 4px;
+  --tabs-spring-pill: 200 25 1;
+  --tabs-spring-pane: 300 30 1;
+  --tabs-fade: 140ms;
+}
+:root[data-theme="dark"] { --tabs-pill-edge: var(--border); --tabs-pill: var(--surface-active); }
+
+[data-motion="tabs"] { display: flex; flex-direction: column; gap: var(--tabs-gap); min-width: 0; }
+
+.tabs-au__list {
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; width: fit-content; max-width: 100%;
+  height: var(--tabs-list-height); padding: var(--tabs-list-pad); border-radius: var(--tabs-list-radius); background: var(--tabs-track);
+}
+.tabs-au__pill {
+  position: absolute; z-index: 0; left: 0; top: 0; width: 100px; height: 28px; transform-origin: 0 0; pointer-events: none;
+  background: var(--tabs-pill); border: 1px solid var(--tabs-pill-edge); box-shadow: var(--tabs-pill-shadow);
+  transform: translate(0, 0) scaleX(0); will-change: transform;
+}
+[data-motion="tabs"]:not([data-ready]) .tabs-au__pill { visibility: hidden; }
+
+.tabs-au__list [role="tab"] {
+  position: relative; z-index: 1; flex: 1 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; align-self: stretch;
+  padding: var(--space-1) var(--space-2); border: 0; border-radius: var(--radius-item); background: none; color: var(--tabs-text);
+  font: inherit; font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; cursor: pointer; user-select: none; touch-action: manipulation;
+  transition: color var(--tabs-color-time) var(--ease-in-out);
+}
+.tabs-au__list [role="tab"][data-active="true"] { color: var(--tabs-text-active); }
+.tabs-au__list [role="tab"] .icon, .tabs-au__list [role="tab"] svg { flex: none; width: 16px; height: 16px; }
+.tabs-au__list [role="tab"]:disabled { opacity: 0.5; cursor: not-allowed; }
+.tabs-au__list [role="tab"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* Clipped, not hidden: a hidden box can still be scrolled by a focus or a scrollIntoView, which would carry the track
+   away from the pane that shows. */
+.tabs-au__contents { overflow: clip; }
+.tabs-au__track { display: flex; align-items: flex-start; margin-inline: calc(var(--tabs-bleed) * -1); will-change: transform; }
+.tabs-au__track > [role="tabpanel"] {
+  flex: 0 0 100%; min-width: 0; padding-inline: var(--tabs-bleed); box-sizing: border-box;
+  filter: blur(0); transition: filter var(--tabs-pane-time, 480ms) var(--tabs-pane-ease, var(--ease-out));
+}
+.tabs-au__track > [role="tabpanel"][data-active="false"] { filter: blur(var(--tabs-blur)); }
+.tabs-au__track > [role="tabpanel"]:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; border-radius: var(--radius-item); }
+
+/* Reduced motion: no travel and no blur; the panes cross-fade and the label color changes quickly. */
+@media (prefers-reduced-motion: reduce) {
+  .tabs-au__track > [role="tabpanel"] { transition: opacity var(--tabs-fade) var(--ease-out); }
+  .tabs-au__track > [role="tabpanel"][data-active="false"] { filter: none; opacity: 0; }
+  .tabs-au__list [role="tab"] { transition-duration: var(--tabs-fade); }
+}

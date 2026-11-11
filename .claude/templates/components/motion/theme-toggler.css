@@ -1,0 +1,15 @@
+/* Theme toggler (Magic UI + Animate UI). The view transition's own styles are scoped to the attribute the
+   toggler sets on the root while it runs, so another view transition on the page is left alone. */
+:root {
+  --theme-toggle-icon: 18px;
+  --theme-fade: 140ms;
+}
+.tt__icons { display: inline-grid; place-items: center; width: var(--theme-toggle-icon); height: var(--theme-toggle-icon); flex: none; }
+.tt__icon { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+
+html[data-theme-vt]::view-transition-old(root),
+html[data-theme-vt]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html[data-theme-vt="shape"]::view-transition-group(root) { animation-duration: var(--theme-toggle-vt-duration); }
+html[data-theme-vt="shape"]::view-transition-new(root) { clip-path: var(--theme-vt-clip-from); }
+html[data-theme-vt="fade"]::view-transition-new(root) { animation: theme-fade-in var(--theme-fade) var(--ease-out) both; }
+@keyframes theme-fade-in { from { opacity: 0; } to { opacity: 1; } }

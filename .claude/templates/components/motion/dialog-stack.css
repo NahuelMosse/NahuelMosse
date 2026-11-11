@@ -1,0 +1,27 @@
+/* Dialog stack (Watermelon UI): a modal of stacked cards. The front card is live; the ones behind it peek out above it. */
+:root {
+  --mu-dialog-stack-width: 24rem;
+  --mu-dialog-stack-peek: -35px;
+  --mu-dialog-stack-under-scale: 0.94;
+  --mu-dialog-stack-under-opacity: 0.5;
+}
+.mu-dialog-stack { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: var(--space-4); opacity: 0; transform: translateY(100px); transition: opacity 250ms ease-out, transform 250ms ease-out; }
+.mu-dialog-stack[data-open="true"] { opacity: 1; transform: none; }
+.mu-dialog-stack[hidden] { display: none; }
+.mu-dialog-stack__scrim { position: absolute; inset: 0; background: oklch(0% 0 0 / 0.25); backdrop-filter: blur(2px); }
+.mu-dialog-stack__stage { position: relative; width: min(var(--mu-dialog-stack-width), 100%); min-height: 28rem; }
+.mu-dialog-stack__card { position: absolute; inset: 0 0 auto 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: calc(var(--radius) * 2); background: var(--surface-raised); color: var(--text); box-shadow: var(--shadow-modal); transition: transform var(--mu-dialog-stack-ms) var(--mu-dialog-stack-ease), opacity var(--mu-dialog-stack-ms) var(--mu-dialog-stack-ease); }
+.mu-dialog-stack__card[data-state="front"] { transform: none; opacity: 1; }
+.mu-dialog-stack__card[data-state="under"] { transform: translateY(var(--mu-dialog-stack-peek)) scale(var(--mu-dialog-stack-under-scale)); opacity: var(--mu-dialog-stack-under-opacity); pointer-events: none; }
+.mu-dialog-stack__card[data-state="ahead"] { transform: translateY(50px) scale(0.95); opacity: 0; pointer-events: none; }
+.mu-dialog-stack__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border); background: var(--surface-sunken); }
+.mu-dialog-stack__title { margin: 0; font-size: var(--text-md); font-weight: var(--weight-medium); color: var(--text-soft); }
+.mu-dialog-stack__x { display: inline-grid; place-items: center; width: 44px; height: 44px; margin: -8px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-soft); cursor: pointer; }
+.mu-dialog-stack__x:hover { background: var(--surface-active, var(--surface-sunken)); }
+.mu-dialog-stack__x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.mu-dialog-stack__x:focus-visible, .mu-dialog-stack__body :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mu-dialog-stack__body { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--space-5) var(--space-6); }
+@media (prefers-reduced-motion: reduce) {
+  .mu-dialog-stack { transform: none; transition: opacity 120ms linear; }
+  .mu-dialog-stack__card, .mu-dialog-stack__card[data-state] { transition: opacity 120ms linear; transform: none; }
+}

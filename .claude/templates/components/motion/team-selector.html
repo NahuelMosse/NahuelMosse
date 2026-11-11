@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Puestos del equipo</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./team-selector.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: var(--space-6); align-items: start; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Equipo de facturación</h1><p class="text-soft">Sumá o quitá puestos: los avatares entran con un resorte y el número gira hacia donde va. En el tope, la tarjeta vibra.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <div class="demo__grid">
+    <section class="stack" data-gap="3" aria-label="Un puesto de entrada"><div id="one" data-motion="team-selector"></div><p class="text-caption" id="log" role="status">Puestos: 1</p></section>
+    <section class="stack" data-gap="3" aria-label="Tres puestos de entrada"><div id="three"></div></section>
+  </div>
+</main>
+<script type="module">
+  import { mount } from './team-selector.js';
+  mount(document.getElementById('one'));
+  mount(document.getElementById('three'), { defaultValue: 3, label: 'Revisores de facturas' });
+  document.addEventListener('teamselector:change', (e) => { if (e.target.id === 'one') document.getElementById('log').textContent = `Puestos: ${e.detail.size}`; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs animadas · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./tabs.css">
+<link rel="stylesheet" href="./icons.css">
+<style>
+  .demo { max-width: 720px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); margin-bottom: var(--space-3); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--border-subtle); font-size: var(--text-md); }
+  .row span:last-child { font-variant-numeric: tabular-nums; }
+  .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .kanban > div { background: var(--surface-sunken); border-radius: var(--radius-control); padding: var(--space-3); font-size: var(--text-sm); }
+  .kanban h3 { font-size: var(--text-xs); color: var(--text-soft); margin-bottom: var(--space-2); text-transform: none; font-weight: var(--weight-medium); }
+  .kanban p { background: var(--surface-raised); border-radius: var(--radius-item); padding: var(--space-2); margin-bottom: var(--space-2); box-shadow: var(--shadow-1); }
+  .timeline { list-style: none; padding: 0; display: grid; gap: var(--space-3); font-size: var(--text-md); }
+  .timeline li { display: grid; grid-template-columns: 92px 1fr; gap: var(--space-3); }
+  .timeline time { color: var(--text-soft); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Tabs animadas</h1>
+      <p class="demo__note">Porte de Animate UI · Tabs. Resorte 200/25 en el resaltado, 300/30 en el contenido.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section>
+    <h2>Vistas de facturas</h2>
+    <div data-motion="tabs" id="views" data-value="list">
+      <div class="tabs-au__list" role="tablist" aria-label="Vista de facturas">
+        <button role="tab" data-value="list">Lista</button>
+        <button role="tab" data-value="board">Tablero</button>
+        <button role="tab" data-value="timeline">Línea de tiempo</button>
+      </div>
+      <div class="tabs-au__contents">
+        <div role="tabpanel" data-value="list">
+          <div class="row"><span>FC-A 0001-00004821 · Ferretería Del Plata</span><span>$ 1.284.500,00</span></div>
+          <div class="row"><span>FC-A 0001-00004822 · Estudio Quiroga y Asoc.</span><span>$ 342.900,00</span></div>
+          <div class="row"><span>FC-B 0003-00001190 · Panadería La Esquina</span><span>$ 58.200,00</span></div>
+        </div>
+        <div role="tabpanel" data-value="board">
+          <div class="kanban">
+            <div><h3>Borrador</h3><p>FC-B 0003-00001190</p></div>
+            <div><h3>Emitida</h3><p>FC-A 0001-00004821</p><p>FC-A 0001-00004822</p></div>
+            <div><h3>Cobrada</h3><p>FC-A 0001-00004790</p><p>FC-A 0001-00004803</p><p>FC-C 0002-00000311</p></div>
+          </div>
+        </div>
+        <div role="tabpanel" data-value="timeline">
+          <ol class="timeline">
+            <li><time datetime="2026-10-12">12/10/2026</time><span>Se emitió FC-A 0001-00004822 a Estudio Quiroga y Asoc.</span></li>
+            <li><time datetime="2026-10-09">09/10/2026</time><span>Ferretería Del Plata pagó FC-A 0001-00004790.</span></li>
+            <li><time datetime="2026-10-05">05/10/2026</time><span>Se envió recordatorio de vencimiento a Panadería La Esquina.</span></li>
+            <li><time datetime="2026-10-01">01/10/2026</time><span>Se creó el borrador FC-B 0003-00001190.</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Con íconos</h2>
+    <div data-motion="tabs" id="with-icons" data-value="clients">
+      <div class="tabs-au__list" role="tablist" aria-label="Secciones">
+        <button role="tab" data-value="panel"><span data-motion="icons" data-icon="layout-dashboard" data-size="16"></span>Panel</button>
+        <button role="tab" data-value="clients"><span data-motion="icons" data-icon="users" data-size="16"></span>Clientes</button>
+        <button role="tab" data-value="settings"><span data-motion="icons" data-icon="settings" data-size="16"></span>Ajustes</button>
+      </div>
+      <div class="tabs-au__contents">
+        <div role="tabpanel" data-value="panel"><p class="demo__note">Facturación del mes, vencimientos próximos y cobranzas.</p></div>
+        <div role="tabpanel" data-value="clients"><p class="demo__note">42 clientes activos. 3 con facturas vencidas hace más de 30 días.</p><p class="demo__note">Último alta: Estudio Quiroga y Asoc., CUIT 30-71234567-8.</p></div>
+        <div role="tabpanel" data-value="settings"><p class="demo__note">Numeración de comprobantes, puntos de venta y alícuotas de IVA.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./icons.js"></script>
+<script type="module" src="./tabs.js"></script>
+</body>
+</html>

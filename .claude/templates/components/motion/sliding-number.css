@@ -1,0 +1,12 @@
+/* Sliding number (Animate UI / Motion Primitives): a column of ten digits per place, each place a
+   1ch-wide window one line tall. The springs are tokens, as "stiffness damping mass". */
+:root {
+  --sliding-number-spring: 50 10 0.4;
+  --sliding-number-spring-primitives: 280 18 0.3;
+}
+.sn { display: inline-flex; align-items: center; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
+.sn__digits { display: inline-flex; align-items: center; }
+.sn__s { display: inline-block; }
+.sn__roll { position: relative; display: inline-block; width: 1ch; overflow-x: visible; overflow-y: clip; line-height: 1; font-variant-numeric: tabular-nums; }
+.sn__ghost { visibility: hidden; }
+.sn__d { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }

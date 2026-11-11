@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cifra con carretes · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./slot-text.css">
+<style>
+  .figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); }
+  .figure-card { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .figure-card .big { font-size: var(--text-2xl); font-weight: var(--weight-strong); }
+  .figure-card small { color: var(--text-soft); font-size: var(--text-sm); }
+  .rev { display: grid; gap: var(--space-4); width: min(100%, 420px); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .rev__head { display: flex; justify-content: space-between; align-items: baseline; font-size: var(--text-sm); }
+  .rev__name { color: var(--text-soft); }
+  .rev__delta { color: var(--success); font-weight: var(--weight-medium); font-variant-numeric: tabular-nums; }
+  .rev__amount { font-size: 3.25rem; font-weight: var(--weight-regular); letter-spacing: -0.03em; line-height: 1.2; min-height: 1.2em; }
+  .rev__tabs { display: grid; grid-template-columns: repeat(4, 1fr); padding: 2px; border-radius: var(--radius-control); background: var(--segmented-track); }
+  .rev__tabs button { height: 30px; border: 0; border-radius: var(--radius-item); background: none; color: var(--text-soft); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+  .rev__tabs button[aria-pressed="true"] { background: var(--segmented-thumb); color: var(--text); box-shadow: var(--shadow-control); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Cifra con carretes</h1>
+      <p class="mu-demo__note">Cada carácter es un carrete: los dígitos giran en el sentido en que se movió el número y frenan de izquierda a derecha, sin rebote. Las columnas se indexan por valor posicional, así que 999 a 1.000 conserva el carrete de las unidades. Con movimiento reducido cambia con un fundido.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-rev">
+    <h2 class="mu-demo__label" id="s-rev">Facturado por período</h2>
+    <div class="rev" id="rev">
+      <div class="rev__head"><span class="rev__name">Facturado</span><span class="rev__delta" id="delta">+12,4 %</span></div>
+      <div class="rev__amount"><span id="rev-amount"></span></div>
+      <div class="rev__tabs" role="group" aria-label="Período">
+        <button type="button" aria-pressed="false" data-p="hoy">Hoy</button>
+        <button type="button" aria-pressed="true" data-p="semana">Semana</button>
+        <button type="button" aria-pressed="false" data-p="mes">Mes</button>
+        <button type="button" aria-pressed="false" data-p="año">Año</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-money">
+    <h2 class="mu-demo__label" id="s-money">Facturado del mes</h2>
+    <div class="figures">
+      <div class="figure-card"><small>Facturado</small><span class="big"><span id="billed"></span></span></div>
+      <div class="figure-card"><small>Facturas emitidas</small><span class="big"><span id="count" data-motion="slot-text" data-value="999"></span></span></div>
+      <div class="figure-card"><small>Estado de la factura A-0004-00001284</small><span class="big"><span id="state" data-motion="slot-text" data-value="Borrador"></span></span></div>
+    </div>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="paid">Entró un cobro de $ 250.000</button>
+      <button type="button" class="btn-demo" id="refund">Se devolvió $ 120.000</button>
+      <button type="button" class="btn-demo" id="issue">Emitir una factura</button>
+      <button type="button" class="btn-demo" id="cycle">Cambiar el estado</button>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './slot-text.js';
+  themeSwitch();
+  const money = (n) => `$ ${new Intl.NumberFormat('es-AR').format(n)}`;
+  const periods = { hoy: [184500, '+3,2 %'], semana: [1248300, '+12,4 %'], mes: [4850000, '+8,1 %'], año: [52904200, '+21,7 %'] };
+  const rev = mount(document.getElementById('rev-amount'), { value: periods.semana[0], format: money });
+  const delta = mount(document.getElementById('delta'), { value: periods.semana[1] });
+  for (const b of document.querySelectorAll('.rev__tabs button')) {
+    b.addEventListener('click', () => {
+      for (const o of document.querySelectorAll('.rev__tabs button')) o.setAttribute('aria-pressed', String(o === b));
+      rev.set(periods[b.dataset.p][0]);
+      delta.set(periods[b.dataset.p][1]);
+    });
+  }
+  const billed = mount(document.getElementById('billed'), { value: 4850000, format: money });
+  const count = mount(document.getElementById('count'), {});
+  const state = mount(document.getElementById('state'), {});
+  let total = 4850000;
+  let issued = 999;
+  const states = ['Borrador', 'Emitida', 'Pagada', 'Vencida'];
+  let at = 0;
+  document.getElementById('paid').addEventListener('click', () => { total += 250000; billed.set(total); });
+  document.getElementById('refund').addEventListener('click', () => { total -= 120000; billed.set(total); });
+  document.getElementById('issue').addEventListener('click', () => { issued += 1; count.set(issued); });
+  document.getElementById('cycle').addEventListener('click', () => { at = (at + 1) % states.length; state.set(states[at]); });
+</script>
+</body>
+</html>

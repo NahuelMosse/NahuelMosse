@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Botón que gira · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./flip-button.css">
+<style>
+  .demo { max-width: 760px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Botón que gira</h1>
+      <p class="demo__note">Porte de Animate UI · Flip Button. Un resorte de 280/20 gira la cara. También con el teclado.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section class="stack">
+    <h2>Dorso de una factura</h2>
+    <div class="inline">
+      <button data-motion="flip-button" id="back-of" data-front="Ver dorso" data-back="Dar vuelta"></button>
+      <button data-motion="flip-button" data-front="Descargar PDF" data-back="Factura A 0001-00004821" data-back-variant="ghost"></button>
+      <button data-motion="flip-button" data-front="Anular" data-back="Anular factura" data-front-variant="ghost" data-back-variant="destructive" data-size="sm"></button>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Desde cada borde</h2>
+    <div class="inline">
+      <button data-motion="flip-button" data-from="top" data-front="Desde arriba" data-back="Baja"></button>
+      <button data-motion="flip-button" data-from="bottom" data-front="Desde abajo" data-back="Sube"></button>
+      <button data-motion="flip-button" data-from="left" data-front="Desde la izquierda" data-back="Entra"></button>
+      <button data-motion="flip-button" data-from="right" data-front="Desde la derecha" data-back="Entra"></button>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Con ícono y deshabilitado</h2>
+    <div class="inline">
+      <button data-motion="flip-button" aria-label="Enviar la factura por correo">
+        <span data-face="front" class="btn btn--ghost">Enviar</span><span data-face="back" class="btn btn--primary">A cliente@ledger.test</span>
+      </button>
+      <button data-motion="flip-button" data-front="Emitir" data-back="No disponible" disabled></button>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./flip-button.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+/* Showcase register: the warm skin for landings and pieces that have to impress. It is the same set
+   with other tokens, a lit material and the effects of effects.css turned on; load it after
+   components.css and put `data-register="showcase"` on the root. Warm dark by default;
+   `data-theme="light"` next to it is the warm light variant. The accent is amber and ignores the
+   preset in `data-accent`. A product never loads this file. */
+:root[data-register="showcase"] {
+  color-scheme: dark;
+  --accent-hue: 62;
+  --accent-chroma: 0.16;
+  --accent-l: 78%;
+  --n-1: oklch(14.5% 0.012 50);
+  --n-2: oklch(17% 0.014 50);
+  --n-3: oklch(20% 0.016 50);
+  --n-4: oklch(23% 0.018 50);
+  --n-5: oklch(26.5% 0.02 50);
+  --n-6: oklch(31% 0.02 50);
+  --n-7: oklch(37% 0.02 52);
+  --n-8: oklch(46% 0.02 55);
+  --n-9: oklch(58% 0.02 60);
+  --n-10: oklch(70% 0.025 65);
+  --n-11: oklch(80% 0.03 70);
+  --n-12: oklch(95% 0.03 75);
+  --green-9: oklch(80% 0.14 165);
+  --red-9: oklch(72% 0.17 25);
+  --yellow-9: oklch(84% 0.15 90);
+  --blue-9: oklch(78% 0.11 235);
+  --bg: var(--n-1);
+  --surface: var(--n-2);
+  --surface-raised: oklch(20.5% 0.016 50);
+  --surface-overlay: oklch(23.5% 0.016 50);
+  --surface-nested: var(--surface-overlay);
+  --surface-hover: var(--n-4);
+  --surface-active: var(--n-5);
+  --surface-selected: var(--n-5);
+  --segmented-track: oklch(18% 0.014 50);
+  --segmented-thumb: var(--n-6);
+  --border: oklch(100% 0 0 / 0.1);
+  --border-subtle: oklch(100% 0 0 / 0.06);
+  --border-strong: oklch(100% 0 0 / 0.18);
+  --knob: oklch(96% 0.01 70);
+  --accent-hover: oklch(83% 0.15 66);
+  --on-accent: oklch(20% 0.03 50);
+  --accent-text: oklch(84% 0.12 70);
+  --accent-soft: oklch(78% 0.16 62 / 0.14);
+  --focus: var(--accent);
+  --success-soft: oklch(80% 0.14 165 / 0.14);
+  --danger-soft: oklch(72% 0.17 25 / 0.14);
+  --on-danger: oklch(20% 0.03 50);
+  --warning-soft: oklch(84% 0.15 90 / 0.14);
+  --info-soft: oklch(78% 0.11 235 / 0.14);
+  --scrim: oklch(0% 0 0 / 0.55);
+  --material: linear-gradient(165deg, oklch(100% 0 0 / 0.06) 0%, oklch(78% 0.16 62 / 0.04) 45%, transparent 100%);
+  --highlight: inset 0 1px 0 oklch(100% 0 0 / 0.08);
+  --spot: oklch(78% 0.16 62 / 0.12);
+  --beam-from: oklch(66% 0.17 50);
+  --beam-to: oklch(88% 0.12 80);
+  --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.4), 0 8px 24px -12px oklch(0% 0 0 / 0.5);
+  --shadow-2: 0 0 0 1px oklch(100% 0 0 / 0.05), 0 8px 16px -4px oklch(0% 0 0 / 0.5);
+  --shadow-3: 0 0 0 1px oklch(100% 0 0 / 0.06), 0 16px 40px -8px oklch(0% 0 0 / 0.6);
+}
+
+:root[data-register="showcase"][data-theme="light"] {
+  color-scheme: light;
+  --n-1: oklch(99.2% 0.002 80);
+  --n-2: oklch(97.8% 0.003 80);
+  --n-3: oklch(95.6% 0.004 80);
+  --n-4: oklch(93.4% 0.005 80);
+  --n-5: oklch(91% 0.006 80);
+  --n-6: oklch(88.2% 0.007 80);
+  --n-7: oklch(83.5% 0.009 80);
+  --n-8: oklch(75% 0.012 80);
+  --n-9: oklch(64% 0.014 80);
+  --n-10: oklch(52% 0.014 80);
+  --n-11: oklch(44% 0.014 80);
+  --n-12: oklch(21% 0.012 60);
+  --green-9: oklch(60% 0.15 155);
+  --red-9: oklch(56% 0.2 25);
+  --yellow-9: oklch(72% 0.15 80);
+  --blue-9: oklch(56% 0.13 235);
+  --bg: var(--n-2);
+  --surface: var(--n-1);
+  --surface-raised: oklch(100% 0 0);
+  --surface-overlay: oklch(100% 0 0);
+  --surface-nested: var(--bg);
+  --surface-hover: var(--n-3);
+  --surface-active: var(--n-4);
+  --surface-selected: var(--n-4);
+  --segmented-track: var(--n-4);
+  --segmented-thumb: var(--surface-raised);
+  --border: var(--n-6);
+  --border-subtle: var(--n-5);
+  --border-strong: var(--n-7);
+  --control-border: oklch(0% 0 0 / 0.44);
+  --control-border-hover: oklch(0% 0 0 / 0.56);
+  --btn-border: var(--border-strong);
+  --field-bg: var(--surface-raised);
+  --field-bg-hover: var(--surface-raised);
+  --btn-bg-hover: var(--surface-hover);
+  --hl-bg: oklch(22% 0.02 80 / 0.055);
+  --track-hover: var(--n-5);
+  --edge-shadow: oklch(22% 0.02 80 / 0.14);
+  --hl-danger: color-mix(in oklab, var(--danger) 10%, transparent);
+  --row-hover: oklch(22% 0.02 80 / 0.025);
+  --selected-row: color-mix(in oklab, var(--accent) 6%, var(--surface-raised));
+  --selected-row-hover: color-mix(in oklab, var(--accent) 9%, var(--surface-raised));
+  --range-tint: color-mix(in oklab, var(--accent) 12%, transparent);
+  --chart-bar: color-mix(in oklab, var(--accent) 28%, var(--surface-raised));
+  --sheen: oklch(100% 0 0 / 0.64);
+  --avatar-bg-l: 93%;
+  --avatar-bg-c: 0.04;
+  --avatar-fg-l: 40%;
+  --avatar-fg-c: 0.09;
+  --overlay-ring: oklch(22% 0.02 80 / 0.09);
+  --overlay-edge: 0 0 #0000;
+  --shadow-overlay: 0 0 0 1px var(--overlay-ring), 0 2px 4px -1px oklch(25% 0.03 80 / 0.06), 0 12px 32px -8px oklch(25% 0.03 80 / 0.14);
+  --shadow-modal: 0 0 0 1px var(--overlay-ring), 0 4px 8px -2px oklch(25% 0.03 80 / 0.06), 0 24px 60px -12px oklch(25% 0.03 80 / 0.22);
+  --shadow-control: 0 1px 0 oklch(0% 0 0 / 0.04), 0 1px 2px oklch(25% 0.03 80 / 0.05);
+  --card-hairline: 0 1px 0 oklch(0% 0 0 / 0.04);
+  --shadow-thumb: 0 1px 2px oklch(25% 0.03 80 / 0.08), 0 0 0 0.5px oklch(0% 0 0 / 0.06);
+  --knob: oklch(100% 0 0);
+  --accent-hover: oklch(74% 0.16 65);
+  --accent-text: oklch(47% 0.12 55);
+  --accent-soft: oklch(79% 0.16 68 / 0.2);
+  --focus: oklch(55% 0.15 55);
+  --success-soft: oklch(60% 0.15 155 / 0.14);
+  --danger-soft: oklch(56% 0.2 25 / 0.12);
+  --on-danger: oklch(99% 0 0);
+  --warning-soft: oklch(72% 0.15 80 / 0.18);
+  --info-soft: oklch(56% 0.13 235 / 0.12);
+  --scrim: oklch(0% 0 0 / 0.36);
+  --material: linear-gradient(165deg, oklch(100% 0 0 / 0.7) 0%, oklch(79% 0.16 68 / 0.05) 50%, transparent 100%);
+  --highlight: inset 0 1px 0 oklch(100% 0 0 / 0.8);
+  --spot: oklch(79% 0.16 68 / 0.16);
+  --shadow-1: 0 1px 0 oklch(0% 0 0 / 0.03), 0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-2: 0 1px 0 oklch(0% 0 0 / 0.04), 0 2px 4px oklch(0% 0 0 / 0.06), 0 8px 16px -4px oklch(0% 0 0 / 0.08);
+  --shadow-3: 0 1px 0 oklch(0% 0 0 / 0.05), 0 4px 8px oklch(0% 0 0 / 0.06), 0 16px 32px -8px oklch(0% 0 0 / 0.16);
+}
+
+/* What the register adds on top of the components: a wider, warmer pointer light, a glow under the
+   one primary, a lit brand mark, an empty state with a halo behind it. */
+:root[data-register="showcase"] { --spot-edge: var(--beam-from); }
+[data-register="showcase"] .spotlight { --spot-size: 280px; --spot-edge-size: 220px; }
+[data-register="showcase"] .btn--primary { box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.35), 0 4px 16px -6px var(--accent), var(--shadow-1); }
+[data-register="showcase"] .brand__mark { background: radial-gradient(circle at 30% 25%, oklch(92% 0.09 80), var(--accent) 45%, var(--beam-from)); box-shadow: 0 0 16px -2px var(--accent); }
+[data-register="showcase"] .empty { position: relative; isolation: isolate; overflow: hidden; }
+[data-register="showcase"] .empty::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 0; width: 320px; height: 160px; translate: -50% -40%; background: radial-gradient(closest-side, var(--spot), transparent); }
+[data-register="showcase"] .empty__mark { color: var(--accent-text); background: var(--accent-soft); }

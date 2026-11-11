@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Número que desliza · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./sliding-number.css">
+<style>
+  .demo { max-width: 860px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
+  .kpi { background: var(--surface-raised); border-radius: var(--radius); box-shadow: var(--shadow-1), 0 0 0 1px var(--border); padding: var(--space-4); display: grid; gap: var(--space-2); }
+  .kpi__label { color: var(--text-soft); font-size: var(--text-sm); }
+  .kpi__value { font-size: var(--text-2xl); letter-spacing: var(--tracking-2xl); font-weight: var(--weight-strong); }
+  .clock { font-size: var(--text-2xl); font-family: var(--font-mono); }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Número que desliza</h1>
+      <p class="demo__note">Porte de Animate UI y Motion Primitives · Sliding Number. Cada dígito es una columna con resorte.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section class="stack">
+    <h2>Indicadores del mes</h2>
+    <div class="kpis">
+      <div class="kpi"><span class="kpi__label">Facturado</span><span class="kpi__value" id="billed" data-motion="sliding-number" data-value="12845000" data-currency="ARS" data-decimals="0"></span></div>
+      <div class="kpi"><span class="kpi__label">Cobrado</span><span class="kpi__value" id="collected" data-motion="sliding-number" data-value="9310250.5" data-currency="ARS"></span></div>
+      <div class="kpi"><span class="kpi__label">Facturas emitidas</span><span class="kpi__value" id="count" data-motion="sliding-number" data-value="98"></span></div>
+    </div>
+    <div class="inline">
+      <button class="btn btn--primary" id="more">Entró una cobranza</button>
+      <button class="btn" id="less">Se anuló una factura</button>
+      <button class="btn btn--ghost" id="jump">Pasar a 1.000.000.000</button>
+      <button class="btn btn--ghost" id="reset">Volver</button>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Dos resortes</h2>
+    <p class="demo__note">Animate UI (200/20/0,4) arriba, Motion Primitives (280/18/0,3) abajo: el segundo es más seco.</p>
+    <div class="inline" style="--gap: var(--space-6)">
+      <span class="kpi__value" id="soft" data-motion="sliding-number" data-value="4821"></span>
+      <span class="kpi__value" id="snappy" data-motion="sliding-number" data-value="4821" data-preset="primitives"></span>
+      <button class="btn" id="both">Siguiente número de factura</button>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Entra desde otro valor</h2>
+    <p class="demo__note">Empieza en 0 y desliza al entrar en pantalla.</p>
+    <span class="kpi__value" id="intro" data-motion="sliding-number" data-from="0" data-value="342900.75" data-currency="ARS" data-inview></span>
+  </section>
+
+  <section class="stack">
+    <h2>Con ceros a la izquierda</h2>
+    <span class="clock" aria-label="Vence en"><span id="hh" data-value="2"></span>:<span id="mm" data-value="5"></span></span>
+    <div class="inline"><button class="btn" id="tick">+ 7 minutos</button></div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module">
+  import { mount } from './sliding-number.js';
+  const pad = { format: { minimumIntegerDigits: 2 } };
+  mount(document.querySelector('#hh'), pad);
+  mount(document.querySelector('#mm'), pad);
+  const at = (id) => mount(document.querySelector(id));
+  const billed = at('#billed'), collected = at('#collected'), count = at('#count');
+  document.querySelector('#more').addEventListener('click', () => { billed.set(billed.value + 342900); collected.set(collected.value + 128450.25); count.set(count.value + 1); });
+  document.querySelector('#less').addEventListener('click', () => { billed.set(billed.value - 58200); count.set(count.value - 1); });
+  document.querySelector('#jump').addEventListener('click', () => billed.set(1000000000));
+  document.querySelector('#reset').addEventListener('click', () => { billed.set(12845000); collected.set(9310250.5); count.set(98); });
+  let next = 4821;
+  document.querySelector('#both').addEventListener('click', () => { next += 1; at('#soft').set(next); at('#snappy').set(next); });
+  let minutes = 125;
+  document.querySelector('#tick').addEventListener('click', () => { minutes += 7; mount(document.querySelector('#hh')).set(Math.floor(minutes / 60) % 24); mount(document.querySelector('#mm')).set(minutes % 60); });
+</script>
+<script type="module" src="./sliding-number.js"></script>
+</body>
+</html>

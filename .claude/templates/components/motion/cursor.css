@@ -1,0 +1,9 @@
+/* Cursor (Motion Primitives): a custom pointer that follows the mouse inside its parent. It only exists where there is a fine
+   hover pointer; the system cursor is hidden in the parent only while the custom one shows. */
+.mu-cursor { position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; opacity: 0; transform: translate3d(-100px, -100px, 0); transition: opacity .18s var(--spring, cubic-bezier(0.23, 1, 0.32, 1)); }
+.mu-cursor[data-on="true"] { opacity: 1; }
+.mu-cursor__body { display: inline-flex; transform: translate(-50%, -50%) scale(.5); transition: transform .18s var(--spring, cubic-bezier(0.23, 1, 0.32, 1)); }
+.mu-cursor[data-on="true"] .mu-cursor__body { transform: translate(-50%, -50%) scale(1); }
+.mu-cursor-host[data-mu-cursor="on"], .mu-cursor-host[data-mu-cursor="on"] * { cursor: none; }
+@media (hover: none), (pointer: coarse) { .mu-cursor { display: none; } }
+@media (prefers-reduced-motion: reduce) { .mu-cursor, .mu-cursor__body { transition: none; } }

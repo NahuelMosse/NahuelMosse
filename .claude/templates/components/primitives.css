@@ -1,0 +1,64 @@
+/* Primitives: the spatial and typographic language of the product. A screen is laid out with these
+   and the components; it never writes its own display, gap, margin or font-size. That is what gives
+   a brand-new screen the product's DNA from the first line. */
+
+/* Inter Variable (SIL OFL 1.1, fonts/OFL.txt): the Latin subset, one file for every weight. Glyphs it
+   lacks (arrows, ⌘) fall back to the system face. */
+@font-face { font-family: "Inter"; src: url("./fonts/InterVariable.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+
+.ui { font-family: var(--font); font-size: var(--text-md); line-height: 1.45; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+body.ui { margin: 0; }
+.ui *, .ui *::before, .ui *::after { box-sizing: border-box; }
+.ui :where(button, input, select, textarea) { font: inherit; color: inherit; }
+.ui :where(h1, h2, h3, h4, p, figure, ul, ol) { margin: 0; }
+/* The one focus style, at the lowest specificity: a component that draws its own indicator (a text
+   field's ring, an inner ring where its container clips) overrides it without a fight. */
+:where(.ui) :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Container: the page column. 1200 px at most, centered, 24 px gutters (32 px from 768 px up).
+   The width includes the gutters, so at 1280 px there are 40 px of canvas on each side. */
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* Stack: children one under the other, separated by a step of the space scale. */
+.stack { display: flex; flex-direction: column; gap: var(--gap, var(--space-3)); }
+/* Inline: children side by side, wrapping, vertically centered. */
+.inline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap, var(--space-2)); }
+.inline[data-justify="between"] { justify-content: space-between; }
+.inline[data-justify="end"] { justify-content: flex-end; }
+/* Grid: as many columns as fit the minimum width. */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--min, 240px), 1fr)); gap: var(--gap, var(--space-4)); }
+:where(.stack, .inline, .grid)[data-gap="1"] { --gap: var(--space-1); }
+:where(.stack, .inline, .grid)[data-gap="2"] { --gap: var(--space-2); }
+:where(.stack, .inline, .grid)[data-gap="3"] { --gap: var(--space-3); }
+:where(.stack, .inline, .grid)[data-gap="4"] { --gap: var(--space-4); }
+:where(.stack, .inline, .grid)[data-gap="5"] { --gap: var(--space-5); }
+:where(.stack, .inline, .grid)[data-gap="6"] { --gap: var(--space-6); }
+:where(.stack, .inline, .grid)[data-gap="7"] { --gap: var(--space-7); }
+
+/* Surface: something that rests on the canvas. The only place where border, radius and elevation
+   are chosen for a block; a screen does not draw boxes of its own. A hairline plus a low layered
+   shadow; what floats gets more. */
+.surface { background: var(--material), var(--surface-raised); background-clip: padding-box; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--card-hairline), var(--highlight), var(--shadow-1); padding: var(--pad, var(--space-4)); }
+.surface[data-level="sunken"] { background: var(--surface-sunken); box-shadow: none; }
+.surface[data-level="floating"] { box-shadow: var(--shadow-3); }
+.surface[data-pad="0"] { --pad: 0; }
+.surface[data-pad="5"] { --pad: var(--space-5); }
+.surface[data-pad="3"] { --pad: var(--space-3); }
+
+/* Text: the type scale with its roles. Tracking tightens from 20 px up; numbers are tabular. */
+.text-caption { font-size: var(--text-xs); color: var(--text-faint); }
+.text-soft { color: var(--text-soft); }
+.text-body { font-size: var(--text-md); }
+.text-label { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--text-soft); }
+.text-title { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+.text-heading { font-size: var(--text-xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-xl); line-height: 1.3; }
+.text-display { font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-2xl); line-height: 1.15; }
+.text-figure { font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-2xl); line-height: 1.1; }
+.ui :where(.num, td.num, th.num, [data-num], .text-figure, .figure__value, .figure__delta, .badge, .nav__count, .toolbar__count, .dl dd, kbd, time) { font-variant-numeric: tabular-nums; }
+.divider { height: 1px; border: 0; margin: 0; background: var(--border-subtle); }
+/* Icons are 16 px line drawings from the page's `<symbol>` sprite: `<svg class="icon" viewBox="0 0 16 16"><use href="#i-name"/></svg>`. */
+.icon, .notice__icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+:is(.icon, .notice__icon):not([stroke-width]) { stroke-width: 1.5; }
+.skip-link { position: absolute; left: var(--space-3); top: var(--space-2); z-index: 40; padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); background: var(--surface-inverse); color: var(--text-inverse); font-size: var(--text-sm); transform: translateY(-200%); transition: transform var(--motion-release); }
+.skip-link:focus-visible { transform: none; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

@@ -1,0 +1,26 @@
+/* Feature tour (Watermelon UI): a modal card with an icon, a title, a description and a row of dots. */
+:root {
+  --mu-feature-tour-width: 25rem;
+}
+.mu-feature-tour { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: var(--space-4); background: oklch(0% 0 0 / 0.3); backdrop-filter: blur(2px); }
+.mu-feature-tour[hidden] { display: none; }
+.mu-feature-tour__card { position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; width: min(var(--mu-feature-tour-width), 100%); min-height: 32rem; padding: var(--space-6); border: 1px solid var(--border); border-radius: 34px; background: var(--surface-raised); color: var(--text); box-shadow: var(--shadow-modal); }
+.mu-feature-tour__x { position: absolute; top: var(--space-4); right: var(--space-4); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--surface-sunken); color: var(--text-soft); cursor: pointer; }
+.mu-feature-tour__x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
+.mu-feature-tour__stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: var(--space-6); }
+.mu-feature-tour__icon { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 24px; background: var(--surface-sunken); box-shadow: inset 0 1px 3px oklch(0% 0 0 / 0.1); color: var(--text); }
+.mu-feature-tour__icon svg { width: 44px; height: 44px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.mu-feature-tour__text { display: grid; gap: var(--space-2); justify-items: center; padding-inline: var(--space-3); }
+.mu-feature-tour__title { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-strong); }
+.mu-feature-tour__desc { margin: 0; color: var(--text-soft); font-size: var(--text-md); line-height: 1.35; }
+.mu-feature-tour__more { margin-top: var(--space-4); min-height: 44px; padding: 0 var(--space-6); border: 0; border-radius: var(--radius-full); background: var(--surface-sunken); color: var(--text); font: inherit; font-weight: var(--weight-medium); cursor: pointer; transition: transform 150ms; }
+.mu-feature-tour__more:active { transform: scale(0.97); }
+.mu-feature-tour__more[hidden] { display: none; }
+.mu-feature-tour__dots { display: flex; margin-top: var(--space-5); }
+.mu-feature-tour__dot { position: relative; width: 28px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; }
+.mu-feature-tour__dot::before { content: ""; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--border); transition: transform 200ms, background-color 200ms; }
+.mu-feature-tour__dot[aria-selected="true"]::before { background: var(--text-soft); transform: scale(1.2); }
+.mu-feature-tour button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .mu-feature-tour__dot::before, .mu-feature-tour__more { transition: none; }
+}

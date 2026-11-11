@@ -1,0 +1,7 @@
+/* Glow effect (Motion Primitives): a blurred gradient behind its parent. The rotate mode turns a registered angle, because a
+   gradient string cannot be interpolated; the other modes swap gradients, scale and opacity from script. */
+@property --mu-glow-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.mu-glow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; transform: scale(var(--mu-glow-scale, 1)); will-change: transform; backface-visibility: hidden; }
+.mu-glow--rotate { background: conic-gradient(from var(--mu-glow-angle) at 50% 50%, var(--mu-glow-colors)); animation: mu-glow-turn var(--mu-glow-duration, 5s) linear infinite; }
+@keyframes mu-glow-turn { to { --mu-glow-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .mu-glow--rotate { animation: none; } }

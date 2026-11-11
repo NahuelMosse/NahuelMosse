@@ -1,0 +1,20 @@
+/* Card swipe (Watermelon UI): a row of cards you drag; each turns on Y as it leaves the center. */
+:root {
+  --card-swipe-width: 20rem;
+  --card-swipe-gap: var(--space-4);
+}
+.mu-card-swipe { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); width: var(--card-swipe-width); max-width: 100%; margin-inline: auto; border-radius: var(--radius); }
+.mu-card-swipe:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.mu-card-swipe__viewport { width: 100%; overflow: hidden; perspective: 1000px; touch-action: pan-y; cursor: grab; }
+.mu-card-swipe[data-dragging="true"] .mu-card-swipe__viewport { cursor: grabbing; user-select: none; }
+.mu-card-swipe__track { display: flex; column-gap: var(--card-swipe-gap); width: max-content; }
+.mu-card-swipe__card { flex: none; box-sizing: border-box; width: var(--card-swipe-width); max-width: 100vw; min-height: 24rem; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); padding: var(--space-6); border: 1px solid var(--border); border-radius: calc(var(--radius) * 2.5); background: var(--surface-raised); color: var(--text); box-shadow: var(--shadow-2); }
+.mu-card-swipe__dots { display: flex; gap: 0; }
+.mu-card-swipe__dot { position: relative; width: 28px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; }
+.mu-card-swipe__dot::before { content: ""; position: absolute; inset: 50% auto auto 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--border); transition: background-color 200ms; }
+.mu-card-swipe__dot[aria-current="true"]::before { background: var(--text-soft); }
+.mu-card-swipe__dot:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; border-radius: var(--radius-control); }
+@media (prefers-reduced-motion: reduce) {
+  .mu-card-swipe__card { transform: none !important; }
+  .mu-card-swipe__dot::before { transition: none; }
+}

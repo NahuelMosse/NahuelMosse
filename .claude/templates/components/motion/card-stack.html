@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Facturas por revisar</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./card-stack.css">
+<style>.demo { max-width: 1040px; margin: 0 auto; padding: var(--space-6) var(--space-5); }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Facturas por revisar</h1><p class="text-soft">Deslizá a la derecha para aprobar y a la izquierda para rechazar. Botones y flechas hacen lo mismo; Backspace deshace; el botón del abanico abre la pila.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <section class="stack" data-gap="3" aria-label="Revisión">
+    <div id="review" data-motion="card-stack"></div>
+    <p class="text-caption" role="log" aria-live="polite" id="log">Todavía no revisaste ninguna.</p>
+  </section>
+</main>
+<script type="module">
+  import { mount } from './card-stack.js';
+  mount(document.getElementById('review'));
+  const log = document.getElementById('log');
+  document.addEventListener('cardstack:decide', (e) => { log.textContent = `${e.detail.decision === 'approved' ? 'Aprobada' : 'Rechazada'}: ${e.detail.id}`; });
+  document.addEventListener('cardstack:undo', (e) => { log.textContent = `Deshecha: ${e.detail.id}`; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

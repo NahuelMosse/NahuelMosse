@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que rueda · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./text-roll.css">
+<style>
+  .big { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: -0.02em; }
+  .link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--surface-raised); color: var(--text); font: inherit; font-weight: var(--weight-medium); cursor: pointer; }
+  .link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que rueda</h1>
+      <p class="mu-demo__note">Cada letra gira sobre su eje y la palabra se da vuelta de a una. Arranca al cargar y se repite al pasar el mouse, al enfocar con el teclado o al tocar. Un lector de pantalla oye el texto una vez. Con movimiento reducido no gira.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-title">
+    <h2 class="mu-demo__label" id="s-title">Titular</h2>
+    <p class="big"><span id="title">Resumen de cuenta</span></p>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-btn">
+    <h2 class="mu-demo__label" id="s-btn">Botón: rueda al enfocar, al pasar o al tocar</h2>
+    <div class="mu-demo__row">
+      <button type="button" class="link" id="cta"><span id="cta-text">Ver facturas vencidas</span></button>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './text-roll.js';
+  themeSwitch();
+  const title = mount(document.getElementById('title'), {});
+  const cta = mount(document.getElementById('cta-text'), { duration: 0.4 });
+  const button = document.getElementById('cta');
+  for (const type of ['pointerenter', 'focus', 'click']) button.addEventListener(type, () => cta.roll());
+  document.getElementById('title').addEventListener('click', () => title.roll());
+</script>
+</body>
+</html>

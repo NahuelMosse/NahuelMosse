@@ -1,0 +1,44 @@
+/* Flip card (Animate UI): 160 × 240 up to 768 px, 240 × 320 from there; the faces turn on Y in 500 ms with
+   easeOut, and each hides its back with backface-visibility. A face that is taller than the card scrolls.
+   Each face is a card of the set: a 1 px border, the card hairline and a level-1 shadow that rises to level 2
+   (and the border to its strong tone) under a mouse, so a turned card reads like the ones around it. */
+:root {
+  --flip-card-w: 160px;
+  --flip-card-h: 240px;
+  --flip-card-perspective: 1000px;
+  --flip-card-time: 500ms;
+  --flip-card-ease: cubic-bezier(0, 0, 0.58, 1);
+  --flip-card-border: var(--border);
+  --flip-card-border-hover: var(--border-strong);
+  --flip-card-shadow: var(--card-hairline), var(--shadow-1);
+  --flip-card-shadow-hover: var(--card-hairline), var(--shadow-2);
+  --flip-card-radius: var(--radius);
+  --flip-card-pad: var(--space-5) var(--space-4);
+  --flip-card-fade: 140ms;
+}
+@media (min-width: 768px) { :root { --flip-card-w: 240px; --flip-card-h: 320px; } }
+
+.fc { position: relative; width: var(--flip-card-w); height: var(--flip-card-h); perspective: var(--flip-card-perspective); }
+.fc[data-trigger="hover"], .fc:not([data-trigger]) { cursor: pointer; }
+.fc__face {
+  position: absolute; inset: 0; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--flip-card-pad);
+  border: 1px solid var(--flip-card-border); border-radius: var(--flip-card-radius); box-shadow: var(--flip-card-shadow);
+  overflow: auto; overscroll-behavior: contain;
+  backface-visibility: hidden; transform-style: preserve-3d; color: var(--text);
+  transition: transform var(--flip-card-time) var(--flip-card-ease), border-color var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+}
+.fc__face[data-face="front"] { background: linear-gradient(to bottom right, var(--surface-sunken), var(--surface-raised), var(--surface-sunken)); align-items: center; justify-content: center; text-align: center; transform: rotateY(0deg); }
+.fc__face[data-face="back"] { background: linear-gradient(to top right, var(--surface-sunken), var(--surface-raised), var(--surface-sunken)); justify-content: space-between; align-items: center; transform: rotateY(180deg); }
+.fc[data-flipped="true"] .fc__face[data-face="front"] { transform: rotateY(180deg); }
+.fc[data-flipped="true"] .fc__face[data-face="back"] { transform: rotateY(0deg); }
+.fc__toggle { flex: none; }
+@media (hover: hover) and (pointer: fine) {
+  .fc:hover .fc__face { border-color: var(--flip-card-border-hover); box-shadow: var(--flip-card-shadow-hover); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc__face { transition: opacity var(--flip-card-fade) var(--ease-out), border-color var(--flip-card-fade) var(--ease-out), box-shadow var(--flip-card-fade) var(--ease-out); backface-visibility: visible; }
+  .fc .fc__face[data-face], .fc[data-flipped] .fc__face[data-face] { transform: none; }
+  .fc .fc__face[data-face="back"], .fc[data-flipped="true"] .fc__face[data-face="front"] { opacity: 0; pointer-events: none; }
+  .fc[data-flipped="true"] .fc__face[data-face="back"], .fc[data-flipped="false"] .fc__face[data-face="front"] { opacity: 1; pointer-events: auto; }
+}

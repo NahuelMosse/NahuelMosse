@@ -1,0 +1,78 @@
+/* Card stack: frosted 320 × 440 cards on one spot; their pose (pile, fan, drag, flight) is written by the
+   module with transform, so nothing here animates layout. */
+:root {
+  --card-stack-card-w: 320px;
+  --card-stack-card-h: 440px;
+  --card-stack-sheet-text: 0.625rem;
+  --card-stack-figure: 16 / 12;
+  --card-stack-glass: color-mix(in oklab, var(--surface-raised) 62%, transparent);
+  --card-stack-shadow: 0 8px 20px oklch(0% 0 0 / 0.08);
+  --card-stack-shadow-hover: 0 12px 40px oklch(0% 0 0 / 0.12);
+  --card-stack-ok: color-mix(in oklab, var(--success), var(--text) 30%);
+  --card-stack-no: color-mix(in oklab, var(--danger), var(--text) 20%);
+}
+:root[data-theme="dark"] { --card-stack-shadow: 0 8px 20px oklch(0% 0 0 / 0.3); --card-stack-shadow-hover: 0 12px 40px oklch(0% 0 0 / 0.4); --card-stack-ok: color-mix(in oklab, var(--success), white 35%); --card-stack-no: color-mix(in oklab, var(--danger), white 30%); }
+
+.cs { position: relative; overflow-x: clip; overflow-clip-margin: 12px; width: 100%; max-width: 1200px; margin-inline: auto; font-family: var(--font); color: var(--text); }
+.cs *, .cs *::before, .cs *::after { box-sizing: border-box; }
+.cs__stack { position: relative; min-height: var(--card-stack-card-h); width: 100%; user-select: none; -webkit-user-select: none; border-radius: var(--radius); }
+.cs__stack:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.cs__card { --cw: min(var(--card-stack-card-w), 100%); position: absolute; top: 0; left: calc((100% - var(--cw)) / 2); width: var(--cw); height: var(--card-stack-card-h); padding: 24px; overflow: hidden; border-radius: var(--radius-lg); background: var(--card-stack-glass); border: 1px solid var(--border-strong); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5); box-shadow: var(--card-stack-shadow); transition: border-color 300ms var(--ease-out), box-shadow 300ms var(--ease-out); touch-action: pan-y; transform: translate3d(0, 0, 0); }
+@media (hover: hover) and (pointer: fine) { .cs__card:hover { box-shadow: var(--card-stack-shadow-hover); border-color: var(--control-border); } }
+.cs__card[data-top="true"] { cursor: grab; }
+.cs__card[data-dragging="true"] { cursor: grabbing; box-shadow: var(--card-stack-shadow-hover); transition: none; }
+.cs__content { position: relative; z-index: 1; }
+.cs__specs { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 8px; margin: 0 0 16px; font-size: 0.6875rem; }
+.cs__specs div { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.cs__specs dd { margin: 0; width: 100%; font-weight: var(--weight-medium); color: var(--text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs__specs dt { margin: 0 0 2px; width: 100%; color: var(--text); order: 2; }
+.cs__figure { position: relative; aspect-ratio: var(--card-stack-figure); width: 100%; overflow: hidden; border-radius: var(--radius-control); background: var(--surface-sunken); border: 1px solid var(--border); box-shadow: var(--shadow-track); }
+
+/* The invoice drawn as a page: letterhead, recipient, a billed line with its VAT and the total, in small type. */
+.cs__sheet { position: absolute; inset: 12px 22px 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 0; border-radius: 6px 6px 0 0; background: var(--surface-raised); box-shadow: var(--shadow-2); font-size: var(--card-stack-sheet-text); line-height: 1.3; color: var(--text); }
+.cs__head { display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.cs__logo { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 6px; background: var(--accent); color: var(--on-accent); font-style: normal; font-weight: 700; font-size: var(--text-sm); }
+.cs__kind { display: flex; flex-direction: column; font-weight: 700; letter-spacing: 0.1em; color: var(--text-soft); }
+.cs__kind b { font-weight: var(--weight-medium); letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--text); }
+.cs__to { display: flex; flex-direction: column; font-weight: var(--weight-strong); }
+.cs__to small { font-size: inherit; font-weight: var(--weight-medium); color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.08em; }
+.cs__rows { display: flex; flex-direction: column; gap: 6px; }
+.cs__row { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.cs__row > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs__row > span:last-child { flex: none; }
+.cs__row--head { color: var(--text-soft); font-weight: var(--weight-medium); }
+.cs__total { display: flex; justify-content: space-between; align-items: center; margin-top: auto; margin-bottom: 12px; padding: 6px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent-text); font-weight: var(--weight-strong); }
+.cs__total b { font-size: var(--text-md); font-variant-numeric: tabular-nums; }
+
+.cs__titles { display: flex; flex-direction: column; gap: 4px; margin-top: 16px; }
+.cs__title, .cs__subtitle { display: block; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs__title { font-size: var(--text-xl); line-height: 1.2; font-weight: 700; color: var(--text); }
+.cs__subtitle { font-size: var(--text-md); line-height: 1.4; font-weight: var(--weight-medium); color: var(--text); }
+.cs__desc { margin: 8px 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--text-soft); }
+
+.cs__stamp { position: absolute; z-index: 2; top: 22px; padding: 2px 10px; border: 2px solid currentColor; border-radius: var(--radius-item); background: var(--card-stack-glass); font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: var(--ok, 0); transition: opacity 120ms var(--ease-out); pointer-events: none; }
+.cs__stamp--ok { left: 20px; color: var(--card-stack-ok); rotate: -12deg; }
+.cs__stamp--no { right: 20px; color: var(--card-stack-no); rotate: 12deg; opacity: var(--no, 0); }
+.cs__card[data-dragging="true"] .cs__stamp { transition: none; }
+
+.cs__empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.cs__empty[hidden] { display: none; }
+.cs__empty-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--success-soft); color: var(--card-stack-ok); }
+.cs__empty-mark .cs__icon { width: 22px; height: 22px; }
+.cs__empty-title { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-strong); }
+
+.cs__bar { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 16px; }
+.cs__help, .cs__count { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cs__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: var(--control-lg); padding: 0 16px; border: 1px solid var(--btn-border); border-radius: var(--radius-control); background: var(--surface-raised); color: var(--text); font: inherit; font-size: var(--text-md); font-weight: var(--weight-medium); box-shadow: var(--shadow-control); cursor: pointer; transition: background-color var(--motion-hover), transform var(--motion-press), opacity var(--motion-hover); }
+.cs__btn--icon { width: var(--control-lg); padding: 0; }
+.cs__btn--ok { border-color: transparent; background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-primary); }
+.cs__btn--no { color: var(--card-stack-no); }
+@media (hover: hover) and (pointer: fine) { .cs__btn:not(:disabled):hover { background: var(--btn-bg-hover); } .cs__btn--ok:not(:disabled):hover { background: var(--accent-hover); } }
+.cs__btn:not(:disabled):active { transform: scale(var(--press-scale)); }
+.cs__btn:disabled { opacity: 0.45; cursor: default; }
+.cs__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cs__icon { width: 16px; height: 16px; flex: none; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cs__btn[aria-expanded="true"] { background: var(--surface-active); }
+/* On a phone the labels leave the screen but stay as the buttons' accessible names. */
+@media (max-width: 480px) { .cs__btn span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .cs__btn { position: relative; width: var(--control-lg); padding: 0; } }
+@media (prefers-reduced-motion: reduce) { .cs__card, .cs__btn, .cs__stamp { transition-duration: 120ms; } }

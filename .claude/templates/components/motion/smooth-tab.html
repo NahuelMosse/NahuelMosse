@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Pestañas</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./smooth-tab.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: var(--space-7); align-items: start; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Secciones del tablero</h1><p class="text-soft">El contenido entra con desenfoque desde el lado del que viene la pestaña; la píldora sigue a la selección con un resorte. Flechas, Inicio y Fin mueven el foco.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <div class="demo__grid">
+    <section class="stack" data-gap="3" aria-label="Cuatro secciones"><div id="tabs" data-motion="smooth-tab"></div><p class="text-caption" id="log" role="status">Sección: Facturas</p></section>
+    <section class="stack" data-gap="3" aria-label="Tres secciones, empieza en la segunda"><div id="tabs3"></div></section>
+  </div>
+</main>
+<script type="module">
+  import { mount } from './smooth-tab.js';
+  mount(document.getElementById('tabs'));
+  mount(document.getElementById('tabs3'), { defaultId: 'cobros', label: 'Tesorería', items: [
+    { id: 'ingresos', title: 'Ingresos', description: 'Cobros del mes por cliente y medio de pago.', tone: 'success' },
+    { id: 'cobros', title: 'Cobros', description: 'Lo que entró al banco y todavía no conciliaste.', tone: 'info' },
+    { id: 'mora', title: 'Mora', description: 'Facturas vencidas hace más de treinta días.', tone: 'danger' },
+  ] });
+  document.addEventListener('smoothtab:change', (e) => { if (e.target.id === 'tabs') document.getElementById('log').textContent = `Sección: ${e.detail.id}`; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

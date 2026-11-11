@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selector de tema · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./icons.css">
+<link rel="stylesheet" href="./theme-toggler.css">
+<style>
+  .demo { max-width: 760px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .sample { display: grid; gap: var(--space-2); padding: var(--space-4); background: var(--surface-raised); border-radius: var(--radius); box-shadow: var(--shadow-1), 0 0 0 1px var(--border); }
+  .sample strong { font-size: var(--text-xl); font-variant-numeric: tabular-nums; }
+  .variants { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .variants figure { display: grid; justify-items: center; gap: var(--space-2); }
+  .variants figcaption { color: var(--text-soft); font-size: var(--text-xs); }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Selector de tema</h1>
+      <p class="demo__note">Porte de Magic UI · Animated Theme Toggler, con el sol y la luna de Animate UI. La revelación nace en el botón.</p>
+    </div>
+    <button data-motion="theme-toggler" id="main-toggle" aria-label="Tema oscuro"></button>
+  </header>
+
+  <section class="stack">
+    <h2>Se ve en toda la página</h2>
+    <div class="sample"><span class="demo__note">Cobrado este mes</span><strong>$ 9.310.250,50</strong><span class="demo__note">38 facturas · 4 vencidas</span></div>
+  </section>
+
+  <section class="stack">
+    <h2>Formas de la revelación</h2>
+    <div class="variants">
+      <figure><button data-motion="theme-toggler" data-variant="circle" aria-label="Tema oscuro (círculo)"></button><figcaption>círculo</figcaption></figure>
+      <figure><button data-motion="theme-toggler" data-variant="square" aria-label="Tema oscuro (cuadrado)"></button><figcaption>cuadrado</figcaption></figure>
+      <figure><button data-motion="theme-toggler" data-variant="diamond" aria-label="Tema oscuro (rombo)"></button><figcaption>rombo</figcaption></figure>
+      <figure><button data-motion="theme-toggler" data-variant="hexagon" aria-label="Tema oscuro (hexágono)"></button><figcaption>hexágono</figcaption></figure>
+      <figure><button data-motion="theme-toggler" data-variant="star" aria-label="Tema oscuro (estrella)"></button><figcaption>estrella</figcaption></figure>
+      <figure><button data-motion="theme-toggler" data-from-center aria-label="Tema oscuro (desde el centro)"></button><figcaption>desde el centro</figcaption></figure>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./theme-toggler.js"></script>
+</body>
+</html>

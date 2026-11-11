@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Buscar acciones</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./action-search-bar.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__stage { min-height: 360px; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Acciones sugeridas</h1><p class="text-soft">Desde la barra de herramientas: escribí para filtrar, con flechas y Enter o con el mouse. Atajo Ctrl K.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <section class="surface demo__stage stack" data-gap="4" aria-label="Barra de herramientas">
+    <div id="bar" data-motion="action-search-bar"></div>
+    <p class="text-caption">Última acción elegida: <strong id="chosen">ninguna</strong></p>
+  </section>
+</main>
+<script type="module">
+  import { mount } from './action-search-bar.js';
+  mount(document.getElementById('bar'));
+  document.addEventListener('actionsearch:select', (e) => { document.getElementById('chosen').textContent = e.detail.action.label; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

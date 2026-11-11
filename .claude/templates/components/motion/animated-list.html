@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista animada · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./animated-list.css">
+<style>
+  .feed { height: 420px; padding: var(--space-2); overflow: hidden; -webkit-mask-image: linear-gradient(to top, transparent, #000 25%); mask-image: linear-gradient(to top, transparent, #000 25%); }
+  .feed--live { height: 340px; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Lista animada</h1>
+      <p class="mu-demo__note">Actividad reciente y avisos de cobros. Cada tarjeta entra desde arriba con un resorte (rigidez 350, amortiguación 40) y empuja a las que ya estaban.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-recent">
+    <h2 class="mu-demo__label" id="s-recent">Actividad reciente · una tarjeta por segundo</h2>
+    <div class="mu-demo__stage"><div id="recent" class="feed" data-motion="animated-list" aria-label="Actividad reciente"></div></div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-live">
+    <h2 class="mu-demo__label" id="s-live">Avisos de cobros · llegan cuando pasan, quedan los últimos cinco</h2>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="simulate">Simular cobro</button>
+    </div>
+    <div class="mu-demo__stage"><div id="live" class="feed feed--live" aria-label="Avisos de cobros"></div></div>
+  </section>
+</main>
+<script type="module">
+  import { activity, notice, themeSwitch } from './mu-demo.js';
+  themeSwitch();
+  const recent = document.getElementById('recent');
+  for (const item of activity) recent.append(notice(item));
+  const { mount } = await import('./animated-list.js');
+  const live = mount(document.getElementById('live'), { max: 5 });
+  const payments = [['Ferretería Alvear', 184500], ['Estudio Quiroga', 96000], ['Café Palermo', 41250], ['Transportes Cuyo', 320800], ['Clínica Belgrano', 158400], ['Librería Del Sur', 92300]];
+  let n = 0;
+  const post = () => {
+    const [client, amount] = payments[n++ % payments.length];
+    live.add(notice({ icon: 'coin', tone: 'success', title: 'Cobro recibido', time: 'ahora', href: '#cobros', text: `${new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount)} · ${client}` }));
+  };
+  document.getElementById('simulate').addEventListener('click', post);
+  post();
+</script>
+</body>
+</html>

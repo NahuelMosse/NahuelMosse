@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Facturación por estado</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mp-demo.css">
+<link rel="stylesheet" href="./arc-demo.css">
+<link rel="stylesheet" href="./arc.css">
+<link rel="stylesheet" href="./donut-chart.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Facturación por estado</h1>
+      <p class="demo__lead">El anillo se transforma entre períodos en vez de redibujarse: los segmentos con la misma clave conservan lugar y color. El total rueda en el centro, la leyenda y el anillo se iluminan juntos y ocultar un segmento redistribuye el resto.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-estado">
+    <h2 id="s-estado">Facturado por estado</h2>
+    <p>Pasá el cursor o recorré la leyenda con flechas para leer cada estado; un clic en una fila lo oculta o lo muestra.</p>
+    <div class="demo__stage" style="padding: var(--space-5)">
+      <section class="arc-card" id="card" style="width: min(620px, 100%)">
+        <div class="arc-card__head">
+          <div>
+            <h3 class="arc-card__title">Facturado por estado</h3>
+            <p class="arc-card__sub" id="range-label">1 al 30 de septiembre de 2026</p>
+          </div>
+          <div class="arc-seg" role="group" aria-label="Período" id="range">
+            <button type="button" data-v="week" aria-pressed="false">Semana</button>
+            <button type="button" data-v="month" aria-pressed="true">Mes</button>
+            <button type="button" data-v="year" aria-pressed="false">Año</button>
+          </div>
+        </div>
+        <div id="donut"></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './donut-chart.js';
+import './mp-demo.js';
+
+const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', notation: 'compact', maximumFractionDigits: 1 });
+const compact = (v) => money.format(v);
+const sets = {
+  week: { label: '8 al 14 de octubre de 2026', data: [
+    { key: 'pagada', label: 'Pagada', value: 2840000 }, { key: 'emitida', label: 'Emitida', value: 1930000 }, { key: 'vencida', label: 'Vencida', value: 610000 }, { key: 'borrador', label: 'Borrador', value: 420000 },
+    { key: 'anulada', label: 'Anulada', value: 80000 }, { key: 'nota', label: 'Nota de crédito', value: 60000 } ] },
+  month: { label: '1 al 30 de septiembre de 2026', data: [
+    { key: 'pagada', label: 'Pagada', value: 16840000 }, { key: 'emitida', label: 'Emitida', value: 8120000 }, { key: 'vencida', label: 'Vencida', value: 5260000 }, { key: 'borrador', label: 'Borrador', value: 6430000 },
+    { key: 'anulada', label: 'Anulada', value: 2180000 }, { key: 'nota', label: 'Nota de crédito', value: 1100000 } ] },
+  year: { label: 'Enero a septiembre de 2026', data: [
+    { key: 'pagada', label: 'Pagada', value: 121500000 }, { key: 'emitida', label: 'Emitida', value: 64800000 }, { key: 'vencida', label: 'Vencida', value: 22900000 }, { key: 'borrador', label: 'Borrador', value: 31200000 },
+    { key: 'anulada', label: 'Anulada', value: 9800000 }, { key: 'nota', label: 'Nota de crédito', value: 7400000 }, { key: 'cesion', label: 'Cesión', value: 3100000 } ] },
+};
+const chart = mount(document.getElementById('donut'), { data: sets.month.data, label: 'Facturado por estado', totalLabel: 'Facturado', formatValue: compact, groupBelow: 0.05, otherLabel: 'Otros', maxSegments: 5, size: 208 });
+document.getElementById('range').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  for (const other of b.parentElement.children) other.setAttribute('aria-pressed', String(other === b));
+  document.getElementById('range-label').textContent = sets[b.dataset.v].label;
+  chart.setData(sets[b.dataset.v].data);
+});
+window.chart = chart;
+</script>
+</body>
+</html>

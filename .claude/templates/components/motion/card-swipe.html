@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjetas que se deslizan · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./card-swipe.css">
+<style>
+  .tag { display: inline-grid; place-items: center; width: 56px; height: 56px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-sunken); }
+  .tag svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .tag-card h3 { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-strong); }
+  .tag-card p { margin: 0; color: var(--text-soft); }
+  .tag-card .go { margin-top: auto; height: 44px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-full); background: var(--accent); color: var(--on-accent); font: inherit; cursor: pointer; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Tarjetas que se deslizan</h1>
+      <p class="mu-demo__note">Arrastrá de costado: cada tarjeta gira al alejarse del centro y la fila se acomoda con un resorte. Un arrastre corto o un envión mueve una tarjeta. Con el teclado, flechas izquierda y derecha; también hay puntos para elegir. Con movimiento reducido no gira.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Tareas de cierre del mes</h2>
+    <div data-motion="card-swipe" aria-label="Tareas de cierre del mes">
+      <article class="tag-card mu-card-swipe-demo"><span class="tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h8l4 4V20.5H6zM9 12h6M9 15.5h6"/></svg></span><h3>Emitir facturas</h3><p>Quedan 12 facturas por emitir antes del viernes.</p><button type="button" class="go">Empezar</button></article>
+      <article class="tag-card mu-card-swipe-demo"><span class="tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M5 10v7M9.5 10v7M14.5 10v7M19 10v7M3 20h18"/></svg></span><h3>Conciliar el banco</h3><p>Seis movimientos coinciden con facturas; revisalos.</p><button type="button" class="go">Revisar</button></article>
+      <article class="tag-card mu-card-swipe-demo"><span class="tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3zM12 10v4M12 17v.01"/></svg></span><h3>Cobros vencidos</h3><p>Taller Morán lleva 15 días de atraso.</p><button type="button" class="go">Reclamar</button></article>
+      <article class="tag-card mu-card-swipe-demo"><span class="tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7l8.5 6 8.5-6M3 5h18v14H3z"/></svg></span><h3>Mandar el resumen</h3><p>Enviá el resumen del mes a tu contadora.</p><button type="button" class="go">Enviar</button></article>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './card-swipe.js';
+  themeSwitch();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asistente por pasos · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./stepper.css">
+<style>
+  .card { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); align-items: start; }
+  .narrow { max-width: 380px; }
+  .card--wide { max-width: 40rem; }
+  .panel { margin-top: var(--space-5); }
+  .stage { position: relative; }
+  .pane { display: grid; gap: var(--space-3); align-content: start; }
+  .pane p { margin: 0; color: var(--text-soft); font-size: var(--text-sm); }
+  .slug { color: var(--text); }
+  .panel__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Asistente por pasos</h1>
+      <p class="mu-demo__note">Cada marcador pasa de número a tilde o a alerta: el glifo que sale se achica mientras el nuevo aparece y dibuja su trazo. El conector se llena en un resorte y un salto de varios pasos los recorre uno tras otro. Continuar sin completar el concepto deja el paso con error, en el marcador, en su descripción y en el campo; el panel de cada paso cambia con un cruce desenfocado. Los pasos completados se pueden elegir con clic o con las flechas.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-h">
+    <h2 class="mu-demo__label" id="s-h">Alta de una factura</h2>
+    <div class="card card--wide">
+      <div id="flow"></div>
+      <form class="panel" id="panel" novalidate>
+        <div class="stage" id="stage"></div>
+        <div class="panel__foot">
+          <button type="button" class="btn" id="back">Volver</button>
+          <button type="submit" class="btn btn--primary" id="next">Continuar</button>
+        </div>
+      </form>
+    </div>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="jump">Saltar al último</button>
+      <button type="button" class="btn-demo" id="fail" aria-pressed="false">Marcar un error en ARCA</button>
+      <button type="button" class="btn-demo" id="reset">Empezar de nuevo</button>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-v">
+    <h2 class="mu-demo__label" id="s-v">Vertical y angosto</h2>
+    <div class="cols">
+      <div class="card"><div id="vertical"></div></div>
+      <div class="card narrow"><div id="narrow"></div></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './stepper.js';
+  import { EASE, TOKENS } from './arc-shared.js';
+  themeSwitch();
+  const labels = {
+    label: 'Alta de factura', complete: 'Factura emitida',
+    status: { complete: 'Completado', current: '', upcoming: 'Sin empezar', error: 'Con error' },
+    step: (n, total, label) => `Paso ${n} de ${total}: ${label}`,
+  };
+  const steps = [
+    { id: 'client', label: 'Cliente', description: 'Quién recibe la factura' },
+    { id: 'items', label: 'Detalle', description: 'Conceptos e importes' },
+    { id: 'tax', label: 'Impuestos', description: 'IVA y percepciones' },
+    { id: 'send', label: 'Emisión', description: 'Autorizar y enviar' },
+  ];
+  const ITEMS_ERROR = 'Agregá un concepto';
+  const SEND_ERROR = 'ARCA no respondió. Probá de nuevo en unos minutos.';
+  const state = { current: 1, itemsError: false, sendError: false };
+  const stepsNow = () => steps.map((s) => (s.id === 'items' && state.itemsError ? { ...s, error: ITEMS_ERROR } : s.id === 'send' && state.sendError ? { ...s, error: SEND_ERROR } : s));
+
+  // One pane per step; the one that leaves lifts off with a blur while the new one rises in, and the stage eases to the new height.
+  const stage = document.getElementById('stage');
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const make = (html) => { const d = document.createElement('div'); d.className = 'pane'; d.innerHTML = html; return d; };
+  const field = (id, label, extra, foot) => `<div class="field"><label class="field__label" for="${id}">${label}</label><div class="field__control"><input class="input" id="${id}" ${extra}></div>${foot}</div>`;
+  const panes = [
+    make(field('client', 'Razón social', 'value="Distribuidora Pampa S. A." autocomplete="organization"', '<div class="field__foot"><span>Como figura en ARCA</span></div>')),
+    make(`<div class="field" id="items-field"><label class="field__label" for="items">Concepto</label><div class="field__control"><input class="input" id="items" placeholder="Servicios de consultoría" autocomplete="off" aria-describedby="items-help"></div><div class="field__foot" id="items-help"><span>ledger.example/facturas/<span class="slug" id="slug">concepto</span></span></div><div class="field__message"><p class="field__error" role="alert"><span id="items-error"></span></p></div></div>`),
+    make(field('tax', 'Alícuota de IVA', 'value="21 %" autocomplete="off"', '<div class="field__foot"><span>Se aplica a todos los conceptos</span></div>')),
+    make('<p>Todo listo: al emitir se autoriza la factura en ARCA y se envía al cliente.</p>'),
+    make('<p>La factura quedó emitida y enviada.</p>'),
+  ];
+  const slug = (text) => text.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'concepto';
+  const leave = (pane) => {
+    pane.dataset.leaving = '';
+    Object.assign(pane.style, { position: 'absolute', inset: '0 0 auto 0', pointerEvents: 'none' });
+    pane.inert = true;
+    const done = () => { if (!('leaving' in pane.dataset)) return; delete pane.dataset.leaving; pane.removeAttribute('style'); pane.inert = false; pane.remove(); };
+    if (reduce()) { done(); return; }
+    const out = pane.animate([{ opacity: 1, filter: 'blur(0px)', transform: 'none' }, { opacity: 0, filter: `blur(${TOKENS.blur.subtle}px)`, transform: 'translateY(-0.3em)' }], { duration: TOKENS.duration.instant * 1000, easing: EASE.standard, fill: 'forwards' });
+    out.onfinish = done;
+  };
+  let shown = null;
+  const showPane = (index, instant) => {
+    const next = panes[Math.min(index, panes.length - 1)];
+    if (next === shown) return;
+    const before = stage.getBoundingClientRect().height;
+    if (next.dataset.leaving !== undefined) { next.getAnimations().forEach((a) => a.cancel()); delete next.dataset.leaving; next.removeAttribute('style'); next.inert = false; }
+    if (shown) leave(shown);
+    shown = next;
+    stage.append(next);
+    if (instant || reduce()) return;
+    const after = next.offsetHeight;
+    next.animate([{ opacity: 0, filter: `blur(${TOKENS.blur.soft}px)`, transform: 'translateY(0.3em)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], { duration: TOKENS.duration.standard * 1000, easing: EASE.enter, fill: 'backwards' });
+    if (Math.abs(before - after) > 0.5) stage.animate([{ height: `${before}px` }, { height: `${after}px` }], { duration: TOKENS.duration.considered * 1000, easing: EASE.standard });
+  };
+
+  const flow = mount(document.getElementById('flow'), { steps: stepsNow(), current: state.current, labels, label: 'Alta de una factura', onStepSelect: (i) => go(i) });
+  const itemsInput = panes[1].querySelector('#items');
+  const itemsField = panes[1].querySelector('#items-field');
+  const sync = (instant = false) => {
+    itemsField.dataset.state = state.itemsError ? 'invalid' : '';
+    itemsInput.setAttribute('aria-invalid', String(state.itemsError));
+    panes[1].querySelector('#items-error').textContent = state.itemsError ? ITEMS_ERROR : '';
+    flow.update({ steps: stepsNow(), current: state.current });
+    showPane(state.current, instant);
+  };
+  const go = (index) => { state.current = Math.max(0, Math.min(steps.length, index)); sync(); };
+  itemsInput.addEventListener('input', () => {
+    panes[1].querySelector('#slug').textContent = slug(itemsInput.value);
+    if (state.itemsError && itemsInput.value.trim()) { state.itemsError = false; sync(); }
+  });
+  document.getElementById('panel').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (state.current === 1 && !itemsInput.value.trim()) { state.itemsError = true; sync(); itemsInput.focus({ preventScroll: true }); return; }
+    go(state.current + 1);
+  });
+  document.getElementById('back').addEventListener('click', () => go(state.current - 1));
+  document.getElementById('jump').addEventListener('click', () => go(3));
+  document.getElementById('reset').addEventListener('click', () => { document.getElementById('fail').setAttribute('aria-pressed', 'false'); state.itemsError = false; state.sendError = false; state.current = 0; sync(); });
+  document.getElementById('fail').addEventListener('click', (e) => {
+    state.sendError = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+    e.currentTarget.setAttribute('aria-pressed', String(state.sendError));
+    sync();
+  });
+  showPane(state.current, true);
+
+  mount(document.getElementById('vertical'), { steps, current: 2, orientation: 'vertical', labels: { ...labels, label: 'Alta de cliente' } });
+  mount(document.getElementById('narrow'), { steps, current: 1, labels: { ...labels, label: 'Alta en pantalla angosta' } });
+</script>
+</body>
+</html>

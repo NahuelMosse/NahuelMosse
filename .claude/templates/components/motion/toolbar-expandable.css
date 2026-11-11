@@ -1,0 +1,50 @@
+/* Toolbar expandable. The values of the component, derived from the set's tokens. */
+:root {
+  --toolbar-expandable-radius: var(--radius);
+  --toolbar-expandable-surface: var(--surface-raised);
+  --toolbar-expandable-pad: var(--space-2);
+  --toolbar-expandable-button: 36px;
+}
+
+.tbe { display: inline-block; max-width: 100%; color: var(--text); }
+/* The surface is the ::before: the height changes at once and the surface travels to it with transform. */
+.tbe__box { position: relative; isolation: isolate; border-radius: var(--toolbar-expandable-radius); }
+.tbe__box::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--toolbar-expandable-surface); border-radius: inherit; box-shadow: 0 0 0 1px var(--border), var(--shadow-2); transform-origin: 0 0; }
+.tbe__clip { overflow: hidden; border-radius: var(--toolbar-expandable-radius) var(--toolbar-expandable-radius) 0 0; }
+.tbe__clip[hidden] { display: none; }
+/* A panel that folds leaves the flow, so the bar is as short as it ends while the panel is still withdrawn. */
+.tbe__clip[data-leaving] { position: absolute; top: 0; left: 0; right: 0; pointer-events: none; }
+.tbe__body { width: var(--toolbar-expandable-body-width, auto); max-width: 100%; }
+.tbe__content { padding: var(--toolbar-expandable-pad); }
+.tbe__content [data-te-panel] { padding: var(--space-2) var(--space-2) 0; font-size: var(--text-md); }
+.tbe__content [data-te-panel][hidden] { display: none; }
+.tbe__panel { display: flex; flex-direction: column; gap: var(--space-4); }
+.tbe__panel > p { margin: 0; color: var(--text-soft); }
+.tbe__panel strong { color: var(--text); font-weight: 500; }
+
+.tbe__menu { display: flex; align-items: center; gap: var(--space-2); padding: var(--toolbar-expandable-pad); }
+.tbe__count { padding: 0 var(--space-3) 0 var(--space-2); font-size: var(--text-sm); font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }
+.tbe__sep { align-self: stretch; width: 1px; margin: var(--space-1) 0; background: var(--border); }
+.tbe__btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--toolbar-expandable-button); height: var(--toolbar-expandable-button);
+  padding: 0; color: var(--text-soft); cursor: pointer; user-select: none; background: transparent; border: 0; border-radius: var(--radius-control);
+  transition: background-color var(--duration-fast), color var(--duration-fast), transform var(--duration-instant) var(--ease-out);
+}
+.tbe__btn:hover { background: var(--surface-hover); color: var(--text); }
+.tbe__btn:active { transform: scale(0.98); }
+.tbe__btn[data-active] { background: var(--surface-selected); color: var(--text); }
+.tbe__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.tbe__btn .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.tbe__action {
+  display: inline-flex; align-items: center; justify-content: center; height: 32px; padding: 0 var(--space-3); font: inherit; font-size: var(--text-sm); color: var(--text-soft);
+  cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-control); box-shadow: 0 0 0 1px var(--border);
+  transition: background-color var(--duration-fast), color var(--duration-fast), transform var(--duration-instant) var(--ease-out);
+}
+.tbe__action:hover { background: var(--surface-hover); color: var(--text); }
+.tbe__action:active { transform: scale(0.98); }
+.tbe__action:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tbe__btn, .tbe__action { transition-duration: 120ms; }
+  .tbe__btn:active, .tbe__action:active { transform: none; }
+}

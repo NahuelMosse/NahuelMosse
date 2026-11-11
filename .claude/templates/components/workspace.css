@@ -1,0 +1,67 @@
+/* Configuración beyond the form: the sections that host the integrations, the templates, the team and the walk-through,
+   and the drawings they hold (an invoice for each template, the three pictures of reconciling). The drawings' colors are
+   lightness and chroma pairs here, and each one takes its hue from the element (`--h`). */
+:root {
+  --workspace-beam-height: 11rem;
+  --workspace-template-height: 15rem;
+  --tpl-ground: 70% 0.07;
+  --tpl-sheet: 99% 0.003;
+  --tpl-ink: 60% 0.13;
+  --tpl-line: 88% 0.015;
+  --tpl-line-strong: 72% 0.05;
+  --viz-white: oklch(100% 0 0);
+  --viz-faint: 0.2;
+  --viz-soft: 0.8;
+  --viz-solid: 0.95;
+  --viz-ink: oklch(30% 0.02 265);
+  --viz-done: oklch(40% 0.12 155);
+}
+/* The two meters of the plan, side by side where the section has the room. */
+.ws-usage { display: grid; gap: var(--space-6); min-width: 0; }
+@media (min-width: 1100px) { .ws-usage { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ws-beam { height: var(--workspace-beam-height); }
+.ws-beam[hidden] { display: none; }
+/* The height is the two nodes of a column, the gap between them and the name that hangs under the lower one. */
+.ws-beam .mu-beam { height: 100%; padding-block: var(--space-4) var(--space-5); }
+/* The loader takes the diagram's place at the diagram's height, so the section does not change size while it syncs. */
+.ws-loader { display: grid; place-items: center; height: var(--workspace-beam-height); }
+.ws-loader .kl { padding: var(--space-3); gap: var(--space-3); }
+/* While it syncs the button shows its loading state (a spinner in its own place, no change of width) and takes no presses. */
+#sync-now[aria-disabled="true"] { pointer-events: none; cursor: progress; }
+
+.ws-templates { --ac-focus-gap: var(--space-3); --ac-focus-height: var(--workspace-template-height); --ac-focus-height-small: var(--workspace-template-height); max-width: none; }
+@media (min-width: 768px) { .ws-templates { padding-inline: 0; } }
+.ws-templates .ac-focus__card { padding: 0; border: 0; font: inherit; text-align: start; cursor: pointer; }
+.ws-templates .ac-focus__card[aria-pressed="true"]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 2px var(--accent); pointer-events: none; }
+
+/* A drawn invoice: the picture of each template. */
+.tpl { position: absolute; inset: 0; display: grid; justify-items: center; padding: var(--space-4) var(--space-3) 0; background: oklch(var(--tpl-ground) var(--h)); }
+.tpl__sheet { display: flex; flex-direction: column; gap: var(--space-2); width: min(220px, 86%); height: 76%; padding: var(--space-3); border-radius: var(--radius-item) var(--radius-item) 0 0; background: oklch(var(--tpl-sheet) var(--h)); box-shadow: var(--shadow-3); }
+.tpl__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.tpl__head { display: grid; width: 40%; gap: 4px; }
+.tpl__mark { width: 24px; height: 24px; border-radius: var(--radius-item); background: oklch(var(--tpl-ink) var(--h)); }
+.tpl__band { height: 20px; border-radius: 3px; background: oklch(var(--tpl-ink) var(--h)); }
+.tpl__line { height: 5px; border-radius: 3px; background: oklch(var(--tpl-line) var(--h)); }
+.tpl__line--w1 { width: 40%; } .tpl__line--w2 { width: 62%; } .tpl__line--w3 { width: 88%; } .tpl__line--w4 { width: 100%; }
+.tpl__line--strong { background: oklch(var(--tpl-line-strong) var(--h)); }
+.tpl__table { display: flex; flex-direction: column; gap: 6px; margin-top: var(--space-2); }
+.tpl__total { align-self: flex-end; width: 44%; height: 9px; margin-top: auto; margin-bottom: var(--space-3); border-radius: 3px; background: oklch(var(--tpl-ink) var(--h)); }
+
+/* The walk-through has the whole width of its section; the pinned panel appears when that width has room for it, not when the window does. */
+.settings-section--stack { grid-template-columns: minmax(0, 1fr); }
+.ws-steps { min-width: 0; container: ws-steps / inline-size; }
+.ws-steps .ac-ssr__panel { display: none; }
+@container ws-steps (min-width: 56rem) { .ws-steps .ac-ssr__panel { display: block; } }
+/* The pictures of the three steps (white on the tone behind them). */
+.viz { display: grid; align-content: center; gap: var(--space-2); padding: var(--space-5); color: var(--viz-white); }
+.viz__row { display: flex; align-items: center; gap: var(--space-2); height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-item); background: color-mix(in oklab, var(--viz-white) calc(var(--viz-faint) * 100%), transparent); }
+.viz__row > span { height: 6px; border-radius: 3px; background: color-mix(in oklab, var(--viz-white) calc(var(--viz-soft) * 100%), transparent); }
+.viz__row--on { background: color-mix(in oklab, var(--viz-white) calc(var(--viz-solid) * 100%), transparent); }
+.viz__row--on > span { background: var(--viz-ink); }
+.viz__pair { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; gap: var(--space-1); }
+.viz__link { height: 2px; background: color-mix(in oklab, var(--viz-white) 85%, transparent); }
+.viz__done { display: grid; place-items: center; justify-self: center; width: 84px; height: 84px; border-radius: 50%; background: color-mix(in oklab, var(--viz-white) calc(var(--viz-solid) * 100%), transparent); color: var(--viz-done); }
+.viz__done svg { width: 44px; height: 44px; }
+
+/* The «Deshacer» of the last action is a button that is shown and hidden with `hidden`. */
+#undo-last[hidden] { display: none; }

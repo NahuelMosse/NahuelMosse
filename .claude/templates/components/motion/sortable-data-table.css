@@ -1,0 +1,133 @@
+/* Sortable data table (Arc, MIT). Cells are opaque so rows passing each other during a sort cover one another
+   cleanly instead of blending text. Sizes and colours are the set's; the shapes and the rhythm are Arc's. */
+:root {
+  --sdt-head: 44px;
+  --sdt-row: 52px;
+  --sdt-radius: var(--radius-lg);
+  --sdt-tint: var(--surface-sunken);
+  --sdt-on: var(--accent);
+  --sdt-glyph: var(--on-accent);
+}
+
+.sdt { position: relative; width: 100%; min-width: 0; max-width: 100%; overflow: hidden; font-family: var(--font); color: var(--text); background: var(--surface-raised); border: 1px solid var(--border-strong); border-radius: var(--sdt-radius); }
+.sdt-scroller { position: relative; overflow-x: auto; overscroll-behavior-x: contain; }
+.sdt-band { position: absolute; top: 0; bottom: 0; background: var(--sdt-tint); pointer-events: none; }
+.sdt-table { position: relative; z-index: 1; width: 100%; min-width: 560px; font-size: var(--text-sm); line-height: 1.4; letter-spacing: -0.01em; text-align: left; border-collapse: separate; border-spacing: 0; }
+.sdt-table[data-fixed] { table-layout: fixed; }
+.sdt-table caption { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.sdt-select-col { width: 44px; }
+
+.sdt-table th, .sdt-table td { --cell-base: var(--surface-raised); --cell-fill: var(--cell-base); background-color: var(--cell-fill); transition: background-color var(--arc-standard) var(--arc-ease-standard), color var(--arc-standard) var(--arc-ease-standard); }
+.sdt-table th[data-sorted], .sdt-table td[data-sorted] { --cell-base: var(--sdt-tint); }
+.sdt-table th { height: var(--sdt-head); padding: 0 var(--space-4); font-size: var(--text-sm); font-weight: 500; text-align: left; color: var(--text-faint); white-space: nowrap; border-bottom: 1px solid var(--border-strong); }
+.sdt-table th[data-sortable] { padding: 0; }
+.sdt-table th[data-sorted] { color: var(--text); }
+.sdt-table td { height: var(--sdt-row); padding: 0 var(--space-4); font-weight: 400; color: var(--text); vertical-align: middle; overflow-wrap: anywhere; border-bottom: 1px solid var(--border); }
+.sdt-table tbody tr:last-child td { border-bottom: 0; }
+.sdt-table [data-numeric] { text-align: right; font-variant-numeric: tabular-nums; }
+.sdt-table[data-selectable] tbody tr { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sdt-table[data-selectable] tbody tr[data-selected] td { --cell-fill: color-mix(in oklab, var(--accent) 8%, var(--cell-base)); }
+.sdt-table[data-selectable] [data-primary]:not([data-sortable]), .sdt-table[data-selectable] th[data-primary] .sdt-sort { padding-left: var(--space-2); }
+
+.sdt-sort { display: flex; align-items: center; justify-content: flex-start; width: 100%; height: var(--sdt-head); padding: 0 var(--space-4); font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; background: transparent; border: 0; -webkit-tap-highlight-color: transparent; }
+.sdt-table th[data-numeric] .sdt-sort { justify-content: flex-end; }
+.sdt-sort-inner { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-control); transition: color var(--arc-fast) var(--arc-ease-standard); }
+/* Right-aligned columns lead with the arrow so the label lines up with the digits below it. */
+.sdt-table th[data-numeric] .sdt-sort-inner { flex-direction: row-reverse; }
+.sdt-sort-icon { position: relative; display: grid; place-items: center; flex: none; width: 16px; height: 16px; }
+.sdt-sort-hint, .sdt-sort-arrow { position: absolute; inset: 0; display: grid; place-items: center; }
+.sdt-sort-hint { color: var(--text-faint); opacity: 0; transition: opacity var(--arc-fast) var(--arc-ease-standard); }
+/* The arrow arrives with its opacity and blur on `enter` and its scale on the snappy spring; it leaves in 120 ms. */
+.sdt-sort-arrow { color: var(--text); opacity: 0; scale: 0.6; filter: blur(2px); transition: opacity var(--arc-instant) var(--arc-ease-standard), filter var(--arc-instant) var(--arc-ease-standard), scale var(--arc-instant) var(--arc-ease-standard); }
+.sdt-table th[data-sorted] .sdt-sort-arrow { opacity: 1; scale: 1; filter: blur(0); transition: opacity var(--arc-standard) var(--arc-ease-enter), filter var(--arc-standard) var(--arc-ease-enter), scale var(--sdt-snappy-t, 260ms) var(--sdt-snappy, ease-out); }
+.sdt-sort:focus-visible .sdt-sort-hint { opacity: 0.6; }
+.sdt-table th[data-sorted] .sdt-sort-hint { opacity: 0; }
+.sdt-sort:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+.sdt-select-cell { width: 44px; }
+.sdt-table .sdt-select-cell { padding: 0 0 0 var(--space-4); }
+.sdt-hit { position: relative; display: flex; align-items: center; width: 100%; height: var(--sdt-head); cursor: pointer; }
+.sdt-input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.sdt-box { position: relative; display: block; flex: none; width: 18px; height: 18px; color: var(--sdt-glyph); pointer-events: none; background: var(--surface-raised); border: 1px solid var(--control-border); border-radius: 5px; transition: border-color var(--arc-fast) var(--arc-ease-standard), transform 580ms var(--spring); }
+.sdt-box[data-on] { border-color: var(--sdt-on); }
+.sdt-fill { position: absolute; inset: -1px; background: var(--sdt-on); border-radius: inherit; opacity: 0; scale: 0.6; transition: opacity var(--arc-fast) var(--arc-ease-standard), scale var(--arc-fast) var(--arc-ease-standard); }
+.sdt-box[data-on] .sdt-fill { opacity: 1; scale: 1; transition: opacity var(--arc-instant) var(--arc-ease-standard), scale var(--sdt-snappy-t, 260ms) var(--sdt-snappy, ease-out); }
+.sdt-mark { position: absolute; inset: -1px; width: 18px; height: 18px; overflow: visible; }
+/* The native checkbox is hidden, so its keyboard focus outline is drawn on the visible box. */
+.sdt-input:focus-visible + .sdt-box { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sdt-input:active + .sdt-box { transform: scale(0.95); transition: border-color var(--arc-fast) var(--arc-ease-standard), transform 110ms var(--arc-ease-standard); }
+
+.sdt-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); height: var(--sdt-head); padding: 0 var(--space-2) 0 var(--space-4); font-size: var(--text-sm); line-height: 1.4; letter-spacing: -0.01em; color: var(--text-faint); border-top: 1px solid var(--border-strong); }
+.sdt-count { display: inline-flex; align-items: baseline; gap: 0.28em; min-width: 0; white-space: nowrap; transition: color var(--arc-standard) var(--arc-ease-standard); }
+.sdt-count[data-active] { color: var(--text); }
+.sdt-swap { display: inline-block; }
+.sdt-swap-inner { position: relative; display: inline-flex; width: max-content; }
+.sdt-swap-text { display: inline-block; white-space: nowrap; }
+.sdt-number { font-variant-numeric: tabular-nums; }
+.sdt-clear { flex: none; height: 30px; padding: 0 var(--space-3); font: inherit; font-weight: 500; letter-spacing: inherit; color: var(--text); cursor: pointer; background: transparent; border: 0; border-radius: var(--radius-control); transition: background-color var(--arc-fast) var(--arc-ease-standard); -webkit-tap-highlight-color: transparent; }
+.sdt-clear:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.sdt-clear:active { scale: 0.97; }
+
+.sdt-table .sdt-empty { height: 120px; color: var(--text-faint); text-align: center; }
+
+@media (hover: hover) and (pointer: fine) {
+  .sdt-table tbody tr:hover td { --cell-fill: color-mix(in oklab, var(--text) 3%, var(--cell-base)); }
+  .sdt-table[data-selectable] tbody tr[data-selected]:hover td { --cell-fill: color-mix(in oklab, var(--accent) 11%, var(--cell-base)); }
+  .sdt-table tbody tr:has(.sdt-empty):hover td { --cell-fill: var(--cell-base); }
+  .sdt-sort:hover .sdt-sort-inner { color: var(--text); }
+  .sdt-sort:hover .sdt-sort-hint { opacity: 0.6; }
+  .sdt-table th[data-sorted] .sdt-sort:hover .sdt-sort-hint { opacity: 0; }
+  .sdt-hit:hover .sdt-box:not([data-on]) { border-color: var(--text-faint); }
+  .sdt-clear:hover { background: var(--surface-sunken); }
+}
+
+@media (max-width: 620px) {
+  .sdt-scroller { overflow: visible; }
+  .sdt-band { display: none; }
+  .sdt-table { display: block; width: 100%; min-width: 0; max-width: 100%; }
+  .sdt-table thead { display: block; }
+  /* The header becomes a strip of sort controls, so sorting stays one tap away on a phone. */
+  .sdt-table thead tr { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); overflow-x: auto; border-bottom: 1px solid var(--border-strong); scrollbar-width: none; }
+  .sdt-table thead tr::-webkit-scrollbar { display: none; }
+  .sdt-table th { display: block; flex: none; height: auto; padding: 0; background: transparent; border: 0; }
+  /* Select all stays pinned while the sort controls scroll beneath it. */
+  .sdt-table th.sdt-select-cell { position: sticky; left: calc(-1 * var(--space-2)); z-index: 1; width: 40px; margin-left: calc(-1 * var(--space-2)); padding: 0 0 0 var(--space-3); background: var(--surface-raised); }
+  .sdt-table th.sdt-select-cell .sdt-hit { height: 32px; }
+  /* Once the strip scrolls, a fade off the pinned cell hides the word sliding under it. */
+  .sdt-table th.sdt-select-cell::after { position: absolute; top: 0; bottom: 0; left: 100%; width: 36px; content: ""; background: linear-gradient(to right, var(--surface-raised) 45%, transparent); opacity: 0; pointer-events: none; }
+  @supports (animation-timeline: scroll()) { .sdt-table th.sdt-select-cell::after { animation: sdt-strip-fade linear both; animation-timeline: scroll(nearest inline); animation-range: 0 24px; } }
+  .sdt-table th .sdt-sort, .sdt-table[data-selectable] th[data-primary] .sdt-sort { width: auto; height: 32px; padding: 0 10px; border-radius: var(--radius-control); transition: background-color var(--arc-standard) var(--arc-ease-standard), color var(--arc-standard) var(--arc-ease-standard); }
+  .sdt-table th[data-sorted] .sdt-sort { background: var(--sdt-tint); }
+  .sdt-table th[data-numeric] .sdt-sort-inner { flex-direction: row; }
+  .sdt-table tbody { display: block; width: 100%; }
+  /* Rows fold into two lines: the first column with its number, then the remaining details. */
+  .sdt-table tbody tr { --row-fill: var(--surface-raised); position: relative; display: flex; flex-wrap: wrap; align-items: baseline; align-content: center; gap: 2px var(--space-2); box-sizing: border-box; width: 100%; min-height: 64px; padding: 10px var(--space-4); background-color: var(--row-fill); border-bottom: 1px solid var(--border); transition: background-color var(--arc-standard) var(--arc-ease-standard); }
+  .sdt-table tbody tr::after { order: 1; flex-basis: 100%; content: ""; }
+  .sdt-table[data-selectable] tbody tr { padding-left: 44px; }
+  .sdt-table[data-selectable] tbody tr[data-selected] { --row-fill: color-mix(in oklab, var(--accent) 8%, var(--surface-raised)); }
+  .sdt-table tbody tr:last-child { border-bottom: 0; }
+  .sdt-table td { display: block; order: 2; min-width: 0; height: auto; padding: 0; font-size: var(--text-xs); text-align: left; color: var(--text-soft); background: transparent; border: 0; }
+  .sdt-table[data-selectable] td[data-primary]:not([data-sortable]) { padding-left: 0; }
+  .sdt-table td[data-primary] { order: 0; flex: 1 1 0; font-size: var(--text-sm); font-weight: 500; color: var(--text); }
+  .sdt-table td[data-numeric]:not([data-primary]) { order: 0; flex: none; margin-left: auto; padding-left: var(--space-2); font-size: var(--text-sm); color: var(--text); }
+  .sdt-table td[data-numeric] ~ td[data-numeric] { order: 2; margin-left: 0; padding-left: 0; font-size: var(--text-xs); color: var(--text-soft); }
+  /* The sorted value lifts to full contrast, echoing the tinted column on wider screens. */
+  .sdt-table td[data-sorted]:not([data-primary]) { color: var(--text); }
+  .sdt-table td.sdt-select-cell { position: absolute; top: 0; bottom: 0; left: var(--space-1); display: flex; align-items: center; width: 36px; padding: 0; }
+  .sdt-table td.sdt-select-cell .sdt-hit { justify-content: center; }
+  .sdt-table .sdt-empty { flex: 1 0 100%; height: auto; padding: var(--space-6) 0; }
+  .sdt-table[data-selectable] tbody tr:has(.sdt-empty) { padding-left: var(--space-4); }
+}
+@media (max-width: 620px) and (hover: hover) and (pointer: fine) {
+  .sdt-table tbody tr:hover { --row-fill: color-mix(in oklab, var(--text) 3%, var(--surface-raised)); }
+  .sdt-table[data-selectable] tbody tr[data-selected]:hover { --row-fill: color-mix(in oklab, var(--accent) 11%, var(--surface-raised)); }
+  .sdt-table tbody tr:hover td { background: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sdt-sort-arrow, .sdt-table th[data-sorted] .sdt-sort-arrow { scale: 1; filter: none; transition: opacity var(--arc-instant) linear; }
+  .sdt-fill, .sdt-box[data-on] .sdt-fill { scale: 1; transition: opacity var(--arc-instant) linear; }
+  .sdt-table th, .sdt-table td, .sdt-table tbody tr, .sdt-sort-inner, .sdt-sort-hint, .sdt-box, .sdt-count, .sdt-clear, .sdt-table th .sdt-sort { transition: none !important; }
+  .sdt-input:active + .sdt-box { transform: none; }
+}
+@keyframes sdt-strip-fade { to { opacity: 1; } }

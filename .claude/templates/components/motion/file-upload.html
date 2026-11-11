@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Subir factura</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./file-upload.css">
+<style>.demo { max-width: 960px; margin: 0 auto; padding: var(--space-6) var(--space-5); } .demo__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: var(--space-6); align-items: start; }</style>
+</head>
+<body class="ui">
+<main class="demo stack" data-gap="5">
+  <header class="inline" data-justify="between">
+    <div class="stack" data-gap="1"><h1 class="text-heading">Adjuntar factura</h1><p class="text-soft">Alta de comprobante · PDF hasta 5 MB. Arrastrá el archivo o elegilo desde el equipo.</p></div>
+    <label class="inline text-label">Tema
+      <select id="theme" class="select" aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select>
+    </label>
+  </header>
+  <div class="demo__grid">
+    <section class="stack" data-gap="3" aria-labelledby="t1">
+      <h2 id="t1" class="text-title">Alta de factura</h2>
+      <div id="main" data-motion="file-upload"></div>
+      <div class="inline">
+        <button class="btn btn--sm" type="button" id="sim">Simular subida</button>
+        <button class="btn btn--sm" type="button" id="bad">Archivo inválido</button>
+        <button class="btn btn--sm" type="button" id="big">Archivo de 9 MB</button>
+      </div>
+    </section>
+    <section class="stack" data-gap="3" aria-labelledby="t2">
+      <h2 id="t2" class="text-title">Subida lenta (6 s)</h2>
+      <div id="slow" data-motion="file-upload" data-upload-delay="6000"></div>
+      <div class="inline"><button class="btn btn--sm" type="button" id="sim2">Simular subida</button></div>
+      <p class="text-caption" id="log" role="status">Sin eventos todavía.</p>
+    </section>
+  </div>
+</main>
+<script type="module">
+  import { mount } from './file-upload.js';
+  const main = mount(document.getElementById('main'));
+  const slow = mount(document.getElementById('slow'));
+  const pdf = (name, size = 184320) => new File([new Uint8Array(size)], name, { type: 'application/pdf' });
+  document.getElementById('sim').onclick = () => main.select(pdf('factura-A-0042.pdf'));
+  document.getElementById('bad').onclick = () => main.select(new File(['x'], 'planilla.xlsx', { type: 'application/vnd.ms-excel' }));
+  document.getElementById('big').onclick = () => main.select(pdf('escaneo-completo.pdf', 9 * 1024 * 1024));
+  document.getElementById('sim2').onclick = () => slow.select(pdf('factura-B-0107.pdf', 412000));
+  const log = document.getElementById('log');
+  document.addEventListener('fileupload:done', (e) => { log.textContent = `Listo: ${e.detail.file.name}`; });
+  document.addEventListener('fileupload:error', (e) => { log.textContent = `Error: ${e.detail.message}`; });
+  document.getElementById('theme').onchange = (e) => document.documentElement.setAttribute('data-theme', e.target.value);
+</script>
+</body>
+</html>

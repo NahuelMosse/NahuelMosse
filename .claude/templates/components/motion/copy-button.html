@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Botón de copiar · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./icons.css">
+<link rel="stylesheet" href="./copy-button.css">
+<style>
+  .demo { max-width: 760px; margin: 0 auto; padding: var(--space-6) var(--space-5); }
+  .demo__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .demo h1 { font-size: var(--text-title); letter-spacing: var(--tracking-title); }
+  .demo h2 { font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .demo__note { color: var(--text-soft); font-size: var(--text-sm); }
+  .field { display: flex; align-items: center; gap: var(--space-3); }
+  .field__name { color: var(--text-soft); font-size: var(--text-sm); min-width: 56px; }
+  .field__value { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="ui">
+<main class="demo stack" style="--gap: var(--space-6)">
+  <header class="demo__bar">
+    <div>
+      <h1>Botón de copiar</h1>
+      <p class="demo__note">Porte de Animate UI · Copy Button. El ícono se cambia por el tilde con escala, opacidad y desenfoque.</p>
+    </div>
+    <label class="demo__note">Tema <select data-demo-theme aria-label="Tema"><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+  </header>
+
+  <section class="stack">
+    <h2>CUIT de un cliente</h2>
+    <div class="field"><span class="field__name">CUIT</span><span class="field__value">30-71234567-8</span><button data-motion="copy-button" id="icon-only" data-copy="30-71234567-8" data-variant="ghost" aria-label="Copiar CUIT"></button></div>
+    <div class="inline"><button data-motion="copy-button" id="with-text" data-copy="30-71234567-8">30-71234567-8</button><span class="demo__note">Con el valor a la vista</span></div>
+  </section>
+
+  <section class="stack">
+    <h2>Variantes y tamaños</h2>
+    <div class="inline">
+      <button data-motion="copy-button" data-copy="FC-A 0001-00004821" aria-label="Copiar número de factura"></button>
+      <button data-motion="copy-button" data-copy="FC-A 0001-00004821" data-variant="primary" aria-label="Copiar número de factura"></button>
+      <button data-motion="copy-button" data-copy="FC-A 0001-00004821" data-variant="ghost" data-size="sm" aria-label="Copiar número de factura"></button>
+    </div>
+  </section>
+</main>
+<script type="module" src="./au-demo.js"></script>
+<script type="module" src="./copy-button.js"></script>
+</body>
+</html>

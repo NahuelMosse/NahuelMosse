@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Morphing dialog</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./morphing-dialog.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Morphing dialog</h1>
+      <p class="demo__lead">La card de un cliente se vuelve su ficha completa: el avatar, el nombre y el CUIT viajan de un lugar al otro mientras el panel crece desde la card.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-clientes">
+    <h2 id="s-clientes">Clientes</h2>
+    <p>Enter, espacio o clic abren la ficha. Escape, la X o un clic afuera la cierran y el foco vuelve a la card.</p>
+    <div class="demo__stage"><div class="demo-grid" id="clients"></div></div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-lento">
+    <h2 id="s-lento">Resorte más blando</h2>
+    <p>El mismo componente con otro resorte (rigidez 120, amortiguación 16): se ve el recorrido completo.</p>
+    <div class="demo__stage"><div class="demo-grid" id="soft"></div></div>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './morphing-dialog.js';
+import { hueOf, escapeHtml } from '../core.js';
+import './mp-demo.js';
+
+const CLIENTS = [
+  { name: 'Sánchez Hermanos S.A.', cuit: '30-71234567-8', iva: 'Responsable Inscripto', mail: 'administracion@sanchezhnos.example', tel: '+54 11 4821-3390', saldo: '$ 1.284.300,00',
+    facturas: [['FC A 0001-00002347', '12/09/2026', 'Pagada', '$ 482.000,00'], ['FC A 0001-00002291', '28/08/2026', 'Vencida', '$ 1.284.300,00'], ['FC A 0001-00002210', '14/08/2026', 'Pagada', '$ 96.450,00']] },
+  { name: 'Distribuidora Del Sur S.R.L.', cuit: '30-70998123-4', iva: 'Responsable Inscripto', mail: 'compras@delsur.example', tel: '+54 351 428-1175', saldo: '$ 0,00',
+    facturas: [['FC A 0001-00002340', '10/09/2026', 'Pagada', '$ 215.800,00'], ['FC A 0001-00002302', '30/08/2026', 'Pagada', '$ 78.120,00']] },
+  { name: 'Estudio Herrera & Asoc.', cuit: '20-28456731-5', iva: 'Monotributo', mail: 'estudio@herreraasoc.example', tel: '+54 341 449-0027', saldo: '$ 152.900,00',
+    facturas: [['FC C 0002-00000418', '05/09/2026', 'Pendiente', '$ 152.900,00'], ['FC C 0002-00000397', '21/08/2026', 'Pagada', '$ 64.000,00'], ['FC C 0002-00000371', '02/08/2026', 'Pagada', '$ 64.000,00']] },
+];
+const initials = (name) => name.split(/\s+/).filter((w) => /^\p{L}/u.test(w)).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
+const render = (host, transition) => {
+  for (const c of CLIENTS) {
+    const root = document.createElement('div');
+    root.dataset.motion = 'morphing-dialog';
+    const hue = hueOf(c.name);
+    const rows = c.facturas.map((f) => `<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td><td>${f[3]}</td></tr>`).join('');
+    root.innerHTML = `
+      <button type="button" class="mdlg-trigger" data-md="trigger">
+        <span class="mdlg-trigger__row">
+          <span class="mdlg-avatar" data-md="image" style="--hue:${hue}" aria-hidden="true">${initials(c.name)}</span>
+          <span class="mdlg-trigger__text"><span data-md="title">${escapeHtml(c.name)}</span><span data-md="subtitle">CUIT ${c.cuit}</span></span>
+        </span>
+      </button>
+      <template data-md="content">
+        <div class="mdlg-sheet">
+          <div class="mdlg-sheet__head">
+            <span class="mdlg-avatar mdlg-avatar--lg" data-md="image" style="--hue:${hue}" aria-hidden="true">${initials(c.name)}</span>
+            <div><div data-md="title">${escapeHtml(c.name)}</div><div data-md="subtitle">CUIT ${c.cuit}</div></div>
+          </div>
+          <div class="mdlg-sheet__body" data-md="description">
+            <dl class="demo-dl">
+              <dt>Condición IVA</dt><dd>${c.iva}</dd>
+              <dt>Email</dt><dd>${c.mail}</dd>
+              <dt>Teléfono</dt><dd>${c.tel}</dd>
+              <dt>Saldo</dt><dd>${c.saldo}</dd>
+            </dl>
+            <table class="demo-table"><thead><tr><th>Comprobante</th><th>Fecha</th><th>Estado</th><th>Importe</th></tr></thead><tbody>${rows}</tbody></table>
+            <button type="button" class="demo-btn">Emitir factura</button>
+          </div>
+        </div>
+      </template>`;
+    host.append(root);
+    mount(root, { closeLabel: 'Cerrar ficha', transition });
+  }
+};
+render(document.getElementById('clients'));
+render(document.getElementById('soft'), { stiffness: 120, damping: 16, mass: 1 });
+</script>
+</body>
+</html>

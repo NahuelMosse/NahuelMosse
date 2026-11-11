@@ -1,0 +1,73 @@
+/* Usage meter (Arc): a segmented allowance with a rolling total, a status mark and a legend that doubles as the keyboard path. */
+:root {
+  --usage-meter-track-h: 14px;
+  --usage-meter-segment-0: var(--accent);
+  --usage-meter-segment-1: color-mix(in oklab, var(--accent) 62%, var(--surface-raised));
+  --usage-meter-segment-2: color-mix(in oklab, var(--accent) 36%, var(--surface-raised));
+  --usage-meter-segment-3: color-mix(in oklab, var(--accent) 22%, var(--surface-raised));
+  --usage-meter-track: color-mix(in oklab, var(--text) 7%, var(--surface-raised));
+}
+
+/* Categories are steps of the accent, strongest first, so the meter reads as one allowance rather than a rainbow. Free space is the track itself. */
+.ar-meter { display: grid; min-width: 0; gap: var(--space-4); color: var(--text); }
+.ar-meter__top { display: flex; min-width: 0; min-height: 28px; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.ar-meter__title { min-width: 0; color: var(--text); font-size: var(--text-md); font-weight: var(--weight-medium); text-wrap: balance; }
+
+/* The status mark hugs its words: its width springs to each message and grows from the right edge, so the text never slides. */
+.ar-meter__badge { display: inline-flex; flex: none; height: 28px; justify-content: flex-end; overflow: hidden; border-radius: var(--radius-full); background: var(--surface-sunken); color: var(--text-soft); font-size: var(--text-xs); font-weight: var(--weight-medium); line-height: 1; transition: background-color var(--ar-duration-standard) var(--ar-ease-standard), color var(--ar-duration-standard) var(--ar-ease-standard); }
+.ar-meter__badge-inner { position: relative; display: inline-flex; flex: none; align-items: center; gap: 6px; padding: 0 var(--space-3); white-space: nowrap; }
+.ar-meter__badge-icon { display: inline-grid; place-items: center; }
+.ar-meter__badge-icon:empty { display: none; }
+.ar-meter__badge-mark { display: grid; place-items: center; }
+.ar-meter__badge[data-status="near"] { background: var(--warning-soft); color: var(--text); }
+.ar-meter__badge[data-status="near"] .ar-meter__badge-mark { color: var(--warning); }
+.ar-meter__badge[data-status="over"] { background: var(--danger-soft); color: var(--text); }
+.ar-meter__badge[data-status="over"] .ar-meter__badge-mark { color: var(--danger); }
+
+.ar-meter__total { display: flex; min-width: 0; align-items: baseline; gap: var(--space-2); margin: 0; }
+.ar-meter__amount { flex: none; font-size: 2.25rem; font-weight: var(--weight-medium); letter-spacing: -.03em; line-height: 1.1; }
+.ar-meter__caption { min-width: 0; flex: 1; color: var(--text-soft); font-size: var(--text-sm); }
+.ar-meter__caption > span { white-space: normal; overflow-wrap: anywhere; }
+
+/* The bar leaves room above and below the track for the limit marker. */
+.ar-meter__bar { position: relative; padding-block: 5px; }
+.ar-meter__track { position: relative; height: var(--usage-meter-track-h); overflow: hidden; border-radius: var(--radius-full); background: var(--usage-meter-track); isolation: isolate; -webkit-tap-highlight-color: transparent; }
+.ar-meter__segment { position: absolute; inset: 0; transform-origin: 0 50%; transform: scaleX(0); transition: opacity var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-meter__segment[data-index="0"], .ar-meter__swatch[data-index="0"] { background: var(--usage-meter-segment-0); }
+.ar-meter__segment[data-index="1"], .ar-meter__swatch[data-index="1"] { background: var(--usage-meter-segment-1); }
+.ar-meter__segment[data-index="2"], .ar-meter__swatch[data-index="2"] { background: var(--usage-meter-segment-2); }
+.ar-meter__segment[data-index="3"], .ar-meter__swatch[data-index="3"] { background: var(--usage-meter-segment-3); }
+.ar-meter__segment[data-highlight="off"] { opacity: .28; }
+/* Past the limit the used colours stay, struck through by a hatch; highlighting the overage floods it with the danger colour. */
+.ar-meter__overflow { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.ar-meter__hatch { fill: var(--surface-raised); }
+.ar-meter__over-tint { fill: var(--danger); opacity: 0; transition: opacity var(--ar-duration-fast) var(--ar-ease-standard); }
+.ar-meter__overflow[data-highlight="on"] .ar-meter__over-tint { opacity: 1; }
+.ar-meter__limit { position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; border-radius: 1px; background: var(--text); opacity: 0; pointer-events: none; }
+
+/* The legend doubles as the keyboard path: arrow keys move between categories, focus previews one, a press pins it. */
+.ar-meter__legend { display: flex; flex-wrap: wrap; gap: 2px; margin: 0 calc(var(--space-2) * -1); }
+.ar-meter__item { display: grid; flex: 1 1 auto; min-width: 0; max-width: 100%; justify-items: start; align-content: start; gap: 2px; padding: var(--space-2); border: 0; border-radius: var(--radius-control); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--ar-duration-fast) var(--ar-ease-standard), opacity var(--ar-duration-fast) var(--ar-ease-standard); }
+@media (hover: hover) and (pointer: fine) { .ar-meter__item:hover { background: var(--surface-hover); } }
+.ar-meter__item[aria-pressed="true"] { background: var(--surface-hover); }
+.ar-meter__item[data-highlight="off"] { opacity: .45; }
+.ar-meter__item-head { display: flex; min-width: 0; max-width: 100%; align-items: center; gap: var(--space-2); color: var(--text-soft); font-size: var(--text-sm); }
+.ar-meter__item-label { min-width: 0; flex: 1; }
+.ar-meter__item-label > span { white-space: normal; overflow-wrap: anywhere; }
+.ar-meter__key { position: relative; display: grid; width: 12px; height: 12px; flex: none; place-items: center; }
+.ar-meter__swatch { width: 10px; height: 10px; border-radius: 3px; }
+.ar-meter__swatch[data-index="free"] { background: var(--usage-meter-track); box-shadow: inset 0 0 0 1px var(--border-strong); }
+.ar-meter__key-icon { display: grid; place-items: center; color: var(--danger); }
+.ar-meter__item-value { display: flex; align-items: baseline; gap: 4px; padding-left: 20px; color: var(--text); font-size: var(--text-md); font-weight: var(--weight-medium); }
+.ar-meter__item-unit { color: var(--text-soft); font-size: var(--text-sm); font-weight: var(--weight-regular); }
+
+/* A rolling number: each digit is a clipped wheel that feathers at its edges, and new columns open from zero width. */
+.ar-meter__ticker { position: relative; display: inline-flex; align-items: flex-start; white-space: nowrap; font-variant-numeric: tabular-nums; user-select: none; }
+.ar-meter__column { --feather: .16em; position: relative; display: inline-block; overflow: hidden; margin-block: calc(var(--feather) * -1); padding-block: var(--feather); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 calc(var(--feather) * 1.5), #000 calc(100% - var(--feather) * 1.5), transparent); mask-image: linear-gradient(to bottom, transparent, #000 calc(var(--feather) * 1.5), #000 calc(100% - var(--feather) * 1.5), transparent); }
+.ar-meter__sizer { visibility: hidden; }
+.ar-meter__glyph { position: absolute; inset: var(--feather) 0; text-align: center; }
+.ar-meter__symbol { display: inline-block; overflow-x: clip; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-meter__badge, .ar-meter__segment, .ar-meter__item, .ar-meter__over-tint { transition-duration: 120ms; transition-timing-function: ease-out; }
+}

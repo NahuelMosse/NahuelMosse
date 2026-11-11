@@ -1,0 +1,6 @@
+/* Border trail (Motion Primitives): a spot of light runs around the edge of its parent. The mask keeps only the border-box
+   ring, so the spot shows on the edge and never inside. */
+.mu-border-trail { position: absolute; inset: 0; border: 1px solid transparent; border-radius: inherit; pointer-events: none; -webkit-mask-clip: padding-box, border-box; mask-clip: padding-box, border-box; -webkit-mask-composite: source-in, xor; mask-composite: intersect; -webkit-mask-image: linear-gradient(transparent, transparent), linear-gradient(#000, #000); mask-image: linear-gradient(transparent, transparent), linear-gradient(#000, #000); }
+.mu-border-trail__spot { position: absolute; aspect-ratio: 1; background: var(--mu-trail-color, var(--accent)); offset-path: rect(0 auto auto 0 round var(--mu-trail-size, 60px)); offset-distance: 0%; animation: mu-border-trail var(--mu-trail-duration, 5s) linear infinite; }
+@keyframes mu-border-trail { to { offset-distance: 100%; } }
+@media (prefers-reduced-motion: reduce) { .mu-border-trail__spot { animation: none; } }

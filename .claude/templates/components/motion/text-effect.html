@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que entra · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./text-effect.css">
+<style>
+  .big { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: -0.02em; }
+  .copy { margin: 0; max-width: 46ch; color: var(--text-soft); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que entra</h1>
+      <p class="mu-demo__note">El texto se parte en palabras, letras o líneas y cada pieza entra escalonada, con cinco estilos. Un lector de pantalla oye el texto completo, no las piezas. Con movimiento reducido solo hay un fundido corto, todo junto. Se repite con el botón.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-presets">
+    <h2 class="mu-demo__label" id="s-presets">Estilos, por palabra</h2>
+    <p class="big" data-motion="text-effect" data-preset="fade">Fade: tus cobros, claros</p>
+    <p class="big" data-motion="text-effect" data-preset="blur">Blur: tus cobros, claros</p>
+    <p class="big" data-motion="text-effect" data-preset="fade-in-blur">Fade in blur: tus cobros, claros</p>
+    <p class="big" data-motion="text-effect" data-preset="scale">Scale: tus cobros, claros</p>
+    <p class="big" data-motion="text-effect" data-preset="slide">Slide: tus cobros, claros</p>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-per">
+    <h2 class="mu-demo__label" id="s-per">Por letra y por línea</h2>
+    <p class="big" data-motion="text-effect" data-per="char" data-preset="fade-in-blur" data-speed-reveal="1.5">Facturá sin vueltas</p>
+    <p class="copy" id="lines" data-motion="text-effect" data-per="line" data-preset="slide" data-text="Emití la factura.&#10;Mandala por mail.&#10;Cobrá en tiempo y forma.">Emití la factura.
+Mandala por mail.
+Cobrá en tiempo y forma.</p>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="again">Repetir todo</button>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './text-effect.js';
+  themeSwitch();
+  document.getElementById('again').addEventListener('click', () => {
+    document.querySelectorAll('[data-motion="text-effect"]').forEach((el) => mount(el).play());
+  });
+</script>
+</body>
+</html>

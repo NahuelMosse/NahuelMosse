@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Toolbar dynamic</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./toolbar-dynamic.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Toolbar dynamic</h1>
+      <p class="demo__lead">Una barra chica que se ensancha según lo que se necesite: la lupa la abre en un buscador de facturas, Volver, Escape o un clic afuera la devuelven a su tamaño.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-buscar">
+    <h2 id="s-buscar">Buscar facturas</h2>
+    <p>El primer botón queda deshabilitado hasta que haya algo seleccionado.</p>
+    <div class="demo__stage demo__stage--end">
+      <div class="tbd" data-motion="toolbar-dynamic" id="search" role="group" aria-label="Herramientas de facturas">
+        <div class="tbd__box" data-td="box">
+          <div class="tbd__row" data-td="closed">
+            <button type="button" class="tbd__btn" disabled aria-label="Exportar selección"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8M4.5 7.5L8 11l3.5-3.5M3 13.5h10"/></svg></button>
+            <button type="button" class="tbd__btn" data-td="expand" aria-label="Buscar facturas"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg></button>
+          </div>
+          <div class="tbd__row" data-td="open" hidden>
+            <button type="button" class="tbd__btn" data-td="back" aria-label="Volver"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+            <input class="tbd__input" data-td="input" type="search" placeholder="Buscar facturas" aria-label="Buscar facturas" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="demo__log" id="log" role="status"></p>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './toolbar-dynamic.js';
+import './mp-demo.js';
+
+const bar = document.getElementById('search');
+mount(bar);
+bar.addEventListener('toolbar-dynamic:input', (e) => { document.getElementById('log').textContent = e.detail.value ? `Buscando «${e.detail.value}»` : ''; });
+</script>
+</body>
+</html>

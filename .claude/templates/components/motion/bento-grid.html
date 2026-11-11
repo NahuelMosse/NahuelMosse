@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inicio · Grilla bento · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./bento-grid.css">
+<link rel="stylesheet" href="./animated-list.css">
+<link rel="stylesheet" href="./animated-beam.css">
+<link rel="stylesheet" href="./animated-circular-progress-bar.css">
+<link rel="stylesheet" href="./apple-activity-card.css">
+<link rel="stylesheet" href="./number-ticker.css">
+<link rel="stylesheet" href="./marquee.css">
+<style>
+  /* The backgrounds of the cells: placed from the top, faded where the text begins, and a little larger on hover. */
+  .cell-bg { position: absolute; transition: transform 300ms ease-out; }
+  .cell-bg--clients { inset: 40px 0 auto 0; -webkit-mask-image: linear-gradient(to top, transparent 40%, #000 100%); mask-image: linear-gradient(to top, transparent 40%, #000 100%); }
+  .cell-bg--clients .mu-marquee + .mu-marquee { margin-top: var(--space-1); }
+  .cell-bg--list { top: 16px; right: 8px; left: 8px; height: 300px; overflow: hidden; transform: scale(0.75); transform-origin: top; -webkit-mask-image: linear-gradient(to top, transparent 10%, #000 100%); mask-image: linear-gradient(to top, transparent 10%, #000 100%); }
+  .mu-bento__card:is(:hover, :focus-within) .cell-bg--list { transform: scale(0.9); }
+  .cell-bg--beam { top: 16px; right: 8px; left: 8px; height: 300px; transform-origin: top; -webkit-mask-image: linear-gradient(to top, transparent 10%, #000 100%); mask-image: linear-gradient(to top, transparent 10%, #000 100%); }
+  .cell-bg--beam .mu-beam { height: 100%; }
+  .mu-bento__card:is(:hover, :focus-within) .cell-bg--beam { transform: scale(1.05); }
+  .cell-bg--gauge { top: 32px; left: 0; right: 0; display: flex; justify-content: center; transform-origin: top; -webkit-mask-image: linear-gradient(to top, transparent 25%, #000 100%); mask-image: linear-gradient(to top, transparent 25%, #000 100%); }
+  .mu-bento__card:is(:hover, :focus-within) .cell-bg--gauge { transform: scale(1.08); }
+  .cell-bg--rings { top: 0; left: 0; right: 0; transform: scale(0.8); transform-origin: top; -webkit-mask-image: linear-gradient(to top, transparent 15%, #000 100%); mask-image: linear-gradient(to top, transparent 15%, #000 100%); }
+  .mu-bento__card:is(:hover, :focus-within) .cell-bg--rings { transform: scale(0.88); }
+  .cell-bg--figures { top: 32px; left: var(--space-4); right: var(--space-4); display: grid; gap: var(--space-4); -webkit-mask-image: linear-gradient(to top, transparent 25%, #000 100%); mask-image: linear-gradient(to top, transparent 25%, #000 100%); }
+  .figures__big { font-size: 2.25rem; font-weight: var(--weight-strong); line-height: 1.1; }
+  .figures__row { display: flex; gap: var(--space-5); color: var(--text-soft); font-size: var(--text-sm); }
+  .figures__row strong { display: block; color: var(--text); font-size: var(--text-xl); font-weight: var(--weight-strong); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo" style="max-width: 1200px">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Inicio de octubre</h1>
+      <p class="mu-demo__note">El resumen del mes en una grilla bento: cada celda aloja su propio movimiento. Al pasar el mouse o enfocar con el teclado, el texto sube, el ícono se achica y aparece el enlace.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <div id="bento" aria-label="Resumen del mes"></div>
+</main>
+<script type="module">
+  import { activity, clients, logo, notice, svgIcon, themeSwitch } from './mu-demo.js';
+  import { mount as bento } from './bento-grid.js';
+  import { mount as list } from './animated-list.js';
+  import { mount as beam } from './animated-beam.js';
+  import { mount as gauge } from './animated-circular-progress-bar.js';
+  import { mount as rings } from './apple-activity-card.js';
+  import { mount as ticker } from './number-ticker.js';
+  import { mount as marquee } from './marquee.js';
+  themeSwitch();
+
+  const html = (markup) => { const t = document.createElement('template'); t.innerHTML = markup.trim(); return t.content.firstElementChild; };
+  const host = (cls, inner, attrs = '') => html(`<div class="cell-bg ${cls}" ${attrs}>${inner}</div>`);
+
+  const cells = [
+    {
+      name: 'Clientes', description: 'Quiénes cobran con Ledger este mes.', icon: svgIcon('users'), href: '#clientes', cta: 'Ver clientes', span: 1,
+      background: (slot) => {
+        const el = host('cell-bg--clients', '');
+        const row = (names, extra) => { const m = document.createElement('div'); for (const n of names) m.append(logo(n)); el.append(m); return marquee(m, { pauseOnHover: true, duration: 20, ...extra }); };
+        const a = row(clients.slice(0, 4), {});
+        const b = row(clients.slice(4), { reverse: true });
+        slot.append(el);
+        return { destroy: () => { a.destroy(); b.destroy(); } };
+      },
+    },
+    {
+      name: 'Actividad reciente', description: 'Cobros, facturas y avisos a medida que pasan.', icon: svgIcon('bell'), href: '#actividad', cta: 'Ver toda la actividad', span: 2,
+      background: (slot) => {
+        const el = host('cell-bg--list', '');
+        const inner = document.createElement('div');
+        for (const item of activity) inner.append(notice(item));
+        el.append(inner);
+        slot.append(el);
+        return list(inner, { delay: 1000 });
+      },
+    },
+    {
+      name: 'Integraciones', description: 'Banco, AFIP, mail y planilla conectados con Ledger.', icon: svgIcon('share'), href: '#integraciones', cta: 'Administrar integraciones', span: 2,
+      background: (slot) => {
+        const el = host('cell-bg--beam', `<div class="mu-beam" role="group" aria-label="Integraciones de Ledger"><div class="mu-beam__layout">
+          <div class="mu-beam__col"><div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="banco" role="img" aria-label="Banco">${svgIcon('bank')}</div></div><div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="afip" role="img" aria-label="AFIP">${svgIcon('shield')}</div></div></div>
+          <div class="mu-beam__col"><div class="mu-beam__cell"><div class="mu-beam__node mu-beam__node--hub" data-beam-node="ledger" role="img" aria-label="Ledger">${svgIcon('ledger')}</div></div></div>
+          <div class="mu-beam__col"><div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="mail" role="img" aria-label="Mail">${svgIcon('mail')}</div></div><div class="mu-beam__cell"><div class="mu-beam__node" data-beam-node="planilla" role="img" aria-label="Planilla">${svgIcon('sheet')}</div></div></div>
+        </div></div>`);
+        slot.append(el);
+        return beam(el.firstElementChild, { duration: 3, beams: [{ from: 'banco', to: 'ledger' }, { from: 'afip', to: 'ledger' }, { from: 'ledger', to: 'mail' }, { from: 'ledger', to: 'planilla' }] });
+      },
+    },
+    {
+      name: 'Meta del mes', description: 'Cobrado sobre lo que se espera cobrar en octubre.', icon: svgIcon('target'), href: '#meta', cta: 'Ver la meta', span: 1,
+      background: (slot) => {
+        const el = host('cell-bg--gauge', '<div aria-label="Meta de cobro del mes"></div>');
+        slot.append(el);
+        return gauge(el.firstElementChild, { value: 68 });
+      },
+    },
+    {
+      name: 'Cobranza', description: 'Facturas cobradas, clientes al día y pagos conciliados.', icon: svgIcon('rings'), href: '#cobranza', cta: 'Ver la cobranza', span: 2,
+      background: (slot) => {
+        const el = host('cell-bg--rings', '<div></div>');
+        slot.append(el);
+        return rings(el.firstElementChild, { name: 'Anillos de cobranza', rings: [{ label: 'COBRADAS', current: 38, target: 52, unit: 'FAC' }, { label: 'CLIENTES AL DÍA', current: 24, target: 30, unit: 'CLI' }, { label: 'CONCILIADOS', current: 6, target: 12, unit: 'PAGOS' }] });
+      },
+    },
+    {
+      name: 'Facturado', description: 'Lo emitido en el mes y cuánto queda por cobrar.', icon: svgIcon('trend'), href: '#facturado', cta: 'Ver facturas', span: 1,
+      background: (slot) => {
+        const el = host('cell-bg--figures', '<div class="figures__big"><span data-v="billed"></span></div><div class="figures__row"><div><strong data-v="count"></strong>facturas</div><div><strong data-v="owed"></strong>por cobrar</div></div>');
+        slot.append(el);
+        const t = [ticker(el.querySelector('[data-v="billed"]'), { value: 5000000, currency: 'ARS' }), ticker(el.querySelector('[data-v="count"]'), { value: 1284 }), ticker(el.querySelector('[data-v="owed"]'), { value: 1600000, currency: 'ARS' })];
+        return { destroy: () => t.forEach((x) => x.destroy()) };
+      },
+    },
+  ];
+  bento(document.getElementById('bento'), { cells });
+</script>
+</body>
+</html>

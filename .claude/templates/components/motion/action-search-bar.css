@@ -1,0 +1,45 @@
+/* Action search bar: label, field with the rolling icon, and the panel of suggested actions. */
+:root {
+  --action-search-bar-width: 24rem;
+  --action-search-bar-field-h: 36px;
+  --action-search-bar-item-pad: 8px 12px;
+}
+
+.asb { position: relative; width: 100%; max-width: var(--action-search-bar-width); font-family: var(--font); color: var(--text); }
+.asb *, .asb *::before, .asb *::after { box-sizing: border-box; }
+.asb__label { display: block; margin-bottom: 4px; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text-soft); }
+.asb__field { position: relative; }
+.asb__input { width: 100%; height: var(--action-search-bar-field-h); padding: 6px 36px 6px 12px; border: 1px solid var(--control-border); border-radius: var(--radius-control); background: var(--field-bg); color: var(--text); font: inherit; font-size: var(--text-sm); box-shadow: var(--shadow-control); transition: border-color var(--motion-hover), box-shadow var(--motion-ring); }
+.asb__input::placeholder { color: var(--text-faint); }
+@media (hover: hover) and (pointer: fine) { .asb__input:hover { border-color: var(--control-border-hover); } }
+.asb__input:focus-visible { outline: 0; border-color: var(--focus); box-shadow: 0 0 0 3px var(--focus-soft); }
+.asb__icons { position: absolute; top: 50%; right: 12px; width: 16px; height: 16px; translate: 0 -50%; pointer-events: none; }
+.asb__ico { position: absolute; inset: 0; display: block; color: var(--text-faint); }
+.asb__ico[hidden] { display: none; }
+.asb__icon { width: 16px; height: 16px; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.asb__panel { position: absolute; z-index: 20; top: 100%; left: 0; right: 0; margin-top: 4px; overflow: hidden; border-radius: var(--radius-control); background: var(--surface-overlay); box-shadow: var(--shadow-overlay), var(--overlay-edge); }
+.asb__panel[hidden] { display: none; }
+.asb__list { margin: 0; padding: 4px; list-style: none; }
+.asb__item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: var(--action-search-bar-item-pad); border-radius: var(--radius-item); cursor: pointer; transition: background-color var(--motion-hover); }
+.asb__item[hidden] { display: none; }
+@media (hover: hover) and (pointer: fine) { .asb__item:hover { background: var(--surface-hover); } }
+.asb__item[aria-selected="true"] { background: var(--surface-active); }
+.asb__lead { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.asb__glyph { display: inline-flex; color: var(--tone, var(--accent-text)); }
+.asb__item[data-tone="accent"] { --tone: var(--accent-text); }
+.asb__item[data-tone="info"] { --tone: var(--info); }
+.asb__item[data-tone="success"] { --tone: var(--success); }
+.asb__item[data-tone="warning"] { --tone: color-mix(in oklab, var(--warning), var(--text) 25%); }
+.asb__item[data-tone="danger"] { --tone: var(--danger); }
+.asb__name { font-size: var(--text-md); font-weight: var(--weight-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.asb__desc { font-size: var(--text-xs); color: var(--text-faint); white-space: nowrap; }
+.asb__trail { display: flex; align-items: center; gap: 8px; flex: none; font-size: var(--text-xs); color: var(--text-faint); }
+.asb__short, .asb__foot kbd { font: inherit; font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--text-faint); }
+.asb__foot kbd { padding: 0 4px; border-radius: 4px; background: var(--surface-active); color: var(--text-soft); }
+.asb__empty { margin: 0; padding: 12px; font-size: var(--text-sm); color: var(--text-soft); text-align: center; }
+.asb__empty[hidden] { display: none; }
+.asb__foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; padding: 8px 12px; border-top: 1px solid var(--border-subtle); font-size: var(--text-xs); color: var(--text-soft); }
+.asb__live { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 420px) { .asb__desc, .asb__end { display: none; } .asb__foot span:first-child { display: none; } }
+@media (prefers-reduced-motion: reduce) { .asb__input, .asb__item { transition-duration: 120ms; } }

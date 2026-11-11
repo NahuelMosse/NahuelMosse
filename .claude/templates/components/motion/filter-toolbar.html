@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Filtros de facturas</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mp-demo.css">
+<link rel="stylesheet" href="./arc-demo.css">
+<link rel="stylesheet" href="./arc.css">
+<link rel="stylesheet" href="./filter-toolbar.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Filtros de facturas</h1>
+      <p class="demo__lead">Los filtros aplicados son chips que se abren y se cierran con el ancho de su lugar; «Agregar filtro» se convierte en un menú de dos pasos, primero el campo y después el valor. Si un chip salta de línea, se desliza en vez de teletransportarse.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-lista">
+    <h2 id="s-lista">Listado de facturas</h2>
+    <p>Flechas, Inicio, Fin y la primera letra recorren el menú; Escape lo cierra y devuelve el foco al botón. Cambiar el valor de un filtro que ya está aplicado mueve el texto dentro de su chip.</p>
+    <div class="demo__stage demo__stage--column" id="stage" style="min-height: 430px; justify-content: flex-start; padding-top: 72px">
+      <div id="toolbar" style="width: min(620px, 100%)"></div>
+    </div>
+    <p class="demo__log" id="log" aria-live="polite"></p>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './filter-toolbar.js';
+import { svgIcon } from './arc-kit.js';
+import './mp-demo.js';
+
+const fmt = new Intl.NumberFormat('es-AR');
+const fields = [
+  { id: 'estado', label: 'Estado', icon: svgIcon('<circle cx="8" cy="8" r="5.5" stroke-dasharray="2 2.2"/>'), options: [{ value: 'Borrador', hint: 8 }, { value: 'Emitida', hint: 14 }, { value: 'Pagada', hint: 21 }, { value: 'Vencida', hint: 6 }, { value: 'Anulada', hint: 3 }] },
+  { id: 'cliente', label: 'Cliente', icon: svgIcon('<circle cx="8" cy="5.5" r="2.5"/><path d="M3 13.5c.4-2.6 2.5-4 5-4s4.6 1.4 5 4"/>'), options: ['Sánchez Hermanos S.A.', 'Ferretería del Plata', 'Estudio Acosta y Asoc.', 'Panificadora Norte', 'Distribuidora Cuyo'] },
+  { id: 'vence', label: 'Vencimiento', icon: svgIcon('<path d="M3 4.5h10v8.5H3zM3 7.5h10M5.5 2.5v3M10.5 2.5v3"/>'), options: ['Esta semana', 'Este mes', 'Próximo mes', 'Ya venció'] },
+  { id: 'monto', label: 'Monto', icon: svgIcon('<path d="M2.5 12.5v-3M6 12.5v-6M9.5 12.5v-8M13 12.5v-5"/>'), options: [{ value: 'Hasta $ 100.000' }, { value: '$ 100.000 a $ 500.000' }, { value: 'Más de $ 500.000' }] },
+];
+const log = document.getElementById('log');
+const toolbar = mount(document.getElementById('toolbar'), {
+  filters: [{ id: 'estado', label: 'Estado', value: 'Emitida' }, { id: 'cliente', label: 'Cliente', value: 'Sánchez Hermanos S.A.' }],
+  addFilter: { fields, label: 'Agregar filtro', align: 'end' },
+  onChange: (list) => { log.textContent = list.length ? `${fmt.format(Math.max(1, 126 - list.length * 38))} facturas coinciden con ${list.length === 1 ? 'el filtro' : `los ${list.length} filtros`}.` : `${fmt.format(126)} facturas en total.`; },
+});
+log.textContent = `${fmt.format(50)} facturas coinciden con los 2 filtros.`;
+window.toolbar = toolbar;
+</script>
+</body>
+</html>

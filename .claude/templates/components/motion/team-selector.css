@@ -1,0 +1,33 @@
+/* Team selector: a 320 px card, overlapping 44 px avatars, a rolling counter between two square buttons. */
+:root {
+  --team-selector-width: 20rem;
+  --team-selector-avatar: 44px;
+  --team-selector-overlap: 12px;
+  --team-selector-shift: 300ms;
+}
+
+.ts { display: flex; justify-content: flex-start; width: 100%; font-family: var(--font); color: var(--text); }
+.ts *, .ts *::before, .ts *::after { box-sizing: border-box; }
+.ts__card { width: 100%; max-width: var(--team-selector-width); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-strong); background: var(--surface-raised); box-shadow: var(--card-hairline), var(--shadow-1); }
+.ts__fs { margin: 0; padding: 0; border: 0; min-width: 0; }
+.ts__legend { width: 100%; margin-bottom: 20px; padding: 0; font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--text-soft); }
+/* All the avatars are laid out (the hidden ones are only transparent), so the visible group is shifted towards the card's centre by half of what is hidden. */
+.ts__avatars { display: flex; align-items: center; justify-content: center; width: fit-content; max-width: 100%; margin: 0 auto 28px; padding-left: 0; translate: calc((var(--ts-max, 1) - var(--ts-size, 1)) * (var(--team-selector-avatar) - var(--team-selector-overlap)) / 2) 0; transition: translate var(--team-selector-shift) var(--ease-out); }
+.ts__av { position: relative; display: grid; place-items: center; flex: none; width: var(--team-selector-avatar); height: var(--team-selector-avatar); margin-left: calc(var(--team-selector-overlap) * -1); border-radius: 50%; border: 2px solid var(--surface-raised); background: oklch(var(--avatar-bg-l) var(--avatar-bg-c) var(--hue)); color: oklch(var(--avatar-fg-l) var(--avatar-fg-c) var(--hue)); box-shadow: 0 2px 8px oklch(0% 0 0 / 0.08), 0 0 0 1px var(--border-subtle); font-size: var(--text-sm); font-weight: var(--weight-strong); letter-spacing: 0.02em; user-select: none; }
+.ts__av:first-child { margin-left: 0; }
+.ts__av[data-visible="false"] { opacity: 0; transform: scale(0.85); }
+@media (hover: hover) and (pointer: fine) { .ts__card { transition: box-shadow var(--duration-slow) var(--ease-out), border-color var(--duration-slow) var(--ease-out); } .ts__card:hover { border-color: var(--control-border); box-shadow: var(--card-hairline), var(--shadow-2); } }
+.ts__controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.ts__btn { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--btn-border); border-radius: var(--radius); background: var(--surface-raised); color: var(--text-soft); box-shadow: var(--shadow-control); cursor: pointer; transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out), opacity 150ms var(--ease-out), transform var(--motion-press); }
+@media (hover: hover) and (pointer: fine) { .ts__btn:not([aria-disabled="true"]):hover { background: var(--btn-bg-hover); color: var(--text); border-color: var(--control-border); } }
+.ts__btn:not([aria-disabled="true"]):active { transform: scale(var(--press-scale)); background: var(--surface-active); }
+.ts__btn[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+.ts__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ts__icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ts__count { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
+.ts__roll { position: relative; display: grid; place-items: center; height: 36px; width: 100%; overflow: hidden; }
+.ts__num { display: block; grid-area: 1 / 1; font-size: 1.875rem; font-weight: var(--weight-strong); line-height: 36px; font-variant-numeric: tabular-nums; user-select: none; }
+.ts__num--leaving { position: absolute; }
+.ts__unit { font-size: 0.6875rem; color: var(--text-soft); }
+.ts__sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .ts__btn, .ts__avatars, .ts__card { transition-duration: 120ms; } .ts__btn:not([aria-disabled="true"]):active { transform: none; } }

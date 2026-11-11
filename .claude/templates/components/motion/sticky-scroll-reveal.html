@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revelado con scroll fijo · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ac-demo.css">
+<link rel="stylesheet" href="./sticky-scroll-reveal.css">
+<style>
+  /* The drawn visuals of the three steps (white on the tone behind them). */
+  .viz { display: grid; align-content: center; gap: var(--space-2); padding: var(--space-5); color: oklch(100% 0 0); }
+  .viz__row { display: flex; align-items: center; gap: var(--space-2); height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-item); background: oklch(100% 0 0 / 0.2); }
+  .viz__row > span { height: 6px; border-radius: 3px; background: oklch(100% 0 0 / 0.8); }
+  .viz__row--on { background: oklch(100% 0 0 / 0.95); }
+  .viz__row--on > span { background: oklch(40% 0.12 267); }
+  .viz__pair { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; gap: var(--space-1); }
+  .viz__link { height: 2px; background: oklch(100% 0 0 / 0.85); }
+  .viz__done { display: grid; place-items: center; justify-self: center; width: 84px; height: 84px; border-radius: 50%; background: oklch(100% 0 0 / 0.95); color: oklch(40% 0.12 155); }
+  .viz__done svg { width: 44px; height: 44px; }
+</style>
+</head>
+<body class="ui">
+<main class="ac-demo">
+  <header class="ac-demo__head">
+    <div>
+      <h1 class="ac-demo__title">Revelado con scroll fijo</h1>
+      <p class="ac-demo__note">Cómo funciona la conciliación bancaria. Los pasos se leen a la izquierda mientras el panel de la derecha acompaña y cambia con el paso activo. Se recorre con la rueda, el teclado o el dedo.</p>
+    </div>
+    <div class="ac-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-ac-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-ac-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="ac-demo__section" aria-labelledby="s-steps">
+    <h2 class="ac-demo__label" id="s-steps">Conciliación en tres pasos</h2>
+    <div class="ac-demo__stage ac-demo__stage--flush" id="stage-steps">
+      <div id="steps" data-motion="sticky-scroll-reveal" aria-label="Cómo funciona la conciliación">
+        <section data-step>
+          <h3>Importás el extracto</h3>
+          <p>Subís el archivo de tu banco y Ledger lee cada movimiento: fecha, concepto, importe y referencia. No hace falta preparar nada antes.</p>
+          <div data-visual class="viz">
+            <div class="viz__row"><span style="width:55%"></span></div>
+            <div class="viz__row"><span style="width:70%"></span></div>
+            <div class="viz__row"><span style="width:42%"></span></div>
+            <div class="viz__row"><span style="width:63%"></span></div>
+          </div>
+        </section>
+        <section data-step>
+          <h3>Ledger propone coincidencias</h3>
+          <p>Cada cobro se cruza con la factura que mejor le calza por cliente, importe y referencia. Lo dudoso queda aparte para que lo revises vos.</p>
+          <div data-visual class="viz">
+            <div class="viz__pair"><div class="viz__row"><span style="width:60%"></span></div><span class="viz__link"></span><div class="viz__row viz__row--on"><span style="width:60%"></span></div></div>
+            <div class="viz__pair"><div class="viz__row"><span style="width:45%"></span></div><span class="viz__link"></span><div class="viz__row viz__row--on"><span style="width:75%"></span></div></div>
+            <div class="viz__pair"><div class="viz__row"><span style="width:70%"></span></div><span class="viz__link"></span><div class="viz__row viz__row--on"><span style="width:50%"></span></div></div>
+          </div>
+        </section>
+        <section data-step>
+          <h3>Confirmás y cerrás el mes</h3>
+          <p>Aceptás las coincidencias de una vez o una por una. Al terminar, el mes queda cerrado y cada factura muestra cuándo y cómo se cobró.</p>
+          <div data-visual class="viz">
+            <span class="viz__done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.25 12.75l4.5 4.5 9-10.5"/></svg></span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './ac-demo.js';
+  themeSwitch();
+  await import('./sticky-scroll-reveal.js');
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+rules:
+  - id: sdd-sec-ai-04-tls-off
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: TLS verification disabled (SEC-AI-04)
+    pattern-either:
+      - pattern: "{..., rejectUnauthorized: false, ...}"
+      - pattern: "{..., strictSSL: false, ...}"
+      - pattern: process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+  - id: sdd-sec-ai-06-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: eval / new Function / vm.run* / setTimeout with a string (SEC-AI-06)
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+      - patterns:
+          - pattern: vm.$M(...)
+          - metavariable-regex:
+              metavariable: $M
+              regex: ^(runInContext|runInNewContext|runInThisContext|compileFunction)$
+      - pattern: setTimeout("...", ...)
+  - id: sdd-sec-ai-06-exec-interp
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: exec with interpolation or concatenation (SEC-AI-06)
+    pattern-either:
+      - pattern: exec(`...${$X}...`, ...)
+      - pattern: exec($A + $B, ...)
+      - pattern: execSync(`...${$X}...`, ...)
+      - pattern: execSync($A + $B, ...)
+  - id: sdd-db-sec-01-sql-concat
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: SQL built by concatenation or interpolation (DB-SEC-01)
+    pattern-either:
+      - pattern: $DB.query(`...${$X}...`, ...)
+      - pattern: $DB.query($A + $B, ...)
+      - pattern: $DB.execute(`...${$X}...`, ...)
+      - pattern: $DB.raw(`...${$X}...`, ...)
+      - pattern: $DB.prepare(`...${$X}...`, ...)
+      - pattern: $DB.prepare($A + $B, ...)
+      - pattern: $DB.exec(`...${$X}...`, ...)
+      - pattern: $DB.exec($A + $B, ...)
+      - pattern: $DB.all(`...${$X}...`, ...)
+      - pattern: $DB.all($A + $B, ...)
+      - pattern: $DB.get(`...${$X}...`, ...)
+      - pattern: $DB.get($A + $B, ...)
+      - pattern: $DB.run(`...${$X}...`, ...)
+      - pattern: $DB.run($A + $B, ...)

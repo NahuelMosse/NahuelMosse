@@ -1,0 +1,6 @@
+/* Text scramble (Motion Primitives). Tabular figures keep the line from jittering while random characters swap in. */
+.mu-text-scramble { display: inline-block; white-space: pre-wrap; font-variant-numeric: tabular-nums; }
+.mu-text-scramble__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Reduced motion: the script shows the final text at once; nothing here moves. */
+@media (prefers-reduced-motion: reduce) { .mu-text-scramble__text { transition: none; } }

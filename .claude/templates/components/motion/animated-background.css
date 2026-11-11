@@ -1,0 +1,52 @@
+/* Animated background. The values of the component, derived from the set's tokens. */
+:root {
+  --animated-background-radius: var(--radius-control);
+  --animated-background-fill: var(--surface-hover);
+  --animated-background-shadow: none;
+}
+
+[data-motion="animated-background"] { position: relative; }
+[data-motion="animated-background"] [data-id] { position: relative; z-index: 1; }
+
+/* The highlight: a 100 x 100 box that the script scales and moves onto the item. */
+.abg__hl {
+  position: absolute; top: 0; left: 0; z-index: 0; width: 100px; height: 100px; pointer-events: none; opacity: 0;
+  transform-origin: 0 0; background: var(--animated-background-fill); box-shadow: var(--animated-background-shadow); will-change: transform, opacity;
+}
+.abg__probe { position: absolute; width: 0; height: 0; visibility: hidden; pointer-events: none; border-radius: var(--animated-background-radius); }
+
+/* Items the demo and the screens put inside. */
+.abg-tabs { display: inline-flex; gap: var(--space-1); }
+.abg-tab {
+  display: inline-flex; padding: var(--space-1) var(--space-3); font: inherit; font-size: var(--text-md); color: var(--text-soft);
+  cursor: pointer; background: transparent; border: 0; border-radius: var(--animated-background-radius);
+  transition: color var(--duration-slow) var(--ease-out);
+}
+.abg-tab:hover, .abg-tab[data-checked="true"] { color: var(--text); }
+.abg-tab:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.abg-menu { display: flex; flex-direction: column; gap: 2px; width: 232px; padding: var(--space-2); }
+.abg-menu__item {
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); font-size: var(--text-md); color: var(--text-soft);
+  text-decoration: none; border-radius: var(--animated-background-radius); transition: color var(--duration-slow) var(--ease-out);
+}
+.abg-menu__item:hover, .abg-menu__item[data-checked="true"] { color: var(--text); }
+.abg-menu__item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.abg-menu__item .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.abg-menu__count { margin-left: auto; font-size: var(--text-xs); font-variant-numeric: tabular-nums; color: var(--text-faint); }
+
+.abg-cards { --animated-background-radius: var(--radius); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; padding: var(--space-3); }
+.abg-card { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); user-select: none; }
+.abg-card__title { font-size: var(--text-lg); font-weight: 500; color: var(--text); }
+.abg-card__text { font-size: var(--text-md); color: var(--text-soft); }
+
+.abg-segmented { --animated-background-fill: var(--surface-raised); --animated-background-shadow: var(--shadow-thumb); display: inline-flex; padding: 2px; background: var(--surface-sunken); border-radius: calc(var(--animated-background-radius) + 2px); }
+.abg-segmented .abg-tab { width: 80px; justify-content: center; padding: var(--space-1) 0; color: var(--text); transition: transform var(--duration-instant) var(--ease-out); }
+.abg-segmented .abg-tab:active { transform: scale(0.98); }
+.abg-segmented .abg-tab:not([data-checked="true"]) { color: var(--text-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .abg-tab, .abg-menu__item { transition-duration: 120ms; }
+  .abg-segmented .abg-tab:active { transform: none; }
+}
+@media (max-width: 640px) { .abg-cards { grid-template-columns: repeat(2, 1fr); } }

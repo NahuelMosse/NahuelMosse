@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que se descifra · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./text-scramble.css">
+<style>
+  .big { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-strong); letter-spacing: -0.02em; }
+  .code { font-family: var(--font-mono, ui-monospace, monospace); font-size: var(--text-lg); color: var(--text-soft); }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que se descifra</h1>
+      <p class="mu-demo__note">Caracteres al azar que se resuelven de izquierda a derecha hasta la palabra real. Un lector de pantalla oye solo el texto final. Con movimiento reducido aparece directo. Se repite con el botón, también con el dedo o el teclado.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-title">
+    <h2 class="mu-demo__label" id="s-title">Titular</h2>
+    <p class="big" id="title" data-motion="text-scramble">Cobranzas al día</p>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="again">Repetir</button>
+      <button type="button" class="btn-demo" id="next">Otro texto</button>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-code">
+    <h2 class="mu-demo__label" id="s-code">Número de comprobante, con otro juego de caracteres</h2>
+    <p class="code" id="code" data-motion="text-scramble" data-character-set="0123456789" data-duration="1.2">A-0004-00001284</p>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './text-scramble.js';
+  themeSwitch();
+  const title = mount(document.getElementById('title'), {});
+  const texts = ['Cobranzas al día', 'Facturas vencidas: 12', 'Estudio Quiroga pagó'];
+  let at = 0;
+  document.getElementById('again').addEventListener('click', () => title.scramble());
+  document.getElementById('next').addEventListener('click', () => { at = (at + 1) % texts.length; title.set(texts[at]); });
+  document.getElementById('code').addEventListener('click', () => mount(document.getElementById('code')).scramble());
+</script>
+</body>
+</html>

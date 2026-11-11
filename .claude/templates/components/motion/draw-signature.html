@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firma a mano · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./draw-signature.css">
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Firma a mano</h1>
+      <p class="mu-demo__note">El botón se convierte en una zona de firma y, al terminar, en una constancia; el marco cambia de tamaño con un resorte. Se firma con mouse, dedo o lápiz; no se puede dibujar con el teclado, así que en un trámite que exija firma conviene ofrecer una alternativa escrita. Con movimiento reducido no hay animación de tamaño.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Conformidad de la factura A-0004-00001284</h2>
+    <div data-motion="draw-signature"></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import './draw-signature.js';
+  themeSwitch();
+</script>
+</body>
+</html>

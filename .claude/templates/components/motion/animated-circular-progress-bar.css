@@ -1,0 +1,35 @@
+/* Animated circular progress bar (Magic UI): a gauge whose arc and gap are drawn with CSS custom properties. */
+:root {
+  --mu-gauge-size: 160px;
+  --mu-gauge-primary: var(--accent);
+  --mu-gauge-secondary: color-mix(in oklab, var(--text) 10%, transparent);
+  --mu-gauge-length: 1s;
+  --mu-gauge-font: 1.5rem;
+}
+:root[data-theme="dark"] { --mu-gauge-secondary: oklch(100% 0 0 / 0.1); }
+
+.mu-gauge {
+  --circle-size: 100px;
+  --circumference: 282.7433388230814;
+  --percent-to-px: 2.827433388230814px;
+  --gap-percent: 5;
+  --offset-factor: 0;
+  --transition-length: var(--mu-gauge-length);
+  --transition-step: 200ms;
+  --delay: 0s;
+  --percent-to-deg: 3.6deg;
+  position: relative; width: var(--mu-gauge-size); height: var(--mu-gauge-size); font-size: var(--mu-gauge-font); font-weight: var(--weight-strong); color: var(--text); transform: translateZ(0);
+}
+.mu-gauge__svg { width: 100%; height: 100%; display: block; }
+.mu-gauge__rest, .mu-gauge__arc { transform-origin: calc(var(--circle-size) / 2) calc(var(--circle-size) / 2); stroke-dasharray: calc(var(--stroke-percent, 0) * var(--percent-to-px)) var(--circumference); }
+.mu-gauge__rest { --offset-factor-secondary: calc(1 - var(--offset-factor)); stroke: var(--mu-gauge-secondary); transform: rotate(calc(1turn - 90deg - (var(--gap-percent) * var(--percent-to-deg) * var(--offset-factor-secondary)))) scaleY(-1); transition: stroke-dasharray var(--transition-length) ease var(--delay), transform var(--transition-length) ease var(--delay); }
+.mu-gauge__arc { stroke: var(--mu-gauge-primary); transform: rotate(calc(-90deg + var(--gap-percent) * var(--offset-factor) * var(--percent-to-deg))); transition: stroke-dasharray var(--transition-length) ease var(--delay), transform var(--transition-length) ease var(--delay); }
+.mu-gauge__value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; margin: auto; width: fit-content; height: fit-content; line-height: 1; font-variant-numeric: tabular-nums; animation: mu-gauge-in var(--transition-length) linear var(--delay) both; }
+.mu-gauge__unit { margin-left: 2px; font-size: 0.5em; font-weight: var(--weight-medium); color: var(--text-soft); }
+/* At 0 % a round cap would still print a dot at the top: the arc leaves once it has shrunk to nothing, and comes back at once. */
+.mu-gauge[data-current-value="0"] .mu-gauge__arc { visibility: hidden; transition: stroke-dasharray var(--transition-length) ease var(--delay), transform var(--transition-length) ease var(--delay), visibility 0s linear calc(var(--delay) + var(--transition-length)); }
+@keyframes mu-gauge-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .mu-gauge__rest, .mu-gauge__arc { transition: none; }
+  .mu-gauge__value { animation-duration: 140ms; }
+}

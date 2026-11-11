@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texto que se transforma · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./arc-shared.css">
+<link rel="stylesheet" href="./text-morph.css">
+<style>
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .send { display: inline-flex; align-items: center; height: var(--control-md); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); background: var(--accent); color: var(--on-accent); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-medium); cursor: pointer; }
+  .send:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .state { display: inline-flex; align-items: center; padding: 2px var(--space-3); border-radius: var(--radius-full); background: var(--surface-sunken); color: var(--text); font-size: var(--text-sm); font-weight: var(--weight-medium); }
+  .invoice { display: grid; gap: var(--space-2); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); max-width: 420px; }
+  .invoice h3 { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-strong); }
+  .invoice small { color: var(--text-soft); }
+  .display { margin: 0; font-size: 4.5rem; font-weight: var(--weight-regular); letter-spacing: -0.03em; line-height: 1.1; }
+</style>
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Texto que se transforma</h1>
+      <p class="mu-demo__note">Las letras que comparten dos textos se deslizan a su lugar, las nuevas se enfocan y las que sobran se desenfocan; el ancho sigue con un resorte, así que lo que está al lado no salta. Un lector de pantalla oye el texto plano. Con movimiento reducido cambia con un fundido.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="mu-demo__section" aria-labelledby="s-display">
+    <h2 class="mu-demo__label" id="s-display">Titular grande</h2>
+    <p class="display"><span id="display">Facturar</span></p>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="display-next">Siguiente palabra</button>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-send">
+    <h2 class="mu-demo__label" id="s-send">Botón que cuenta lo que hace</h2>
+    <div class="row">
+      <button type="button" class="send" id="send"><span id="send-label">Enviar factura</span></button>
+      <span style="color: var(--text-soft); font-size: var(--text-sm)">A la derecha, algo que no se mueve a los saltos: <strong>listo</strong></span>
+    </div>
+  </section>
+
+  <section class="mu-demo__section" aria-labelledby="s-state">
+    <h2 class="mu-demo__label" id="s-state">Estado de una factura</h2>
+    <div class="invoice">
+      <h3>A-0004-00001284 · Estudio Quiroga</h3>
+      <div class="row"><span class="state"><span id="state">Borrador</span></span></div>
+    </div>
+    <div class="mu-demo__row">
+      <button type="button" class="btn-demo" id="next">Avanzar el estado</button>
+      <button type="button" class="btn-demo" id="title">Cambiar el título</button>
+    </div>
+    <h3 style="margin: 0; font-size: var(--text-xl)"><span id="heading">Facturas del mes</span></h3>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './mu-demo.js';
+  import { mount } from './text-morph.js';
+  themeSwitch();
+  const label = mount(document.getElementById('send-label'), {});
+  const state = mount(document.getElementById('state'), {});
+  const heading = mount(document.getElementById('heading'), {});
+  const display = mount(document.getElementById('display'), {});
+  const words = ['Facturar', 'Facturando', 'Facturado', 'Cobrado'];
+  let word = 0;
+  document.getElementById('display-next').addEventListener('click', () => { word = (word + 1) % words.length; display.set(words[word]); });
+  let busy = false;
+  document.getElementById('send').addEventListener('click', () => {
+    if (busy) return;
+    busy = true;
+    label.set('Enviando factura');
+    setTimeout(() => label.set('Factura enviada'), 1400);
+    setTimeout(() => { label.set('Enviar factura'); busy = false; }, 3400);
+  });
+  const states = ['Borrador', 'Emitida', 'Pagada', 'Vencida', 'Anulada'];
+  let at = 0;
+  const next = () => { at = (at + 1) % states.length; state.set(states[at]); };
+  document.getElementById('next').addEventListener('click', next);
+  const titles = ['Facturas del mes', 'Facturas vencidas', 'Cobros del mes', 'Clientes con deuda'];
+  let t = 0;
+  document.getElementById('title').addEventListener('click', () => { t = (t + 1) % titles.length; heading.set(titles[t]); });
+</script>
+</body>
+</html>

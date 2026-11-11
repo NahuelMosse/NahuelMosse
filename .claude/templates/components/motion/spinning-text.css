@@ -1,0 +1,23 @@
+/* Spinning text (Motion Primitives): letters on a circle, the ring turns. */
+.mu-spinning-text {
+  --mu-spin-duration: 10s; --mu-spin-radius: 5; --mu-spin-size: 1; --mu-spin-total: 1; --mu-spin-direction: normal;
+  position: relative; display: inline-block; flex: none;
+  width: calc(var(--mu-spin-radius) * 2ch + var(--mu-spin-size) * 2rem);
+  aspect-ratio: 1;
+}
+.mu-spinning-text__ring {
+  position: absolute; inset: 0;
+  animation: mu-spinning-text var(--mu-spin-duration) linear infinite;
+  animation-direction: var(--mu-spin-direction);
+}
+.mu-spinning-text__letter {
+  position: absolute; left: 50%; top: 50%; display: inline-block;
+  font-size: calc(var(--mu-spin-size) * 1rem);
+  transform: translate(-50%, -50%) rotate(calc(360deg / var(--mu-spin-total) * var(--mu-spin-index))) translateY(calc(var(--mu-spin-radius) * -1ch));
+  transform-origin: center;
+}
+.mu-spinning-text__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@keyframes mu-spinning-text { to { transform: rotate(360deg); } }
+
+/* Reduced motion: the ring stays put. */
+@media (prefers-reduced-motion: reduce) { .mu-spinning-text__ring { animation: none; } }

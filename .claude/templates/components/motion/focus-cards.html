@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarjetas con foco · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./ac-demo.css">
+<link rel="stylesheet" href="./focus-cards.css">
+<style>
+  /* A drawn invoice: the picture of each template. */
+  .tpl { position: absolute; inset: 0; display: grid; justify-items: center; padding: var(--space-5) var(--space-5) 0; background: oklch(70% 0.07 var(--h)); }
+  .tpl__sheet { display: flex; flex-direction: column; gap: var(--space-2); width: min(220px, 78%); height: 74%; padding: var(--space-4); border-radius: var(--radius-item) var(--radius-item) 0 0; background: oklch(99% 0.003 var(--h)); box-shadow: var(--shadow-3); }
+  .tpl__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+  .tpl__mark { width: 28px; height: 28px; border-radius: var(--radius-item); background: oklch(60% 0.13 var(--h)); }
+  .tpl__band { height: 22px; border-radius: 3px; background: oklch(60% 0.13 var(--h)); }
+  .tpl__line { height: 5px; border-radius: 3px; background: oklch(88% 0.015 var(--h)); }
+  .tpl__line--w1 { width: 40%; } .tpl__line--w2 { width: 62%; } .tpl__line--w3 { width: 88%; } .tpl__line--w4 { width: 100%; }
+  .tpl__line--strong { background: oklch(72% 0.05 var(--h)); }
+  .tpl__table { display: flex; flex-direction: column; gap: 6px; margin-top: var(--space-2); }
+  .tpl__total { align-self: flex-end; width: 44%; height: 9px; margin-top: auto; margin-bottom: var(--space-3); border-radius: 3px; background: oklch(60% 0.13 var(--h)); }
+  .tpl__side { display: grid; grid-template-columns: 22% 1fr; gap: var(--space-3); flex: 1; }
+  .tpl__rail { border-radius: 3px; background: oklch(60% 0.13 var(--h)); }
+  .tpl__col { display: flex; flex-direction: column; gap: 6px; }
+  .tpl__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tpl__cell { height: 22px; border-radius: 3px; background: oklch(92% 0.02 var(--h)); }
+</style>
+</head>
+<body class="ui">
+<main class="ac-demo">
+  <header class="ac-demo__head">
+    <div>
+      <h1 class="ac-demo__title">Tarjetas con foco</h1>
+      <p class="ac-demo__note">Plantillas de factura. Al apuntar a una, se oscurece con su nombre y las demás se desenfocan; con teclado, el foco hace lo mismo.</p>
+    </div>
+    <div class="ac-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-ac-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-ac-theme="dark">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="ac-demo__section" aria-labelledby="s-tpl">
+    <h2 class="ac-demo__label" id="s-tpl">Elegí una plantilla para la próxima factura</h2>
+    <div class="ac-demo__stage" id="stage-templates">
+      <div id="templates" data-motion="focus-cards" aria-label="Plantillas de factura"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch } from './ac-demo.js';
+  themeSwitch();
+  const L = (cls = '') => `<span class="tpl__line ${cls}"></span>`;
+  const table = (n) => `<div class="tpl__table">${Array.from({ length: n }, (_, i) => L(i % 2 ? 'tpl__line--w3' : 'tpl__line--w4')).join('')}</div>`;
+  const sheets = {
+    classic: `<div class="tpl__row"><span class="tpl__mark"></span><div style="width:40%;display:grid;gap:4px">${L('tpl__line--w4 tpl__line--strong')}${L('tpl__line--w3')}</div></div>${L('tpl__line--w2')}${table(5)}<span class="tpl__total"></span>`,
+    minimal: `${L('tpl__line--w1 tpl__line--strong')}${L('tpl__line--w2')}${table(3)}<span class="tpl__total"></span>`,
+    band: `<span class="tpl__band"></span>${L('tpl__line--w2')}${L('tpl__line--w3')}${table(4)}<span class="tpl__total"></span>`,
+    side: `<div class="tpl__side"><span class="tpl__rail"></span><div class="tpl__col">${L('tpl__line--w2 tpl__line--strong')}${L('tpl__line--w3')}${table(4)}</div></div><span class="tpl__total"></span>`,
+    hours: `<div class="tpl__row">${L('tpl__line--w1 tpl__line--strong')}<span class="tpl__mark" style="width:20px;height:20px"></span></div><div class="tpl__grid">${Array.from({ length: 9 }, () => '<span class="tpl__cell"></span>').join('')}</div>${table(2)}<span class="tpl__total"></span>`,
+    services: `<div class="tpl__row"><span class="tpl__mark"></span>${L('tpl__line--w1')}</div><span class="tpl__band" style="height:12px"></span>${table(4)}<span class="tpl__band" style="height:12px"></span><span class="tpl__total"></span>`,
+  };
+  const templates = [
+    ['Clásica', 'Logo a la izquierda, detalle en tabla', 'classic', 250],
+    ['Minimalista', 'Solo lo necesario, mucho aire', 'minimal', 200],
+    ['Con banda de color', 'Encabezado de marca', 'band', 267],
+    ['Con barra lateral', 'Datos del cliente al costado', 'side', 160],
+    ['Por horas', 'Calendario de horas trabajadas', 'hours', 85],
+    ['Servicios', 'Rubros y subtotales', 'services', 40],
+  ];
+  const host = document.getElementById('templates');
+  for (const [name, sub, kind, hue] of templates) {
+    const a = document.createElement('a');
+    a.href = `#plantilla-${kind}`;
+    a.className = 'ac-focus__card';
+    a.dataset.card = '';
+    a.innerHTML = `<span class="tpl" style="--h:${hue}" aria-hidden="true"><span class="tpl__sheet">${sheets[kind]}</span></span><span class="ac-focus__cap"><span class="ac-focus__title"></span><span class="ac-focus__sub"></span></span>`;
+    a.querySelector('.ac-focus__title').textContent = name;
+    a.querySelector('.ac-focus__sub').textContent = sub;
+    host.append(a);
+  }
+  await import('./focus-cards.js');
+</script>
+</body>
+</html>

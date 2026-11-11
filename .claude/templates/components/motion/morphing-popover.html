@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger · Morphing popover</title>
+<link rel="preload" href="../fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./morphing-popover.css">
+<link rel="stylesheet" href="./mp-demo.css">
+</head>
+<body class="ui">
+<main class="demo">
+  <header class="demo__head">
+    <div>
+      <h1 class="demo__title">Morphing popover</h1>
+      <p class="demo__lead">«Agregar nota» a una factura: el botón se abre en el cuadro de texto y su etiqueta pasa a ser el placeholder. Lo escrito sobrevive a un cierre; Enviar lo guarda.</p>
+    </div>
+    <div class="demo__theme" role="group" aria-label="Tema">
+      <button type="button" data-theme-set="light" aria-pressed="true">Claro</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false">Oscuro</button>
+    </div>
+  </header>
+
+  <section class="demo__section" aria-labelledby="s-nota">
+    <h2 id="s-nota">Nota en una factura</h2>
+    <p>Escape, la flecha o un clic afuera cierran. Cerca del borde de la ventana el panel se corre para no cortarse.</p>
+    <div class="demo__stage demo__stage--column" style="min-height: 320px">
+      <div class="demo-invoice">
+        <div>
+          <div class="demo-invoice__id">FC A 0001-00002347</div>
+          <div class="demo-invoice__who">Sánchez Hermanos S.A. · vence 12/10/2026</div>
+        </div>
+        <div class="mpop" data-motion="morphing-popover" id="note">
+          <button type="button" class="mpop-trigger" data-mpo="trigger"><span data-mpo="label">Agregar nota</span></button>
+          <template data-mpo="content">
+            <div class="mpop-panel">
+              <form class="mpop-form" data-mpo="form">
+                <span class="mpop-label" data-mpo="label">Agregar nota</span>
+                <textarea class="mpop-field" name="nota" aria-label="Nota de la factura" autofocus></textarea>
+                <div class="mpop-actions">
+                  <button type="button" class="mpop-btn" data-mpo="close" aria-label="Cerrar sin guardar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+                  <button type="submit" class="mpop-btn" aria-label="Guardar nota">Guardar</button>
+                </div>
+              </form>
+            </div>
+          </template>
+        </div>
+      </div>
+      <ul id="notes" class="stack" style="list-style: none; padding: 0; width: min(560px, 100%)" aria-live="polite"></ul>
+    </div>
+  </section>
+
+  <section class="demo__section" aria-labelledby="s-borde">
+    <h2 id="s-borde">Contra el borde</h2>
+    <p>Mismo componente, resorte más rebotón (bounce 0.25, 0.5 s).</p>
+    <div class="demo__stage" style="justify-content: flex-end">
+      <div class="mpop" data-motion="morphing-popover" id="edge">
+        <button type="button" class="mpop-trigger" data-mpo="trigger"><span data-mpo="label">Nota interna</span></button>
+        <template data-mpo="content">
+          <div class="mpop-panel">
+            <form class="mpop-form" data-mpo="form">
+              <span class="mpop-label" data-mpo="label">Nota interna</span>
+              <textarea class="mpop-field" aria-label="Nota interna" autofocus></textarea>
+              <div class="mpop-actions">
+                <button type="button" class="mpop-btn" data-mpo="close" aria-label="Cerrar sin guardar"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+                <button type="submit" class="mpop-btn">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { mount } from './morphing-popover.js';
+import './mp-demo.js';
+
+const list = document.getElementById('notes');
+const note = document.getElementById('note');
+mount(note, { transition: { bounce: 0.05, duration: 0.3 }, label: 'Nota de la factura' });
+note.addEventListener('morphing-popover:submit', (e) => {
+  if (!e.detail.value.trim()) return;
+  const item = document.createElement('li');
+  item.className = 'demo-note';
+  item.textContent = e.detail.value;
+  list.prepend(item);
+});
+mount(document.getElementById('edge'), { transition: { bounce: 0.25, duration: 0.5 } });
+</script>
+</body>
+</html>

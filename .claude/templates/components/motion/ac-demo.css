@@ -1,0 +1,14 @@
+/* The chrome of the demo pages of the Aceternity ports. */
+.ac-demo { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-5) var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); }
+.ac-demo__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.ac-demo__title { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-strong); letter-spacing: var(--tracking-xl); }
+.ac-demo__note { margin: var(--space-1) 0 0; color: var(--text-soft); font-size: var(--text-sm); max-width: 62ch; }
+.ac-demo__theme { display: inline-flex; padding: 2px; border-radius: var(--radius-control); background: var(--segmented-track); }
+.ac-demo__theme button { height: var(--control-sm); padding: 0 var(--space-3); border: 0; border-radius: var(--radius-item); background: none; color: var(--text-soft); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.ac-demo__theme button[aria-checked="true"] { background: var(--segmented-thumb); color: var(--text); box-shadow: var(--shadow-control); }
+.ac-demo__section { display: flex; flex-direction: column; gap: var(--space-3); }
+.ac-demo__label { margin: 0; font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--text-soft); }
+.ac-demo__stage { position: relative; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+.ac-demo__stage--center { display: grid; place-items: center; min-height: 240px; }
+.ac-demo__stage--flush { padding: 0; }
+.ac-demo__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }

@@ -1,0 +1,57 @@
+/* Animated list (Magic UI): a column of cards that arrive one by one on a spring. */
+:root {
+  --mu-list-gap: var(--space-4);
+  --mu-list-width: 400px;
+  --mu-notice-radius: 16px;
+  --mu-notice-pad: var(--space-4);
+  --mu-notice-bg: var(--surface-raised);
+  --mu-notice-shadow: 0 0 0 1px oklch(0% 0 0 / 0.03), 0 2px 4px oklch(0% 0 0 / 0.05), 0 12px 24px oklch(0% 0 0 / 0.05);
+  --mu-notice-shadow-hover: 0 0 0 1px oklch(0% 0 0 / 0.06), 0 4px 8px oklch(0% 0 0 / 0.06), 0 16px 32px oklch(0% 0 0 / 0.08);
+  --mu-notice-hover-scale: 1.03;
+  --mu-notice-title: 1.125rem;
+  --mu-notice-icon: 40px;
+  --mu-notice-target: 24px;
+}
+:root[data-theme="dark"], :root[data-register="showcase"] {
+  --mu-notice-bg: transparent;
+  --mu-notice-shadow: 0 -20px 80px -20px oklch(100% 0 0 / 0.12) inset, 0 0 0 1px oklch(100% 0 0 / 0.1);
+  --mu-notice-shadow-hover: 0 -20px 80px -20px oklch(100% 0 0 / 0.16) inset, 0 0 0 1px oklch(100% 0 0 / 0.2), 0 12px 32px oklch(0% 0 0 / 0.4);
+}
+
+.mu-list { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--mu-list-gap); }
+.mu-list__item { width: 100%; margin-inline: auto; transform-origin: 50% 0; }
+
+/* The notification card of the original demo: a tile with the kind of event, the title with its age, the detail. */
+.mu-notice { position: relative; display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: var(--mu-list-width); min-height: fit-content; margin: 0 auto; padding: var(--mu-notice-pad); overflow: hidden; border-radius: var(--mu-notice-radius); background: var(--mu-notice-bg); box-shadow: var(--mu-notice-shadow); color: var(--text); cursor: pointer; transform: translateZ(0); transition: transform 200ms var(--ease-in-out), box-shadow var(--duration-slow) var(--ease-out); }
+:root[data-theme="dark"] .mu-notice, :root[data-register="showcase"] .mu-notice { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+@media (hover: hover) and (pointer: fine) { .mu-notice:hover { transform: scale(var(--mu-notice-hover-scale)); box-shadow: var(--mu-notice-shadow-hover); } }
+.mu-notice:active { transform: scale(calc(var(--mu-notice-hover-scale) * var(--press-scale))); transition-duration: var(--duration-instant), var(--duration-instant); }
+/* A card with a link is a stretched link: the whole card is the target, the ring goes around the card and the
+   title underlines with the card's hover or focus. The link's own box is 8 px taller than its row (the margin gives
+   them back), so it measures 24 px even where the list is drawn at 75 %. */
+.mu-notice__link { display: inline-flex; align-items: center; min-height: calc(var(--mu-notice-target) + var(--space-2)); margin-block: calc(var(--space-1) * -1); color: inherit; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: text-decoration-color var(--motion-hover); }
+.mu-notice__link::after { content: ""; position: absolute; inset: 0; }
+.mu-notice__link:focus-visible { outline: none; text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) { .mu-notice:hover .mu-notice__link { text-decoration-color: var(--text-faint); } }
+.mu-notice:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; transform: scale(var(--mu-notice-hover-scale)); box-shadow: var(--mu-notice-shadow-hover); }
+.mu-notice__icon { display: flex; flex: none; align-items: center; justify-content: center; width: var(--mu-notice-icon); height: var(--mu-notice-icon); border-radius: var(--mu-notice-radius); --_tone: var(--accent); --_on: var(--on-accent); background: var(--_tone); color: var(--_on); }
+:root[data-theme="dark"] .mu-notice__icon, :root[data-register="showcase"] .mu-notice__icon { --_on: oklch(18% 0.02 265); }
+.mu-notice__icon[data-tone="success"] { --_tone: var(--success); }
+.mu-notice__icon[data-tone="warning"] { --_tone: var(--warning); --_on: oklch(22% 0.04 80); }
+.mu-notice__icon[data-tone="danger"] { --_tone: var(--danger); }
+.mu-notice__icon[data-tone="info"] { --_tone: var(--info); }
+.mu-notice__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.mu-notice__body { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.mu-notice__title { display: flex; align-items: center; margin: 0; font-size: var(--text-md); font-weight: var(--weight-medium); white-space: pre; }
+@media (min-width: 640px) { .mu-notice__title { font-size: var(--mu-notice-title); } }
+.mu-notice__title > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.mu-notice__dot { margin-inline: 4px; }
+.mu-notice__time { font-size: var(--text-xs); font-weight: var(--weight-regular); color: var(--text-faint); }
+.mu-notice__text { margin: 0; font-size: var(--text-sm); font-weight: var(--weight-regular); color: var(--text-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mu-notice__time { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mu-notice { transition: box-shadow 120ms linear; }
+  .mu-notice:hover, .mu-notice:active, .mu-notice:has(:focus-visible) { transform: none; }
+  .mu-notice__link { transition-duration: 120ms; }
+}

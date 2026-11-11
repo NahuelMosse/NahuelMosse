@@ -1,0 +1,63 @@
+/* Floating dock (Aceternity UI): tiles that grow toward the pointer; on a phone, a menu that rises. */
+:root {
+  --ac-dock-rest: 40px;
+  --ac-dock-height: 64px;
+  --ac-dock-gap: 16px;
+  --ac-dock-pad: 16px;
+  --ac-dock-radius: 16px;
+  --ac-dock-plate: var(--surface-sunken);
+  --ac-dock-plate-edge: var(--border);
+  --ac-dock-tile: var(--surface-raised);
+  --ac-dock-tile-edge: var(--border);
+  --ac-dock-tile-edge-hover: var(--border-strong);
+  --ac-dock-tile-shadow: var(--shadow-control);
+  --ac-dock-icon: var(--text-soft);
+  --ac-dock-icon-hover: var(--text);
+  --ac-dock-label-bg: var(--surface-overlay);
+  --ac-dock-label-fg: var(--text);
+  --ac-dock-label-edge: var(--border-strong);
+  --ac-dock-breakpoint: 768px;
+}
+
+.ac-dock { display: flex; justify-content: center; }
+
+/* desktop */
+.ac-dock__bar { position: relative; display: none; align-items: flex-end; gap: var(--ac-dock-gap); height: var(--ac-dock-height); padding: 0 var(--ac-dock-pad) calc((var(--ac-dock-height) - var(--ac-dock-rest)) * 0.5 - 0px); box-sizing: border-box; }
+@media (min-width: 768px) { .ac-dock__bar { display: flex; } .ac-dock__mobile { display: none; } }
+.ac-dock__plate { position: absolute; inset: 0; z-index: 0; border-radius: 0; background: var(--ac-dock-plate); clip-path: inset(0 round var(--ac-dock-radius)); pointer-events: auto; }
+/* The plate is clipped by the script on every frame, so its edge is a second layer under a third that is inset by 1 px and takes the same clip: the line follows the rounded corners. */
+.ac-dock__plate::before, .ac-dock__plate::after { content: ""; position: absolute; clip-path: inherit; }
+.ac-dock__plate::before { inset: 0; background: var(--ac-dock-plate-edge); }
+.ac-dock__plate::after { inset: 1px; background: var(--ac-dock-plate); }
+.ac-dock__link { position: relative; z-index: 1; display: block; flex: none; width: var(--ac-dock-rest); height: var(--ac-dock-rest); border-radius: 50%; color: var(--ac-dock-icon); text-decoration: none; transition: color var(--motion-hover); }
+.ac-dock__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ac-dock__link[data-hover] { color: var(--ac-dock-icon-hover); }
+/* The tile's size is the script's (transform on every frame): only its paint changes with the state. */
+.ac-dock__tile { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; background: var(--ac-dock-tile); box-shadow: 0 0 0 1px var(--ac-dock-tile-edge), var(--ac-dock-tile-shadow); transform-origin: 50% 100%; transition: box-shadow var(--motion-hover); }
+.ac-dock__link[data-hover] .ac-dock__tile { box-shadow: 0 0 0 1px var(--ac-dock-tile-edge-hover), var(--shadow-2); }
+.ac-dock__icon { display: grid; place-items: center; width: calc(var(--ac-dock-rest) / 2); height: calc(var(--ac-dock-rest) / 2); transition: transform var(--motion-release); }
+.ac-dock__link:active .ac-dock__icon { transform: scale(var(--press-scale-sm)); transition: transform var(--motion-press); }
+.ac-dock__icon > svg, .ac-dock__icon > img { width: 100%; height: 100%; }
+.ac-dock__label { position: absolute; left: 50%; bottom: calc(100% + 10px); translate: -50% calc(var(--ac-dock-grow, 0px) * -1); padding: 2px var(--space-2); border-radius: var(--radius-item); border: 1px solid var(--ac-dock-label-edge); background: var(--ac-dock-label-bg); color: var(--ac-dock-label-fg); box-shadow: var(--shadow-2); font-size: var(--text-xs); white-space: pre; pointer-events: none; opacity: 0; transform: translateY(10px); transition: opacity 200ms var(--ease-out), transform 360ms var(--spring); }
+.ac-dock__link[data-hover] .ac-dock__label { opacity: 1; transform: none; }
+.ac-dock__link:not([data-hover]) .ac-dock__label { transform: translateY(2px); transition-duration: 120ms, 120ms; }
+
+/* mobile */
+.ac-dock__mobile { position: relative; }
+.ac-dock__toggle { display: grid; place-items: center; width: var(--ac-dock-rest); height: var(--ac-dock-rest); padding: 0; border: 0; border-radius: 50%; background: var(--ac-dock-tile); color: var(--ac-dock-icon); cursor: pointer; box-shadow: 0 0 0 1px var(--ac-dock-tile-edge), var(--ac-dock-tile-shadow); transition: transform var(--motion-release), color var(--motion-hover), box-shadow var(--motion-hover); }
+@media (hover: hover) and (pointer: fine) { .ac-dock__toggle:hover { color: var(--ac-dock-icon-hover); box-shadow: 0 0 0 1px var(--ac-dock-tile-edge-hover), var(--shadow-2); } }
+.ac-dock__toggle:active { transform: scale(var(--press-scale-sm)); transition-duration: var(--duration-instant); }
+.ac-dock__toggle:focus-visible, .ac-dock__m-item:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ac-dock__menu { position: absolute; inset-inline: 0; bottom: 100%; margin-bottom: var(--space-2); display: flex; flex-direction: column; gap: var(--space-2); }
+.ac-dock__m-item { display: grid; place-items: center; width: var(--ac-dock-rest); height: var(--ac-dock-rest); border-radius: 50%; background: var(--ac-dock-tile); color: var(--ac-dock-icon); box-shadow: 0 0 0 1px var(--ac-dock-tile-edge), var(--ac-dock-tile-shadow); opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 200ms var(--ease-out) calc(var(--i) * 50ms), transform 280ms var(--ease-out) calc(var(--i) * 50ms), visibility 0s linear calc(var(--i) * 50ms + 280ms); }
+.ac-dock__menu[data-open] .ac-dock__m-item { opacity: 1; visibility: visible; transform: none; transition: opacity 200ms var(--ease-out) calc((var(--n) - 1 - var(--i)) * 50ms), transform 360ms var(--spring) calc((var(--n) - 1 - var(--i)) * 50ms), visibility 0s; }
+.ac-dock__m-icon { display: grid; place-items: center; width: calc(var(--ac-dock-rest) * 0.4); height: calc(var(--ac-dock-rest) * 0.4); }
+.ac-dock__m-icon > svg { width: 100%; height: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-dock__label, .ac-dock__link:not([data-hover]) .ac-dock__label { transform: none; transition: opacity 120ms linear; }
+  .ac-dock__m-item, .ac-dock__menu[data-open] .ac-dock__m-item { transform: none; transition: opacity 120ms linear, visibility 0s linear 120ms; }
+  .ac-dock__menu[data-open] .ac-dock__m-item { transition: opacity 120ms linear; }
+  .ac-dock__icon, .ac-dock__toggle, .ac-dock__tile, .ac-dock__link { transition-duration: 120ms; }
+  .ac-dock__link:active .ac-dock__icon, .ac-dock__toggle:active { transform: none; }
+}

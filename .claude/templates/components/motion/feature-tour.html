@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recorrido de novedades · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./feature-tour.css">
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Recorrido de novedades</h1>
+      <p class="mu-demo__note">Una tarjeta modal que repasa las novedades paso a paso: el ícono y el texto se reemplazan con un enfoque corto. Flechas izquierda y derecha cambian de paso, Escape cierra y el foco vuelve al botón. Con movimiento reducido solo hay fundido.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Qué hay de nuevo en Ledger</h2>
+    <div id="host"><button type="button" class="btn-demo" data-tour-trigger>Ver las novedades</button></div>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch, svgIcon } from './mu-demo.js';
+  import { mount } from './feature-tour.js';
+  themeSwitch();
+  mount(document.getElementById('host'), {
+    label: 'Novedades de Ledger',
+    steps: [
+      { id: 'conciliacion', title: 'Conciliación automática', description: 'Los movimientos del banco se cruzan solos con tus facturas.', icon: svgIcon('bank') },
+      { id: 'recordatorios', title: 'Recordatorios de cobro', description: 'Ledger avisa a tus clientes antes de que venza cada factura.', icon: svgIcon('bell') },
+      { id: 'equipo', title: 'Tu equipo, al día', description: 'Compartí clientes y facturas con quien lleve tu contabilidad.', icon: svgIcon('users') },
+    ],
+    onLearnMore: () => {},
+  });
+</script>
+</body>
+</html>

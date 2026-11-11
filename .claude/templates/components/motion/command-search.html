@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR" data-locale="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador de comandos · Ledger</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../primitives.css">
+<link rel="stylesheet" href="../effects.css">
+<link rel="stylesheet" href="../life.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="./mu-demo.css">
+<link rel="stylesheet" href="./command-search.css">
+</head>
+<body class="ui">
+<main class="mu-demo">
+  <header class="mu-demo__head">
+    <div>
+      <h1 class="mu-demo__title">Buscador de comandos</h1>
+      <p class="mu-demo__note">El campo se abre como un panel con resultados agrupados. Ctrl o Cmd + K lo abre desde cualquier lado; flechas recorren, Enter ejecuta y Escape cierra. Con movimiento reducido se abre sin crecer.</p>
+    </div>
+    <div class="mu-demo__theme" role="radiogroup" aria-label="Tema">
+      <button type="button" role="radio" aria-checked="true" data-mu-theme="light">Claro</button>
+      <button type="button" role="radio" aria-checked="false" data-mu-theme="dark">Oscuro</button>
+    </div>
+  </header>
+  <section class="mu-demo__section" aria-labelledby="s-main">
+    <h2 class="mu-demo__label" id="s-main">Ir a una factura, un cliente o un ajuste</h2>
+    <div id="host"></div>
+    <p class="mu-demo__note" id="chosen" role="status">Todavía no elegiste nada.</p>
+  </section>
+</main>
+<script type="module">
+  import { themeSwitch, svgIcon } from './mu-demo.js';
+  import { mount } from './command-search.js';
+  themeSwitch();
+  const chosen = document.getElementById('chosen');
+  const go = (item) => { chosen.textContent = `Elegiste: ${item.title}`; };
+  mount(document.getElementById('host'), {
+    placeholder: 'Buscar...',
+    items: [
+      { id: 'new', title: 'Emitir factura', section: 'Sugerencias', icon: svgIcon('invoice'), action: go },
+      { id: 'clients', title: 'Clientes con deuda', section: 'Sugerencias', icon: svgIcon('alert'), action: go },
+      { id: 'bank', title: 'Conciliar el banco', section: 'Sugerencias', icon: svgIcon('bank'), action: go },
+      { id: 'profile', title: 'Perfil', section: 'Ajustes', icon: svgIcon('user'), action: go },
+      { id: 'notif', title: 'Notificaciones', section: 'Ajustes', icon: svgIcon('bell'), action: go },
+      { id: 'faq', title: 'Preguntas frecuentes', section: 'Ayuda', icon: svgIcon('shield'), action: go },
+      { id: 'mail', title: 'Escribir a soporte', section: 'Ayuda', icon: svgIcon('mail'), action: go },
+    ],
+  });
+</script>
+</body>
+</html>

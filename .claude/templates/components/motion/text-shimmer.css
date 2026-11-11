@@ -1,0 +1,22 @@
+/* Text shimmer (Motion Primitives): a gradient band clipped to the letters, over a flat muted fill. */
+.mu-text-shimmer {
+  --mu-shimmer-base: var(--text-soft);
+  --mu-shimmer-band: var(--text);
+  --mu-shimmer-spread: 40px;
+  --mu-shimmer-duration: 2s;
+  position: relative; display: inline-block;
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image:
+    linear-gradient(90deg, #0000 calc(50% - var(--mu-shimmer-spread)), var(--mu-shimmer-band), #0000 calc(50% + var(--mu-shimmer-spread))),
+    linear-gradient(var(--mu-shimmer-base), var(--mu-shimmer-base));
+  background-size: 250% 100%, auto;
+  background-repeat: no-repeat, padding-box;
+  background-position: 100% center;
+  animation: mu-text-shimmer var(--mu-shimmer-duration) linear infinite;
+}
+@keyframes mu-text-shimmer { to { background-position: 0% center; } }
+
+/* Reduced motion: no sweep, the muted text stays. */
+@media (prefers-reduced-motion: reduce) {
+  .mu-text-shimmer { animation: none; background-image: none; color: var(--mu-shimmer-base); }
+}
