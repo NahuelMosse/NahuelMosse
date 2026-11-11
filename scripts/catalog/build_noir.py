@@ -74,7 +74,7 @@ def timeline(f, d):
         ("09/2026", "Smart W.", "AI Enablement Lead", "work"),
         ("NOW", "Ingeniería", "4th year · UM", "study"),
     ]
-    W, H, x0, x1, y = 1100, 320, 70, 1030, 170
+    W, H, x0, x1, y = 1100, 320, 120, 980, 170
     step = (x1 - x0) / (len(nodes) - 1)
     body = label(70, 44, "KOVIX CONSULTING · TECHNICAL LEAD · CLIENT ENGAGEMENTS AND STUDIES", BONE, 13, 3)
     body += f'<rect x="70" y="58" width="60" height="3" fill="{RED}" class="g"/>'
@@ -99,19 +99,19 @@ def timeline(f, d):
 
 def impact(f):
     d = f["display"]
-    tiles = [("1 wk", "VISMA", "One onboarding stage cut from 2 months", "with an Azure OpenAI integration"),
-             ("–90%", "FRÁVEGA", "Average receiving time,", "from 7 h 48 min to 46 min"),
-             ("40k", "FRÁVEGA", "Requests a day on the sellers BFF;", "processes simplified by 80%"),
-             ("40M", "JÜSTO", "Operations over 10+ releases,", "with 50% less preparation time")]
-    W, H, tw = 1100, 300, 260
-    body = label(30, 40, "IMPACT · NUMBERS FROM THE CV", BONE, 13, 3)
+    tiles = [("1 wk", "VISMA", "Onboarding stage: 2 months → 1 week", "Azure OpenAI integration"),
+             ("–90%", "FRÁVEGA", "Average receiving time", "7 h 48 min → 46 min"),
+             ("40k", "FRÁVEGA", "Requests a day, sellers BFF", "Processes simplified by 80%"),
+             ("40M", "JÜSTO", "Operations over 10+ releases", "50% less preparation time")]
+    W, H, tw = 1100, 300, 250
+    body = label(20, 40, "IMPACT · NUMBERS FROM THE CV", BONE, 14, 3)
     for i, (big, where, l1, l2) in enumerate(tiles):
-        x = 30 + i * (tw + 14)
+        x = 20 + i * (tw + 16)
         body += (f'<g class="u" style="animation-delay:{0.15 + i * 0.18:.2f}s"><rect x="{x}" y="64" width="{tw}" height="210" fill="{PANEL}" stroke="{LINE}"/>'
                  + label(x + 22, 96, where, RED, 12, 3)
                  + d.path(big, 76, x + 20, 186, BONE)
                  + f'<rect x="{x + 22}" y="204" width="{tw - 44}" height="3" fill="{RED}" class="g" style="animation-delay:{0.6 + i * 0.18:.2f}s"/>'
-                 + label(x + 22, 234, l1, DIM, 12, 0.3) + label(x + 22, 254, l2, DIM, 12, 0.3) + "</g>")
+                 + label(x + 22, 234, l1, BONE, 12, 0.2) + label(x + 22, 254, l2, DIM, 12, 0.2) + "</g>")
     svg("impact.svg", W, H, "Impact: " + "; ".join(f"{a} {b}: {c} {e}" for a, b, c, e in tiles), body)
 
 
@@ -125,7 +125,7 @@ def glance(f):
         x = 20 + i * (tw + 12)
         body += (f'<g class="u" style="animation-delay:{i * 0.12:.2f}s"><rect x="{x}" y="20" width="{tw}" height="150" fill="{PANEL}" stroke="{LINE}"/>'
                  f'<rect x="{x}" y="20" width="{tw}" height="4" fill="{RED if i % 2 == 0 else BONE}"/>'
-                 + label(x + 18, 54, k, RED if i % 2 == 0 else DIM, 11, 3) + d.path(v, 44, x + 16, 114, BONE)
+                 + label(x + 18, 54, k, RED if i % 2 == 0 else DIM, 12, 3) + d.path(v, 38, x + 16, 112, BONE)
                  + label(x + 18, 146, sub, DIM, 11, 0.5) + "</g>")
     svg("glance.svg", W, H, "At a glance: " + "; ".join(f"{k} {v}, {s}" for k, v, s in tiles), body)
 
@@ -160,7 +160,7 @@ def recommendations(f):
     recs = [("Braian Lo Surdo", "Técnico en Programación Informática",
              "Highlights speed, efficiency, a collaborative spirit, enthusiasm and warmth in teamwork."),
             ("Enzo Codini", "Full Stack Developer",
-             "Highlights the technical and human contribution in complex projects, the willingness and quality of the work; calls him a reference for the team.")]
+             "Highlights the technical and human contribution in complex projects, the willingness and quality of the work; calls Nahuel a reference for the team.")]
     W, H = 1100, 270
     body = label(20, 34, "RECOMMENDED ON LINKEDIN · SUMMARIES FROM THE CV", BONE, 13, 3)
     for i, (name, role, text) in enumerate(recs):
@@ -178,7 +178,7 @@ def header(f, n, word, detail):
     d = f["display"]
     W, H = 1100, 150
     w = d.width(word, 84)
-    body = (label(24, 40, f"{n:02d}  ──  {detail}  ✦", RED, 13, 3)
+    body = (label(24, 40, f"{n:02d}  ──  {detail}  ✦", RED, 16, 3)
             + f'<g class="u">{d.path(word, 84, 20, 124, BONE)}</g>'
             + thread(40 + w, W - 30, 100, amp=5, delay=0.4))
     svg(f"header-{word.lower()}.svg", W, H, f"{n:02d} {word}. {detail}", body)
@@ -201,7 +201,7 @@ def footer(f):
 
 
 def timezone(f):
-    W, H, x0, x1 = 1100, 300, 200, 1070
+    W, H, x0, x1 = 1100, 300, 240, 960
     hx = lambda h: x0 + (x1 - x0) * h / 24  # noqa: E731
     cities = [("Buenos Aires", "UTC−3", 9, 18, True), ("San Francisco", "UTC−8", 14, 23, False), ("New York", "UTC−5", 11, 20, False),
               ("London", "UTC+0", 6, 15, False), ("Madrid · Berlin", "UTC+1", 5, 14, False)]
@@ -211,7 +211,7 @@ def timezone(f):
     for i, (city, tz, a, b, home) in enumerate(cities):
         y = 70 + i * 40
         ov = max(0, min(b, 18) - max(a, 9))
-        body += (f'<g class="u" style="animation-delay:{i * 0.12:.2f}s">' + label(20, y + 18, city, BONE if home else DIM, 14, 0.5) + label(150, y + 18, tz, DIM, 10, 1)
+        body += (f'<g class="u" style="animation-delay:{i * 0.12:.2f}s">' + label(20, y + 18, city, BONE if home else DIM, 14, 0.5) + label(180, y + 18, tz, DIM, 11, 1)
                  + f'<rect x="{hx(a):.1f}" y="{y}" width="{hx(b) - hx(a):.1f}" height="24" fill="{RED if home else "#3a3732"}" class="g" style="animation-delay:{0.2 + i * 0.12:.2f}s"/>'
                  + ("" if home else f'<rect x="{hx(max(a, 9)):.1f}" y="{y}" width="{max(0, hx(min(b, 18)) - hx(max(a, 9))):.1f}" height="24" fill="none" stroke="{RED}" stroke-width="2"/>'
                     + label(hx(b) + 10, y + 17, f"{ov} h overlap", BONE, 12, 0.5))
@@ -219,8 +219,20 @@ def timezone(f):
     svg("timezone.svg", W, H, "Working hours overlap with Buenos Aires: " + ", ".join(f"{c} {max(0, min(b, 18) - max(a, 9))} h" for c, _, a, b, h in cities if not h), body)
 
 
+TAB_FONT = None
+
+
 def device_frames(portfolio):
     """Animated WebP of each project's real screens in a bone device frame with a red tab, crossfading."""
+    global TAB_FONT
+    from fontTools.ttLib import TTFont
+    from PIL import ImageFont
+    tt = TTFont(portfolio / "public" / "fonts" / "courier-prime-400.woff2")
+    tt.flavor = None
+    raw = io.BytesIO()
+    tt.save(raw)
+    raw.seek(0)
+    TAB_FONT = ImageFont.truetype(raw, 20)
     pieces = portfolio / "public" / "film" / "pieces"
     sets = {
         "grit": ("phone", ["grit-hoy", "grit-serie", "grit-descanso", "grit-completado"]),
@@ -241,8 +253,8 @@ def device_frames(portfolio):
         if kind == "browser":
             for j in range(3):
                 dr.ellipse((sx + 4 + j * 16, sy - 26, sx + 14 + j * 16, sy - 16), fill=(58, 55, 50))
-        dr.rectangle((sx - pad, 18, sx - pad + 120, 44), fill=red)
-        dr.text((sx - pad + 10, 24), key.upper(), fill=bone)
+        dr.rectangle((sx - pad, 14, sx - pad + 150, 46), fill=red)
+        dr.text((sx - pad + 14, 19), key.upper(), fill=bone, font=TAB_FONT)
         shots = []
         for n in names:
             p = pieces / f"{n}.webp"

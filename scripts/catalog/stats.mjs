@@ -97,10 +97,9 @@ card("stats.svg", 460, 260, "GITHUB · LAST 12 MONTHS",
 // Streak card with a flame.
 const flame = `<g transform="translate(46 64)"><path class="fl" d="M24 0C30 14 44 20 44 38C44 52 35 62 22 62C9 62 0 52 0 39C0 28 7 22 11 14C13 22 17 26 21 27C19 17 20 8 24 0Z" fill="${RED}"/>
 <path class="fl" style="animation-delay:.3s" d="M22 30C26 38 32 41 32 49C32 56 27 60 22 60C16 60 12 56 12 50C12 45 15 42 17 38C18 42 20 44 22 44C21 39 21 35 22 30Z" fill="#f2b8a0"/></g>`;
-const big = (x, n, l, c) => `<g class="u"><text x="${x}" y="110" text-anchor="middle" fill="${c}" font-size="44">${fmt(n)}</text><text x="${x}" y="142" text-anchor="middle" fill="${DIM}" font-size="13" letter-spacing="2">${l}</text></g>`;
-card("streak.svg", 460, 190, "", flame + big(186, current, "DAY STREAK", RED) + big(296, longest, "LONGEST", BONE) + big(396, activeDays, "ACTIVE DAYS", BONE)
-  + `<line x1="244" y1="74" x2="244" y2="144" stroke="${LINE}"/><line x1="348" y1="74" x2="348" y2="144" stroke="${LINE}"/>
-<text x="46" y="170" fill="${DIM}" font-size="12" letter-spacing="2">LAST 12 MONTHS</text>`,
+const big = (x, n, l, c) => `<g class="u"><text x="${x}" y="140" text-anchor="middle" fill="${c}" font-size="40">${fmt(n)}</text><text x="${x}" y="170" text-anchor="middle" fill="${DIM}" font-size="13" letter-spacing="2">${l}</text></g>`;
+card("streak.svg", 460, 260, "STREAK · LAST 12 MONTHS", `<g transform="translate(0 30)">${flame}</g>` + big(170, current, "CURRENT", RED) + big(276, longest, "LONGEST", BONE) + big(386, activeDays, "ACTIVE DAYS", BONE)
+  + `<line x1="223" y1="104" x2="223" y2="174" stroke="${LINE}"/><line x1="329" y1="104" x2="329" y2="174" stroke="${LINE}"/>`,
   `Current streak ${current} days, longest ${longest}, ${activeDays} active days in the last year`);
 
 // Languages by bytes across public, non-fork repos: bar card, donut and the Mermaid pie.
@@ -148,7 +147,7 @@ card("languages.svg", 460, 260, "TOP LANGUAGES · PUBLIC REPOS", bar + legend, t
 
 // Weekly activity area chart.
 {
-  const W = 900, H = 240, x0 = 40, x1 = W - 24, y0 = 60, y1 = H - 40;
+  const W = 900, H = 240, x0 = 64, x1 = W - 24, y0 = 60, y1 = H - 40;
   const vals = weeks.map((w) => w.contributionDays.reduce((a, d) => a + d.contributionCount, 0));
   const max = Math.max(...vals, 1);
   const pts = vals.map((v, i) => [x0 + (i / (vals.length - 1)) * (x1 - x0), y1 - (v / max) * (y1 - y0)]);
@@ -183,7 +182,7 @@ ${grid}<line x1="${x0}" x2="${x1}" y1="${y1}" y2="${y1}" stroke="${DIM}"/><path 
       if (list.length < 100) break;
     }
   }
-  const cx = 150, cy = 160, r0 = 46, r1 = 116, max = Math.max(...hours, 1);
+  const cx = 150, cy = 186, r0 = 46, r1 = 116, max = Math.max(...hours, 1);
   const bars = hours.map((v, h) => {
     const a = ((h / 24) * 360 - 90) * (Math.PI / 180), a2 = (((h + 0.8) / 24) * 360 - 90) * (Math.PI / 180);
     const r = r0 + (v / max) * (r1 - r0);
@@ -194,11 +193,11 @@ ${grid}<line x1="${x0}" x2="${x1}" y1="${y1}" y2="${y1}" stroke="${DIM}"/><path 
   const peakH = hours.indexOf(max);
   const night = hours.slice(0, 6).reduce((a, b) => a + b, 0) + hours.slice(22).reduce((a, b) => a + b, 0);
   const work = hours.slice(9, 19).reduce((a, b) => a + b, 0);
-  card("commit-clock.svg", 460, 300, "COMMIT CLOCK · BUENOS AIRES",
+  card("commit-clock.svg", 460, 330, "COMMIT CLOCK · BUENOS AIRES",
     `${bars}${ticks}<text x="${cx}" y="${cy + 4}" text-anchor="middle" fill="${BONE}" font-size="13">${fmt(n)}</text><text x="${cx}" y="${cy + 18}" text-anchor="middle" fill="${DIM}" font-size="9" letter-spacing="1">COMMITS</text>
-<g class="u" style="animation-delay:.5s"><text x="300" y="120" fill="${DIM}" font-size="12" letter-spacing="2">PEAK HOUR</text><text x="300" y="150" fill="${RED}" font-size="30">${String(peakH).padStart(2, "0")}:00</text>
-<text x="300" y="190" fill="${DIM}" font-size="12" letter-spacing="2">09–19 H</text><text x="300" y="216" fill="${BONE}" font-size="20">${n ? Math.round((work / n) * 100) : 0}%</text>
-<text x="380" y="190" fill="${DIM}" font-size="12" letter-spacing="2">NIGHT</text><text x="380" y="216" fill="${BONE}" font-size="20">${n ? Math.round((night / n) * 100) : 0}%</text></g>`,
+<g class="u" style="animation-delay:.5s"><text x="310" y="140" fill="${DIM}" font-size="12" letter-spacing="2">PEAK HOUR</text><text x="310" y="170" fill="${RED}" font-size="30">${String(peakH).padStart(2, "0")}:00</text>
+<text x="310" y="210" fill="${DIM}" font-size="12" letter-spacing="2">09–19 H</text><text x="310" y="236" fill="${BONE}" font-size="20">${n ? Math.round((work / n) * 100) : 0}%</text>
+<text x="390" y="210" fill="${DIM}" font-size="12" letter-spacing="2">NIGHT</text><text x="390" y="236" fill="${BONE}" font-size="20">${n ? Math.round((night / n) * 100) : 0}%</text></g>`,
     `Commits by hour in Buenos Aires: ${n} commits, peak at ${peakH}:00`);
 }
 
@@ -206,12 +205,12 @@ ${grid}<line x1="${x0}" x2="${x1}" y1="${y1}" y2="${y1}" stroke="${DIM}"/><path 
 {
   const axes = [["Commits", cc.totalCommitContributions], ["PRs", cc.totalPullRequestContributions], ["Reviews", cc.totalPullRequestReviewContributions],
     ["Issues", cc.totalIssueContributions], ["Repos", cc.totalRepositoryContributions]];
-  const cx = 230, cy = 170, R = 110, lg = (v) => Math.log10(v + 1) / 4;
+  const cx = 230, cy = 196, R = 110, lg = (v) => Math.log10(v + 1) / 4;
   const pt = (i, r) => { const a = (-90 + (i * 360) / axes.length) * (Math.PI / 180); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
   const ring = (t) => axes.map((_, i) => pt(i, R * t).map((v) => v.toFixed(1)).join(",")).join(" ");
   const shape = axes.map(([, v], i) => pt(i, R * Math.min(1, lg(v))).map((q) => q.toFixed(1)).join(",")).join(" ");
   const labels = axes.map(([k, v], i) => { const [lx, ly] = pt(i, R + 26); return `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${BONE}" font-size="13">${k}<tspan x="${lx.toFixed(1)}" dy="15" fill="${DIM}" font-size="12">${fmt(v)}</tspan></text>`; }).join("");
-  card("radar.svg", 460, 330, "CONTRIBUTION MIX · LAST 12 MONTHS",
+  card("radar.svg", 460, 360, "CONTRIBUTION MIX · LAST 12 MONTHS",
     [0.25, 0.5, 0.75, 1].map((t) => `<polygon points="${ring(t)}" fill="none" stroke="${LINE}"/>`).join("")
     + axes.map((_, i) => { const [ex, ey] = pt(i, R); return `<line x1="${cx}" y1="${cy}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${LINE}"/>`; }).join("")
     + `<polygon points="${shape}" fill="${RED}" fill-opacity=".35" stroke="${RED}" stroke-width="2" class="f"/>${labels}`,
@@ -229,7 +228,7 @@ ${grid}<line x1="${x0}" x2="${x1}" y1="${y1}" y2="${y1}" stroke="${DIM}"/><path 
     pr = await rest(`/repos/${e.repo.name}/pulls/${n}`).catch(() => null);
     if (pr) { pr.repoName = e.repo.name.split("/")[1]; break; }
   }
-  const ago = (iso) => { const h = Math.round((Date.now() - new Date(iso)) / 36e5); return h < 24 ? `${h} h ago` : `${Math.round(h / 24)} d ago`; };
+  const ago = (iso) => { const h = Math.round((Date.now() - new Date(iso)) / 36e5); return h < 1 ? "just now" : h < 24 ? `${h} h ago` : `${Math.round(h / 24)} d ago`; };
   const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
   card("building.svg", 900, 170, "",
     `<circle cx="38" cy="36" r="6" fill="${RED}"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
@@ -250,6 +249,7 @@ for (const name of FEATURED) {
   if (!r) continue;
   const lines = [""];
   for (const w of (r.description || "").split(/\s+/)) { if ((lines.at(-1) + " " + w).trim().length > 46) lines.push(w); else lines[lines.length - 1] = (lines.at(-1) + " " + w).trim(); }
+  if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
   const desc = lines.slice(0, 2).map((l, i) => `<text x="24" y="${92 + i * 20}" fill="${DIM}" font-size="13">${esc(l)}</text>`).join("");
   const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${BONE}"/>`;
   card(`repo-${name}.svg`, 420, 170, "",
@@ -272,10 +272,10 @@ for (const name of FEATURED) {
     data.push({ p, month: d.downloads ?? 0, total: t.downloads ?? 0, version: v.version || "—" });
   }
   card("npm.svg", 900, 190, "NPM · THE DEV-KIT TOOLS",
-    data.map((d, i) => `<g class="u" style="animation-delay:${i * 0.12}s" transform="translate(${24 + i * 300} 0)">
+    data.map((d, i) => `<g transform="translate(${24 + i * 300} 0)"><g class="u" style="animation-delay:${i * 0.12}s">
 <text x="0" y="74" fill="${BONE}" font-size="16">${esc(d.p)}</text><text x="0" y="94" fill="${DIM}" font-size="12">v${esc(d.version)}</text>
 <text x="0" y="146" fill="${RED}" font-size="40">${short(d.total)}</text><text x="0" y="170" fill="${DIM}" font-size="11" letter-spacing="2">DOWNLOADS · ${short(d.month)} LAST 30 DAYS</text>
-${i ? `<line x1="-14" y1="60" x2="-14" y2="170" stroke="${LINE}"/>` : ""}</g>`).join(""),
+${i ? `<line x1="-14" y1="60" x2="-14" y2="170" stroke="${LINE}"/>` : ""}</g></g>`).join(""),
     data.map((d) => `${d.p} v${d.version}: ${d.total} downloads, ${d.month} in the last month`).join(". "));
 }
 
