@@ -42,21 +42,34 @@ def thread(T, x0, x1, y, amp=5, delay=0.4):
             f'class="d" style="animation-delay:{delay}s"/>')
 
 
+COL, PAD, GUT = 1012, 24, 24
+
+
+def slot(n, k):
+    """Image width, content width and content offset of the k-th of n images of a row with no gap between them
+    (n = 4: 24.9 % each), so the row's outer edges meet the full-width plates at PAD and COL - PAD."""
+    w = round(COL * 0.249)
+    cw = (COL - 2 * PAD - (n - 1) * GUT) / n
+    return w, cw, round(PAD + k * (cw + GUT) - ((COL - n * w) / 2 + k * w), 1)
+
+
 def header(display, n, word, detail):
-    W, H = 1100, 150
-    w = display.width(word, 84)
+    W, H = COL, 138
+    size = 77
+    w = display.width(word, size)
     write(f"header-{word.lower()}", W, H, f"{n:02d} {word}. {detail}", lambda T: (
-        f'<text x="24" y="40" fill="{T["red"]}" font-size="16" letter-spacing="3">{esc(f"{n:02d}  ──  {detail}  ✦")}</text>'
-        f'<g class="u">{display.path(word, 84, 20, 124, T["fg"])}</g>' + thread(T, 40 + w, W - 30, 100)))
+        f'<text x="{PAD}" y="34" fill="{T["red"]}" font-size="11" letter-spacing="2">{esc(f"{n:02d}  ──  {detail}  ✦")}</text>'
+        f'<g class="u">{display.path(word, size, PAD - 2, 114, T["fg"])}</g>' + thread(T, PAD + w + 16, W - PAD, 92)))
 
 
-def chip(name, key, value):
-    """A link chip: the channel in red small caps, its address in the theme's type, a red rule under both."""
-    W, H = 300, 56
-    write(f"link-{name}", W, H, f"{key}: {value}", lambda T: (
-        f'<text x="2" y="18" fill="{T["red"]}" font-size="11" letter-spacing="3">{esc(key.upper())}</text>'
-        f'<text x="2" y="42" fill="{T["fg"]}" font-size="18">{esc(value)}</text>'
-        f'<rect x="2" y="51" width="{W - 4}" height="2" fill="{T["red"]}" opacity=".5"/>'))
+def chip(name, k, key, value):
+    """A link chip, the k-th of four: the channel in red small caps, its address in the theme's type, a red rule under both."""
+    W, cw, x = slot(4, k)
+    write(f"link-{name}", W, 48, f"{key}: {value}", lambda T: (
+        f'<g transform="translate({x} 0)">'
+        f'<text x="0" y="16" fill="{T["red"]}" font-size="11" letter-spacing="2">{esc(key.upper())}</text>'
+        f'<text x="0" y="38" fill="{T["fg"]}" font-size="14">{esc(value)}</text>'
+        f'<rect x="0" y="45" width="{cw}" height="2" fill="{T["red"]}" opacity=".5"/></g>'))
 
 
 def main():
@@ -72,10 +85,10 @@ def main():
         header(display, n, word, detail)
     i = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf8"))["identity"]
     site = json.loads((ROOT / "data" / "portfolio.json").read_text(encoding="utf8"))["site"]["url"]
-    chip("portfolio", "Portfolio", site.split("//")[-1].rstrip("/"))
-    chip("linkedin", "LinkedIn", "in/" + i["linkedin"].rstrip("/").split("/")[-1])
+    chip("portfolio", 0, "Portfolio", site.split("//")[-1].rstrip("/"))
+    chip("linkedin", 1, "LinkedIn", "in/" + i["linkedin"].rstrip("/").split("/")[-1])
     cv = json.loads((ROOT / "data" / "cv.json").read_text(encoding="utf8"))
-    chip("email", "Email", cv.get("email") or i["email"])
+    chip("email", 2, "Email", cv.get("email") or i["email"])
     print("built:", ", ".join(sorted(p.name for p in OUT.glob("*.svg"))))
 
 

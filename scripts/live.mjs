@@ -3,6 +3,11 @@
 // streak and "currently building". Every widget is written twice, <name>.dark.svg and <name>.light.svg, on a transparent
 // background in the portfolio palette, for the README's <picture> to pick by the reader's GitHub theme.
 // Needs GITHUB_TOKEN (the Actions token is enough; locally, `GITHUB_TOKEN=$(gh auth token)`).
+//
+// Every widget is drawn at the width the README shows it at in the 1012 px column (full width 1012, a third 337, a quarter
+// 252), so a type size is the same number of pixels everywhere: 11 labels, 14 text, 20 names, 30 stats, 48 figures, 80 the
+// npm counter. Rows of three and four are laid with no gap between their images (sync_portfolio.mjs), and each image insets
+// its content by its position (`slot`), so the outer edges of a row meet the full-width widgets at PAD and COL - PAD.
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,6 +20,14 @@ const token = process.env.GITHUB_TOKEN;
 if (!token) throw new Error("GITHUB_TOKEN is required");
 const { featured: FEATURED, npm: NPM, repos: META } = JSON.parse(readFileSync(join(root, "data", "repos.json"), "utf8"));
 const describe = (name) => META[name]?.description;
+
+const COL = 1012, PAD = 24, GUT = 24, BAND = 176;
+// Image width, content width and content offset of the k-th of n images in a row (n = 3: 33.3 % each; n = 4: 24.9 % each).
+function slot(n, k) {
+  const W = Math.round(COL * (n === 3 ? 0.333 : 0.249));
+  const cw = (COL - 2 * PAD - (n - 1) * GUT) / n;
+  return { W, cw, x: +(PAD + k * (cw + GUT) - ((COL - n * W) / 2 + k * W)).toFixed(1) };
+}
 
 // Each theme names the GitHub page it sits on (bg), so solid fills can be mixed toward it and read as if transparent.
 const RED = "#d2231b";
@@ -39,8 +52,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 const fmt = (n) => Math.round(n).toLocaleString("en-US");
 const wrap = (t, n) => { const lines = [""]; for (const w of t.split(/\s+/)) { if ((lines.at(-1) + " " + w).trim().length > n) lines.push(w); else lines[lines.length - 1] = (lines.at(-1) + " " + w).trim(); } return lines; };
 const hair = (T, x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${T.line}" stroke-opacity="${T.lineOp}"/>`;
-const frame = (T, w, h) => `<rect x=".5" y=".5" width="${w - 1}" height="${h - 1}" fill="none" stroke="${T.line}" stroke-opacity="${T.lineOp}"/>`;
-const title = (T, text, x = 24, y = 34) => `<rect x="${x}" y="${y - 10}" width="10" height="10" fill="${T.red}"/><text x="${x + 20}" y="${y}" fill="${T.fg}" font-size="14" letter-spacing="3">${esc(text)}</text>`;
+const title = (T, text, x = PAD, y = 34, pulse = false) => `<rect x="${x}" y="${y - 8}" width="8" height="8" fill="${T.red}">${pulse ? '<animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/>' : ""}</rect><text x="${x + 16}" y="${y}" fill="${T.fg}" font-size="11" letter-spacing="2">${esc(text)}</text>`;
 
 // Writes both themes of one widget; `draw(T)` returns the inner SVG for a theme.
 function emit(name, w, h, label, draw) {
@@ -50,6 +62,11 @@ function emit(name, w, h, label, draw) {
 ${draw(T)}</svg>
 `);
 }
+// A widget of a row: `draw(T, cw)` is drawn from x = 0 to the content width, set at the slot's offset.
+const emitSlot = (name, n, k, h, label, draw) => {
+  const s = slot(n, k);
+  emit(name, s.W, h, label, (T) => `<g transform="translate(${s.x} 0)">${draw(T, s.cw)}</g>`);
+};
 
 async function gql(query, variables) {
   const r = await fetch("https://api.github.com/graphql", {
@@ -79,19 +96,22 @@ const repos = user.repositories.nodes;
 const max = Math.max(...days.map((d) => d.contributionCount), 1);
 const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.log(max + 1)) * 4)));
 
-// 3D skyline: each day a prism on an oblique grid, its height by contributions, rising week by week.
+// 3D skyline: each day a prism on an oblique grid, its height by contributions, rising week by week. The grid spans the
+// inner width and the height follows from the data, so the figure fills its widget.
 {
-  const W = 1100, H = 520;
-  const e1 = [17.4, 4.4], e2 = [-9.2, 8]; // one week, one weekday
-  const ox = 90, oy = 200;
+  const W = COL, MAXBAR = 104;
+  const e2 = [-9.2, 6.5]; // one weekday
+  const e1 = [(W - 2 * PAD - 7 * Math.abs(e2[0])) / weeks.length, 3.2]; // one week
   const cells = [];
-  weeks.forEach((w, wi) => w.contributionDays.forEach((d) => cells.push({ wi, di: d.weekday, n: d.contributionCount, date: d.date })));
-  cells.sort((a, b) => a.wi * e1[1] + a.di * e2[1] - (b.wi * e1[1] + b.di * e2[1]) || a.wi - b.wi);
+  weeks.forEach((w, wi) => w.contributionDays.forEach((d) => cells.push({ wi, di: d.weekday, n: d.contributionCount, date: d.date, h: d.contributionCount ? 5 + MAXBAR * Math.sqrt(d.contributionCount / max) : 1.5 })));
+  const ox = PAD + 7 * Math.abs(e2[0]), rel = (c) => c.wi * e1[1] + c.di * e2[1];
+  const oy = 56 + Math.max(...cells.map((c) => c.h - rel(c)));
+  const H = Math.ceil(Math.max(...cells.map((c) => oy + rel(c) + e1[1] + e2[1]))) + PAD;
+  cells.sort((a, b) => rel(a) - rel(b) || a.wi - b.wi);
   const P = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
   const total = fmt(cal.totalContributions);
   emit("skyline", W, H, `${total} contributions in the last year, as a 3D skyline`, (T) => {
-    const prisms = cells.map(({ wi, di, n, date }) => {
-      const h = n ? 5 + 150 * Math.sqrt(n / max) : 1.5;
+    const prisms = cells.map(({ wi, di, n, date, h }) => {
       const x = ox + wi * e1[0] + di * e2[0], y = oy + wi * e1[1] + di * e2[1];
       const a = [x, y], b = [x + e1[0], y + e1[1]], c = [x + e1[0] + e2[0], y + e1[1] + e2[1]], dd = [x + e2[0], y + e2[1]];
       const top = level(T, q(n)), side = mix(top, "#000000", T.shade), front = mix(top, "#000000", T.shade * 0.55);
@@ -102,26 +122,27 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
         + `<polygon points="${P(...up(a))} ${P(...up(b))} ${P(...up(c))} ${P(...up(dd))}" fill="${top}"/></g>`;
     }).join("");
     return `${title(T, "CONTRIBUTIONS · LAST 12 MONTHS")}
-<g class="u"><text x="${W - 24}" y="70" text-anchor="end" fill="${T.red}" font-size="56">${total}</text>
-<text x="${W - 24}" y="96" text-anchor="end" fill="${T.dim}" font-size="12" letter-spacing="3">CONTRIBUTIONS</text></g>${prisms}`;
+${prisms}<g class="u"><text x="${PAD}" y="${H - PAD - 24}" fill="${T.red}" font-size="48">${total}</text>
+<text x="${PAD}" y="${H - PAD}" fill="${T.dim}" font-size="11" letter-spacing="2">CONTRIBUTIONS</text></g>`;
   });
 }
 
-// Contribution heatmap.
+// Contribution heatmap: day labels at the inset, the grid filling the rest of the width.
 {
-  const s = 14, gap = 3, x0 = 46, y0 = 58;
-  const W = x0 + weeks.length * (s + gap) + 24, H = y0 + 7 * (s + gap) + 40;
-  emit("heatmap", W, H, `${cal.totalContributions} contributions in the last year`, (T) => {
+  const gap = 3, x0 = PAD + 30, y0 = 70;
+  const pitch = (COL - PAD - x0 + gap) / weeks.length, s = pitch - gap;
+  const H = Math.ceil(y0 + 7 * pitch + 12 + 14 + PAD);
+  emit("heatmap", COL, H, `${cal.totalContributions} contributions in the last year`, (T) => {
     let cells = "", months = "", last = "";
     weeks.forEach((w, wi) => {
       const m = new Date(w.contributionDays[0].date + "T00:00:00Z").toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-      if (m !== last && wi < weeks.length - 2) { months += `<text x="${x0 + wi * (s + gap)}" y="${y0 - 10}" fill="${T.dim}" font-size="11">${m}</text>`; last = m; }
+      if (m !== last && wi < weeks.length - 2) { months += `<text x="${(x0 + wi * pitch).toFixed(1)}" y="${y0 - 8}" fill="${T.dim}" font-size="11">${m}</text>`; last = m; }
       for (const d of w.contributionDays)
-        cells += `<rect x="${x0 + wi * (s + gap)}" y="${y0 + d.weekday * (s + gap)}" width="${s}" height="${s}" fill="${level(T, q(d.contributionCount))}" class="f" style="animation-delay:${(wi * 0.012).toFixed(3)}s"><title>${d.date}: ${d.contributionCount}</title></rect>`;
+        cells += `<rect x="${(x0 + wi * pitch).toFixed(1)}" y="${(y0 + d.weekday * pitch).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" fill="${level(T, q(d.contributionCount))}" class="f" style="animation-delay:${(wi * 0.012).toFixed(3)}s"><title>${d.date}: ${d.contributionCount}</title></rect>`;
     });
-    const labels = ["Mon", "Wed", "Fri"].map((d, i) => `<text x="8" y="${y0 + (1 + i * 2) * (s + gap) + 11}" fill="${T.dim}" font-size="11">${d}</text>`).join("");
-    const key = [0, 1, 2, 3, 4].map((l, i) => `<rect x="${W - 24 - (5 - i) * 18}" y="${y0 + 7 * (s + gap) + 10}" width="14" height="14" fill="${level(T, l)}"/>`).join("");
-    return `<text x="${x0}" y="26" fill="${T.fg}" font-size="14" letter-spacing="3">HEATMAP · DAY BY DAY</text>${months}${labels}${cells}${key}`;
+    const labels = ["Mon", "Wed", "Fri"].map((d, i) => `<text x="${PAD}" y="${(y0 + (1 + i * 2) * pitch + s - 3).toFixed(1)}" fill="${T.dim}" font-size="11">${d}</text>`).join("");
+    const key = [0, 1, 2, 3, 4].map((l, i) => `<rect x="${COL - PAD - (5 - i) * 18 + 4}" y="${(y0 + 7 * pitch + 12).toFixed(1)}" width="14" height="14" fill="${level(T, l)}"/>`).join("");
+    return `${title(T, "HEATMAP · DAY BY DAY")}${months}${labels}${cells}${key}`;
   });
 }
 
@@ -137,14 +158,13 @@ const q = (n) => (n === 0 ? 0 : Math.min(4, 1 + Math.floor((Math.log(n) / Math.l
   }
   const active = days.filter((d) => d.contributionCount).length;
   const merged = (await rest(`/search/issues?q=${encodeURIComponent(`is:pr is:merged is:public author:${USER}`)}&per_page=1`)).total_count;
-  const W = 1100, H = 184, x0 = 24, x1 = W - 24;
+  const W = COL, H = BAND, x0 = PAD, x1 = W - PAD, cw = (x1 - x0) / 4;
   emit("streak", W, H, `Current streak ${current} days, longest ${longest}, ${active} active days in the last year, ${merged} merged pull requests in public repositories`, (T) => {
-    const big = (x, n, l, c, d) => `<g class="u" style="animation-delay:${d}s"><text x="${x}" y="118" text-anchor="middle" fill="${c}" font-size="48">${fmt(n)}</text><text x="${x}" y="148" text-anchor="middle" fill="${T.dim}" font-size="12" letter-spacing="2">${l}</text></g>`;
-    const cols = [W * 0.125, W * 0.375, W * 0.625, W * 0.875];
+    const big = (i, n, l, c, d) => `<g class="u" style="animation-delay:${d}s"><text x="${x0 + cw * (i + 0.5)}" y="112" text-anchor="middle" fill="${c}" font-size="48">${fmt(n)}</text><text x="${x0 + cw * (i + 0.5)}" y="140" text-anchor="middle" fill="${T.dim}" font-size="11" letter-spacing="2">${l}</text></g>`;
     return title(T, "STREAK · LAST 12 MONTHS")
-      + big(cols[0], current, "CURRENT STREAK", T.red, 0) + big(cols[1], longest, "LONGEST", T.fg, 0.08)
-      + big(cols[2], active, "ACTIVE DAYS", T.fg, 0.16) + big(cols[3], merged, "MERGED PRS · PUBLIC REPOS", T.fg, 0.24)
-      + hair(T, W * 0.25, 82, W * 0.25, 152) + hair(T, W * 0.5, 82, W * 0.5, 152) + hair(T, W * 0.75, 82, W * 0.75, 152)
+      + big(0, current, "CURRENT STREAK", T.red, 0) + big(1, longest, "LONGEST", T.fg, 0.08)
+      + big(2, active, "ACTIVE DAYS", T.fg, 0.16) + big(3, merged, "MERGED PRS · PUBLIC REPOS", T.fg, 0.24)
+      + [1, 2, 3].map((i) => hair(T, x0 + cw * i, 72, x0 + cw * i, 146)).join("")
       + hair(T, x0, H - 8.5, x1, H - 8.5);
   });
 }
@@ -155,29 +175,33 @@ async function repoInfo(name) {
   return repos.find((x) => x.name === name) || (await rest(`/repos/${USER}/${name}`).then((j) => ({ name: j.name, description: j.description, stargazerCount: j.stargazers_count, pushedAt: j.pushed_at, primaryLanguage: j.language ? { name: j.language } : null })).catch(() => null));
 }
 
-// The meta row at the foot of a 300x170 repo card: language dot and language, star count, last-push date, closing hairline.
-function metaRow(T, r) {
+// The meta row at the foot of a card: language dot and language, star count, last-push date, closing hairline.
+function metaRow(T, r, cw) {
   const star = `<path d="M0-7l2.1 4.3 4.7.7-3.4 3.3.8 4.7L0 3.8-4.2 6l.8-4.7L-6.8-2l4.7-.7z" fill="${T.fg}"/>`;
-  return `<circle cx="30" cy="138" r="6" fill="${T.red}"/><text x="44" y="142" fill="${T.fg}" font-size="13">${esc(r.primaryLanguage?.name || "—")}</text>
-<g transform="translate(150 138)">${star}</g><text x="164" y="142" fill="${T.fg}" font-size="13">${r.stargazerCount}</text>
-<text x="284" y="142" text-anchor="end" fill="${T.dim}" font-size="12">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
-${hair(T, 24, 166.5, 284, 166.5)}`;
+  return `<circle cx="6" cy="146" r="6" fill="${T.red}"/><text x="20" y="151" fill="${T.fg}" font-size="14">${esc(r.primaryLanguage?.name || "—")}</text>
+<g transform="translate(${cw * 0.5} 146)">${star}</g><text x="${cw * 0.5 + 14}" y="151" fill="${T.fg}" font-size="14">${r.stargazerCount}</text>
+<text x="${cw}" y="151" text-anchor="end" fill="${T.dim}" font-size="11">${new Date(r.pushedAt).toISOString().slice(0, 10)}</text>
+${hair(T, 0, BAND - 5.5, cw, BAND - 5.5)}`;
+}
+
+// A card of a third-width row: tab and label, name, two lines of text, meta row.
+function card(T, cw, label, name, text, r) {
+  const lines = wrap(text, 35);
+  if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
+  return `<rect x="0" y="4" width="48" height="3" fill="${T.red}" class="g"/>
+<text x="0" y="34" fill="${T.dim}" font-size="11" letter-spacing="2">${label}</text>
+<text x="0" y="64" fill="${T.fg}" font-size="20">${esc(name)}</text>
+${lines.slice(0, 2).map((l, i) => `<text x="0" y="${92 + i * 20}" fill="${T.dim}" font-size="14">${esc(l)}</text>`).join("")}
+${r ? metaRow(T, r, cw) : hair(T, 0, BAND - 5.5, cw, BAND - 5.5)}`;
 }
 
 // Featured repo cards, three to a row: the text under each repo's animated preview (assets/previews/, built by
 // build_previews.py): name, English description, language, stars and last push.
-for (const name of FEATURED) {
+for (const [k, name] of FEATURED.entries()) {
   const r = await repoInfo(name);
   if (!r) continue;
   const text = describe(name) || r.description || "";
-  const lines = wrap(text, 33);
-  if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-  emit(`repo-${name}`, 300, 170, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) =>
-    `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
-<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="3">REPOSITORY</text>
-<text x="24" y="62" fill="${T.fg}" font-size="19">${esc(r.name)}</text>
-${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-${metaRow(T, r)}`);
+  emitSlot(`repo-${name}`, 3, k, BAND, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T, cw) => card(T, cw, "REPOSITORY", r.name, text, r));
 }
 
 // npm: all-time downloads of the dev-kit tools since each was published, as a rolling counter, the last 7 days, each
@@ -210,43 +234,36 @@ ${metaRow(T, r)}`);
   const week = pkgs.reduce((a, k) => a + lastWeek(k), 0);
   // The tools' own cards, three to a row under the projects: each is both an npm package and a Claude Code skill; name and
   // what it does in two lines, and the same meta row as the repo cards. Their downloads are in the npm card below.
-  for (const k of pkgs) {
+  for (const [i, k] of pkgs.entries()) {
     const r = await repoInfo(k.p);
-    const lines = wrap(describe(k.p) || "", 33);
-    if (lines.length > 2) lines[1] = lines[1].replace(/[\s—–-]*$/, "") + "…";
-    emit(`tool-${k.p}`, 300, r ? 170 : 130, `${k.p}, an npm package and a Claude Code skill: ${describe(k.p) || ""}${r ? ` ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}` : ""}`, (T) =>
-      `<rect x="24" y="4" width="48" height="3" fill="${T.red}" class="g"/>
-<text x="24" y="34" fill="${T.dim}" font-size="11" letter-spacing="1.6">NPM PACKAGE · CLAUDE CODE SKILL</text>
-<text x="24" y="62" fill="${T.fg}" font-size="19">${esc(k.p)}</text>
-${lines.slice(0, 2).map((l, i) => `<text x="24" y="${88 + i * 19}" fill="${T.dim}" font-size="13">${esc(l)}</text>`).join("")}
-${r ? metaRow(T, r) : hair(T, 24, 126.5, 284, 126.5)}`);
+    emitSlot(`tool-${k.p}`, 3, i, BAND, `${k.p}, an npm package and a Claude Code skill: ${describe(k.p) || ""}${r ? ` ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}` : ""}`, (T, cw) => card(T, cw, "NPM PACKAGE · CLAUDE CODE SKILL", k.p, describe(k.p) || "", r));
   }
-  // Each package's counts as its own 350x110 image, so the README can link each one to its npm page.
-  for (const k of pkgs) emit(`npm-${k.p}`, 350, 110, `${k.p} v${k.version} on npm: ${fmt(k.total)} downloads since ${k.since}, ${fmt(lastWeek(k))} in the last 7 days`, (T) =>
-    `<g class="u"><text x="24" y="26" fill="${T.fg}" font-size="18">${esc(k.p)}</text>
-<text x="24" y="46" fill="${T.dim}" font-size="12">v${esc(k.version)} · since ${k.since}</text>
-<text x="24" y="84" fill="${T.fg}" font-size="30">${fmt(k.total)}</text>
-<text x="${String(fmt(k.total)).length * 18 + 38}" y="84" fill="${T.red}" font-size="14">+${fmt(lastWeek(k))} this week</text></g>
-${hair(T, 24, 101.5, 326, 101.5)}`);
-  const W = 1100, H = 272;
+  // Each package's counts as its own image, so the README can link each one to its npm page.
+  for (const [i, k] of pkgs.entries()) emitSlot(`npm-${k.p}`, 3, i, 104, `${k.p} v${k.version} on npm: ${fmt(k.total)} downloads since ${k.since}, ${fmt(lastWeek(k))} in the last 7 days`, (T, cw) =>
+    `<g class="u"><text x="0" y="28" fill="${T.fg}" font-size="20">${esc(k.p)}</text>
+<text x="0" y="50" fill="${T.dim}" font-size="11">v${esc(k.version)} · since ${k.since}</text>
+<text x="0" y="88" fill="${T.fg}" font-size="30">${fmt(k.total)}</text>
+<text x="${String(fmt(k.total)).length * 18 + 14}" y="88" fill="${T.red}" font-size="14">+${fmt(lastWeek(k))} this week</text></g>
+${hair(T, 0, 98.5, cw, 98.5)}`);
+  const W = COL, H = 212;
   const label = `npm downloads of the dev-kit tools since publication: ${fmt(total)} in total, ${fmt(week)} in the last 7 days. `
     + pkgs.map((k) => `${k.p} v${k.version}: ${fmt(k.total)}, ${fmt(lastWeek(k))} in the last 7 days`).join(". ");
   emit("npm", W, H, label, (T) => {
     // Rolling counter: each digit a column of 0-9 that scrolls to its value.
     const digits = fmt(total).split("");
-    const size = 112, lh = 120, cw = size * 0.6;
-    let x = 24, counter = "", keys = "";
+    const size = 80, lh = 88, cw = size * 0.6, top = 64;
+    let x = PAD, counter = "", keys = "";
     digits.forEach((ch, i) => {
-      if (!/\d/.test(ch)) { counter += `<text x="${x - cw * 0.22}" y="${92 + size * 0.78}" fill="${T.red}" font-size="${size}">${ch}</text>`; x += cw * 0.5; return; }
+      if (!/\d/.test(ch)) { counter += `<text x="${x - cw * 0.22}" y="${top + size * 0.78}" fill="${T.red}" font-size="${size}">${ch}</text>`; x += cw * 0.5; return; }
       const v = Number(ch);
       keys += `@keyframes roll${i}{from{transform:translateY(0)}to{transform:translateY(-${(v + 10) * lh}px)}}`;
-      const col = Array.from({ length: 20 }, (_, n) => `<text x="${x}" y="${92 + size * 0.78 + n * lh}" fill="${T.red}" font-size="${size}">${n % 10}</text>`).join("");
+      const col = Array.from({ length: 20 }, (_, n) => `<text x="${x}" y="${top + size * 0.78 + n * lh}" fill="${T.red}" font-size="${size}">${n % 10}</text>`).join("");
       counter += `<g style="animation:roll${i} ${1.6 + i * 0.25}s cubic-bezier(.16,1,.3,1) both">${col}</g>`;
       x += cw;
     });
-    const clip = `<clipPath id="win"><rect x="0" y="92" width="${x + 20}" height="${lh}"/></clipPath>`;
+    const clip = `<clipPath id="win"><rect x="0" y="${top}" width="${x + 20}" height="${lh}"/></clipPath>`;
     // Sparkline of weekly totals.
-    const sx0 = 640, sx1 = W - 24, sy0 = 92, sy1 = 210;
+    const sx0 = COL / 2 + PAD, sx1 = W - PAD, sy0 = 88, sy1 = 168;
     const bmax = Math.max(...buckets, 1);
     const pts = buckets.map((b, i) => [sx0 + (buckets.length < 2 ? 0 : (i / (buckets.length - 1)) * (sx1 - sx0)), sy1 - (b / bmax) * (sy1 - sy0)]);
     const line = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
@@ -256,10 +273,10 @@ ${hair(T, 24, 101.5, 326, 101.5)}`);
 ${hair(T, sx0, sy1, sx1, sy1)}<path d="${area}" fill="url(#a)" class="f" style="animation-delay:1s"/>
 <path d="${line}" pathLength="1" fill="none" stroke="${T.red}" stroke-width="2.5" stroke-linejoin="round" class="d"/>
 <circle cx="${pts.at(-1)[0].toFixed(1)}" cy="${pts.at(-1)[1].toFixed(1)}" r="5" fill="${T.red}" class="f" style="animation-delay:2s"/>
-<text x="${sx1}" y="${sy1 + 22}" text-anchor="end" fill="${T.dim}" font-size="11" letter-spacing="1">${fmt(buckets.at(-1) || 0)} ${weekly ? "THIS WEEK" : "LAST DAY"} · PEAK ${fmt(bmax)}</text>`;
+<text x="${sx1}" y="190" text-anchor="end" fill="${T.dim}" font-size="11" letter-spacing="1">${fmt(buckets.at(-1) || 0)} ${weekly ? "THIS WEEK" : "LAST DAY"} · PEAK ${fmt(bmax)}</text>`;
     return `<style>${keys}</style><defs>${clip}</defs>${title(T, "NPM · ALL-TIME DOWNLOADS · 3 PACKAGES")}
 <g clip-path="url(#win)">${counter}</g>
-<text x="24" y="244" fill="${T.fg}" font-size="16" letter-spacing="1" class="u" style="animation-delay:1.2s"><tspan fill="${T.red}">+${fmt(week)}</tspan> in the last 7 days</text>
+<text x="${PAD}" y="190" fill="${T.fg}" font-size="14" class="u" style="animation-delay:1.2s"><tspan fill="${T.red}">+${fmt(week)}</tspan> in the last 7 days</text>
 ${spark}`;
   });
 }
@@ -274,23 +291,23 @@ ${spark}`;
   if (latest) {
     const prRepo = prEvent?.repo.name.split("/")[1];
     const prVerb = prEvent ? `Pull request ${prEvent.payload.action}` : "";
-    emit("building", 1100, 190, `Currently building ${latest.name}: ${describe(latest.name)}${prEvent ? ` ${prVerb} in ${prRepo} on ${prEvent.created_at.slice(0, 10)}.` : ""}`, (T) => {
-      const desc = wrap(describe(latest.name), 70).slice(0, 2).map((l, i) => `<text x="24" y="${112 + i * 18}" fill="${T.dim}" font-size="14">${esc(l)}</text>`).join("");
-      return `${hair(T, 0, 0.5, 1100, 0.5)}${hair(T, 0, 189.5, 1100, 189.5)}
-<circle cx="30" cy="34" r="6" fill="${T.red}"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
-<text x="46" y="39" fill="${T.red}" font-size="13" letter-spacing="3">CURRENTLY BUILDING</text>
-<g class="u"><text x="24" y="84" fill="${T.fg}" font-size="30">${esc(latest.name)}</text>${desc}
-<text x="24" y="168" fill="${T.dim}" font-size="12" letter-spacing="1">${esc(latest.primaryLanguage?.name || "")} · last push ${ago(latest.pushedAt)}</text></g>
-${hair(T, 720, 28, 720, 166)}
-${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="746" y="58" fill="${T.dim}" font-size="12" letter-spacing="2">LATEST REVIEWABLE WORK</text>
-<text x="746" y="92" fill="${T.fg}" font-size="18">${esc(prVerb)}</text>
-<text x="746" y="120" fill="${T.dim}" font-size="14">${esc(prRepo)} · #${prEvent.payload.number ?? prEvent.payload.pull_request?.number}</text>
-<text x="746" y="146" fill="${T.dim}" font-size="13">${prEvent.created_at.slice(0, 10)}</text></g>` : ""}`;
+    const split = 660, px = split + PAD;
+    emit("building", COL, BAND, `Currently building ${latest.name}: ${describe(latest.name)}${prEvent ? ` ${prVerb} in ${prRepo} on ${prEvent.created_at.slice(0, 10)}.` : ""}`, (T) => {
+      const desc = wrap(describe(latest.name), 70).slice(0, 2).map((l, i) => `<text x="${PAD}" y="${114 + i * 20}" fill="${T.dim}" font-size="14">${esc(l)}</text>`).join("");
+      return `${hair(T, PAD, 0.5, COL - PAD, 0.5)}${hair(T, PAD, BAND - 0.5, COL - PAD, BAND - 0.5)}
+${title(T, "CURRENTLY BUILDING", PAD, 34, true)}
+<g class="u"><text x="${PAD}" y="86" fill="${T.fg}" font-size="30">${esc(latest.name)}</text>${desc}
+<text x="${PAD}" y="160" fill="${T.dim}" font-size="11" letter-spacing="1">${esc(latest.primaryLanguage?.name || "")} · last push ${ago(latest.pushedAt)}</text></g>
+${hair(T, split, 28, split, 150)}
+${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="${px}" y="34" fill="${T.dim}" font-size="11" letter-spacing="2">LATEST REVIEWABLE WORK</text>
+<text x="${px}" y="86" fill="${T.fg}" font-size="20">${esc(prVerb)}</text>
+<text x="${px}" y="114" fill="${T.dim}" font-size="14">${esc(prRepo)} · #${prEvent.payload.number ?? prEvent.payload.pull_request?.number}</text>
+<text x="${px}" y="160" fill="${T.dim}" font-size="11">${prEvent.created_at.slice(0, 10)}</text></g>` : ""}`;
     });
   }
 }
 
-// Profile views, drawn as a fourth link chip. The README counts each view with komarev.com's invisible 1x1 "pixel"
+// Profile views, drawn as the fourth link chip. The README counts each view with komarev.com's invisible 1x1 "pixel"
 // badge; komarev has no read-only endpoint, so this reads the number from its regular badge (one extra count a day) and
 // keeps the last good number in data/views.json when the service does not answer.
 {
@@ -301,10 +318,10 @@ ${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="746" y="58" fill=
   const read = Number(([...badge.matchAll(/>([\d,]+)</g)].at(-1)?.[1] ?? "").replace(/,/g, "") || NaN);
   const views = Number.isFinite(read) && read >= kept.count ? { count: read, date: new Date().toISOString().slice(0, 10) } : kept;
   writeFileSync(store, JSON.stringify(views, null, 2) + "\n");
-  emit("views", 300, 56, `Profile views: ${fmt(views.count)}`, (T) =>
-    `<text x="2" y="18" fill="${T.red}" font-size="11" letter-spacing="3">PROFILE VIEWS</text>`
-    + `<text x="2" y="42" fill="${T.fg}" font-size="18">${fmt(views.count)}</text>`
-    + `<rect x="2" y="51" width="296" height="2" fill="${T.red}" opacity=".5"/>`);
+  emitSlot("views", 4, 3, 48, `Profile views: ${fmt(views.count)}`, (T, cw) =>
+    `<text x="0" y="16" fill="${T.red}" font-size="11" letter-spacing="2">PROFILE VIEWS</text>`
+    + `<text x="0" y="38" fill="${T.fg}" font-size="14">${fmt(views.count)}</text>`
+    + `<rect x="0" y="45" width="${cw}" height="2" fill="${T.red}" opacity=".5"/>`);
 }
 
 console.log(`live widgets ok: ${cal.totalContributions} contributions`);
