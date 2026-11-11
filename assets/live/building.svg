@@ -8,7 +8,7 @@
 <circle cx="38" cy="36" r="6" fill="#d2231b"><animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></circle>
 <text x="54" y="41" fill="#d2231b" font-size="13" letter-spacing="3">CURRENTLY BUILDING</text>
 <g class="u"><text x="32" y="88" fill="#ede4d0" font-size="30">ClubNahuelMosse</text><text x="32" y="116" fill="#8a8273" font-size="14">A Flutter app with a REST API for booking sports courts.</text>
-<text x="32" y="170" fill="#8a8273" font-size="12" letter-spacing="1">JavaScript · last push just now</text></g>
+<text x="32" y="170" fill="#8a8273" font-size="12" letter-spacing="1">JavaScript · last push 1 h ago</text></g>
 <line x1="560" y1="28" x2="560" y2="166" stroke="#2a2824"/>
 <g class="u" style="animation-delay:.2s"><text x="586" y="58" fill="#8a8273" font-size="12" letter-spacing="2">LATEST REVIEWABLE WORK</text>
 <text x="586" y="92" fill="#ede4d0" font-size="18">Pull request merged</text>

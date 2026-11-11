@@ -61,7 +61,7 @@ def timeline(f, d):
         ("01/2026", "Visma", "Technical Lead", "work"),
         ("08/2026", "Grupo ST", "Technical Lead", "work"),
         ("09/2026", "Smart W.", "AI Enablement Lead", "work"),
-        ("NOW", "Computer Eng.", "Ingeniería en Informática · 4th yr", "study"),
+        ("NOW · 4TH YEAR", "Computer Eng.", "Ingeniería en Informática", "study"),
     ]
     W, H, x0, x1, y = 1100, 320, 120, 980, 170
     step = (x1 - x0) / (len(nodes) - 1)

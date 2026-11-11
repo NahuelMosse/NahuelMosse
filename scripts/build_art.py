@@ -192,7 +192,8 @@ def banner(f, d, cv, portfolio):
 
 
 def card_image(portfolio, key):
-    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a page in an ink-to-red-to-bone duotone."""
+    """An 880 x 336 band (2x the card's 440 x 168): a scene cropped to cover, or a page inverted into a dark duotone, its
+    white paper turned to ink, its lines to red and its text to bone."""
     W, H = 880, 336
     t = CARDS[key]
     if "scene" in t:
@@ -201,7 +202,7 @@ def card_image(portfolio, key):
     lut = []
     for c in range(3):
         a, b, e = int(INK[1 + 2 * c:3 + 2 * c], 16), int(RED[1 + 2 * c:3 + 2 * c], 16), int(BONE[1 + 2 * c:3 + 2 * c], 16)
-        lut += [round(a + (b - a) * v / 128) if v < 128 else round(b + (e - b) * (v - 128) / 127) for v in range(256)]
+        lut += [round(a + (b - a) * (255 - v) / 128) if v > 127 else round(b + (e - b) * (127 - v) / 127) for v in range(256)]
     return Image.merge("RGB", [page.point(lut[i * 256:(i + 1) * 256]) for i in range(3)])
 
 
