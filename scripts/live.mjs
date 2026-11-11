@@ -161,8 +161,8 @@ for (const name of FEATURED) {
   emit(`repo-${name}`, 440, 330, `${r.name}: ${text} ${r.stargazerCount} stars, ${r.primaryLanguage?.name || ""}`, (T) => {
     const img = band(T === THEMES.dark ? "dark" : "light");
     const pic = img
-      ? `<defs><linearGradient id="v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".12" stop-color="#fff"/><stop offset=".62" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<linearGradient id="h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".06" stop-color="#fff"/><stop offset=".94" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      ? `<defs><linearGradient id="v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".16" stop-color="#fff"/><stop offset=".6" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".1" stop-color="#fff"/><stop offset=".9" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <mask id="mv" maskUnits="userSpaceOnUse" x="10" y="10" width="420" height="160"><rect x="10" y="10" width="420" height="160" fill="url(#v)"/></mask>
 <mask id="mh" maskUnits="userSpaceOnUse" x="10" y="10" width="420" height="160"><rect x="10" y="10" width="420" height="160" fill="url(#h)"/></mask></defs>
 <g mask="url(#mh)"><g mask="url(#mv)"><image href="data:image/webp;base64,${img}" x="10" y="10" width="420" height="160" preserveAspectRatio="xMidYMid slice"/></g></g>`
@@ -215,7 +215,7 @@ ${lines.slice(0, 2).map((l, i) => `<text x="24" y="${260 + i * 19}" fill="${T.di
     const size = 112, lh = 120, cw = size * 0.6;
     let x = 24, counter = "", keys = "";
     digits.forEach((ch, i) => {
-      if (!/\d/.test(ch)) { counter += `<text x="${x}" y="${92 + size * 0.78}" fill="${T.red}" font-size="${size}">${ch}</text>`; x += cw * 0.6; return; }
+      if (!/\d/.test(ch)) { counter += `<text x="${x - cw * 0.22}" y="${92 + size * 0.78}" fill="${T.red}" font-size="${size}">${ch}</text>`; x += cw * 0.5; return; }
       const v = Number(ch);
       keys += `@keyframes roll${i}{from{transform:translateY(0)}to{transform:translateY(-${(v + 10) * lh}px)}}`;
       const col = Array.from({ length: 20 }, (_, n) => `<text x="${x}" y="${92 + size * 0.78 + n * lh}" fill="${T.red}" font-size="${size}">${n % 10}</text>`).join("");
