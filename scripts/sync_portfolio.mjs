@@ -121,8 +121,10 @@ const blocks = {
       `<a href="${data.site.url}">${pic("assets/static/link-portfolio", "Portfolio", "24.9%")}</a>`,
       `<a href="${linkedin}">${pic("assets/static/link-linkedin", "LinkedIn", "24.9%")}</a>`,
       `<a href="mailto:${email}">${pic("assets/static/link-email", "Email", "24.9%")}</a>`,
-      // The lab's views chip is komarev.com's counter itself: each view of the README asks for it once and is counted.
+      // The lab's views chip reads komarev.com's count; this invisible pixel is what counts each view, since komarev counts
+      // only what GitHub's image proxy asks of it directly.
       live("views", "Profile views", "24.9%"),
+      `<img src="https://komarev.com/ghpvc/?username=${data.identity.github?.split("/").pop() ?? "NahuelMosse"}&style=pixel" width="1" height="1" alt="">`,
     ].join("");
   },
   // The featured repos, three to a row: their animated previews (assets/previews/, built by scripts/build_previews.py),
