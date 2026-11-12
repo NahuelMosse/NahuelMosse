@@ -3,7 +3,7 @@
     "kind": "deployed",
     "ref": "https://nawi.dev/portfolio.json",
     "payloadVersion": "2.0.0",
-    "syncedAt": "2026-11-11T15:02:05.671Z"
+    "syncedAt": "2026-11-12T15:23:57.592Z"
   },
   "site": {
     "url": "https://nawi.dev"
@@ -238,7 +238,7 @@
       "links": [
         {
           "label": "Visit the site",
-          "href": "https://nahuelmosse.github.io/cebador-landing/"
+          "href": "https://lab.nawi.dev/cebador/"
         }
       ],
       "pieces": [
@@ -284,7 +284,7 @@
       "links": [
         {
           "label": "Visit the site",
-          "href": "https://nahuelmosse.github.io/sonria/"
+          "href": "https://lab.nawi.dev/sonria/"
         },
         {
           "label": "Repository",
@@ -339,7 +339,7 @@
       "links": [
         {
           "label": "Visit the site",
-          "href": "https://nahuelmosse.github.io/miga/"
+          "href": "https://lab.nawi.dev/miga/"
         },
         {
           "label": "Repository",
