@@ -8,7 +8,7 @@
 // 252), so a type size is the same number of pixels everywhere: 11 labels, 14 text, 20 names, 30 stats, 48 figures, 80 the
 // npm counter. Rows of three and four are laid with no gap between their images (sync_portfolio.mjs), and each image insets
 // its content by its position (`slot`), so the outer edges of a row meet the full-width widgets at PAD and COL - PAD.
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -305,23 +305,6 @@ ${prEvent ? `<g class="u" style="animation-delay:.2s"><text x="${px}" y="34" fil
 <text x="${px}" y="160" fill="${T.dim}" font-size="11">${prEvent.created_at.slice(0, 10)}</text></g>` : ""}`;
     });
   }
-}
-
-// Profile views, drawn as the fourth link chip. The README counts each view with komarev.com's invisible 1x1 "pixel"
-// badge; komarev has no read-only endpoint, so this reads the number from its regular badge (one extra count a day) and
-// keeps the last good number in data/views.json when the service does not answer.
-{
-  const store = join(root, "data", "views.json");
-  const kept = existsSync(store) ? JSON.parse(readFileSync(store, "utf8")) : { count: 0, date: null };
-  const badge = await fetch(`https://komarev.com/ghpvc/?username=${USER}&style=flat-square`, { signal: AbortSignal.timeout(20000) })
-    .then((r) => (r.ok ? r.text() : "")).catch(() => "");
-  const read = Number(([...badge.matchAll(/>([\d,]+)</g)].at(-1)?.[1] ?? "").replace(/,/g, "") || NaN);
-  const views = Number.isFinite(read) && read >= kept.count ? { count: read, date: new Date().toISOString().slice(0, 10) } : kept;
-  writeFileSync(store, JSON.stringify(views, null, 2) + "\n");
-  emitSlot("views", 4, 3, 48, `Profile views: ${fmt(views.count)}`, (T, cw) =>
-    `<text x="0" y="16" fill="${T.red}" font-size="11" letter-spacing="2">PROFILE VIEWS</text>`
-    + `<text x="0" y="38" fill="${T.fg}" font-size="14">${fmt(views.count)}</text>`
-    + `<rect x="0" y="45" width="${cw}" height="2" fill="${T.red}" opacity=".5"/>`);
 }
 
 console.log(`live widgets ok: ${cal.totalContributions} contributions`);
